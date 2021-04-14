@@ -391,7 +391,7 @@ class Image_Gd_Thumbnail
 			imagecolorallocate($img,200,200,200);
 			
 		}
-		
+
 		foreach ($this->textOverlay as $text)
 		{
 			if (isset($text["font"]) && isset($text["text"]) && $text["text"])
@@ -429,7 +429,7 @@ class Image_Gd_Thumbnail
 			header("Content-type: $contentType");
 		}
 		
-		// Forzo la creazione della cartella
+		// Folder creation
 		if ($cachePathForce && !file_exists(ROOT."/".$cachePathForce))
 			@mkdir(ROOT."/".$cachePathForce,self::$cacheFolderFilesPermission,true);
 		

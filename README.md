@@ -1,2 +1,2 @@
-# easygiant
-EasyGiant is a flexible and easy-to-use PHP framework based on the MVC paradigm
+# MvcMyLibrary
+MvcMyLibrary is a flexible and easy-to-use PHP library to use together with MvcMy

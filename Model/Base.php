@@ -931,11 +931,14 @@ abstract class Model_Base
 						{
 							if (array_key_exists($entry,$values))
 							{
-								if (!function_exists($funcUponEntry)) {
+								if (!function_exists($funcUponEntry) && !method_exists($this, $funcUponEntry)) {
 									throw new Exception('Error in <b>'.__METHOD__.'</b>: function <b>'.$funcUponEntry. '</b> does not exist');
 								}
 								
-								$values[$entry] = call_user_func($funcUponEntry,$values[$entry]);
+								if (method_exists($this, $funcUponEntry))
+									$values[$entry] = call_user_func(array($this, $funcUponEntry),$values[$entry]);
+								else if (function_exists($funcUponEntry))
+									$values[$entry] = call_user_func($funcUponEntry,$values[$entry]);
 							}
 						}
 

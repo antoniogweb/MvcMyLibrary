@@ -234,6 +234,12 @@ class Files_Upload
 	//get the extension of the file
 	public function getFileExtension($file)
 	{
+		return self::sFileExtension($file);
+	}
+	
+	//get the extension of the file (static)
+	public static function sFileExtension($file)
+	{
 		if (strstr($file,'.'))
 		{
 			$extArray = explode('.', $file);
@@ -241,7 +247,7 @@ class Files_Upload
 		}
 		return '';
 	}
-
+	
 	//get the file name without the extension
 	public function getNameWithoutFileExtension($file)
 	{

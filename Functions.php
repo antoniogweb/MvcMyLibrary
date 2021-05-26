@@ -1,24 +1,24 @@
 <?php
 
-// EasyGiant is a PHP framework for creating and managing dynamic content
+// MvcMyLibrary is a PHP framework for creating and managing dynamic content
 //
 // Copyright (C) 2009 - 2020  Antonio Gallo (info@laboratoriolibero.com)
 // See COPYRIGHT.txt and LICENSE.txt.
 //
-// This file is part of EasyGiant
+// This file is part of MvcMyLibrary
 //
-// EasyGiant is free software: you can redistribute it and/or modify
+// MvcMyLibrary is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation, either version 3 of the License, or
 // (at your option) any later version.
 //
-// EasyGiant is distributed in the hope that it will be useful,
+// MvcMyLibrary is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
 //
 // You should have received a copy of the GNU General Public License
-// along with EasyGiant.  If not, see <http://www.gnu.org/licenses/>.
+// along with MvcMyLibrary.  If not, see <http://www.gnu.org/licenses/>.
 
 if (!defined('EG')) die('Direct access not allowed!');
 
@@ -110,7 +110,7 @@ function sanitizeHtml($stringa) {
 
 //check if only alphabetic + optional characters are present in the string $string. Set $string to $altString if other characters are found
 //$optChar: allowed characters divided by '|'  Ex: '+|-|;'
-function sanitizeCustom($string,$optChar,$altString = 'EasyGiant')
+function sanitizeCustom($string,$optChar,$altString = 'MvcMyLibrary')
 {
 	
 	$optChar = html_entity_decode($optChar,ENT_QUOTES);
@@ -167,7 +167,7 @@ function sanitizeDbDeep($value) {
 }
 
 
-function sanitizeCustomDeep($stringArray,$optChar,$altString = 'EasyGiant')
+function sanitizeCustomDeep($stringArray,$optChar,$altString = 'MvcMyLibrary')
 {
 	$result = array();
 	foreach ($stringArray as $key => $value)

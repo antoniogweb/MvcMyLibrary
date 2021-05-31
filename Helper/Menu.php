@@ -115,6 +115,8 @@ class Helper_Menu extends Helper_Html
 					$class = isset(self::$htmlLinks[$linkName]["class"]) ? "class='".self::$htmlLinks[$linkName]["class"]."'" : $class;
 					
 					$icon = isset($this->links[$linkName]['icon']) ? "<img class='top_menu_icon' src='".$this->links[$linkName]['icon']."'> " : null;
+					$classIconBefore = isset($this->links[$linkName]['classIconBefore']) ? $this->links[$linkName]['classIconBefore']." " : "";
+					$classIconAfter = isset($this->links[$linkName]['classIconAfter']) ? " ".$this->links[$linkName]['classIconAfter'] : "";
 					
 					//choose the controller (current or panel)
 					$controller = (strcmp($linkName,'panel') === 0) ? $this->panelController.'/' : $this->controller.'/';
@@ -160,7 +162,10 @@ class Helper_Menu extends Helper_Html
 					$htmlAfter = isset($this->links[$linkName]["htmlAfter"]) ? $this->links[$linkName]["htmlAfter"] : "</div>";
 					$attributes = isset($this->links[$linkName]["attributes"]) ? $this->links[$linkName]["attributes"] : null;
 					
-					$menu .= "$htmlBefore<a $title $attributes href='$href'>$text</a>$htmlAfter\n";
+					if (Params::$translatorFunction)
+						$text = call_user_func(Params::$translatorFunction, $text);
+					
+					$menu .= "$htmlBefore<a $title $attributes href='$href'>".$classIconBefore.$text.$classIconAfter."</a>$htmlAfter\n";
 				}
 			}
 		}

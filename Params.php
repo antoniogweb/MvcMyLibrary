@@ -140,4 +140,7 @@ class Params
 	
 	// define the array of data to validate
 	public static $arrayToValidate = null;
+	
+	// the function to be used ny helper and other components
+	public static $translatorFunction = null;
 }

@@ -372,10 +372,14 @@ class Helper_List extends Helper_Html {
 		foreach ($this->_head as $item) {
 			$temp = $item['action'];
 			
+// 			var_dump($temp);
+			
 			if (preg_match('/\[\[bulkselect:(.*?)\]\]/',$temp,$matches))
 			{
 				$temp = Html_Form::checkbox("bulkselect_".$matches[1],"","BS","bulk_select_checkbox",null,"data-class='".$matches[1]."'");
 			}
+			else if (Params::$translatorFunction && trim($temp) && $temp != "&nbsp")
+				$temp = call_user_func(Params::$translatorFunction, $temp);
 			
 			//if renderToCsv is set to true skip what is not a simple text
 			if ($this->renderToCsv and !in_array($item["type"],$this->allowedCsvColumnsTypes))

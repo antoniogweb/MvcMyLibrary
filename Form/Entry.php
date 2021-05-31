@@ -52,14 +52,20 @@ abstract class Form_Entry {
 	{
 		$labelTagClass = isset($this->labelClass) ? $this->labelClass : self::$defaultLabelClass;
 		
-		if ($this->report)
+		if (isset($this->labelString))
 		{
-			return isset($this->labelString) ? "<div class='$labelTagClass'><b>".$this->labelString.":</b></div>\n\t" : null;
+			$label = $this->labelString;
+			
+			if (Params::$translatorFunction && trim($label))
+				$label = call_user_func(Params::$translatorFunction, $label);
+			
+			if ($this->report)
+				return "<div class='$labelTagClass'><b>".$label.":</b></div>\n\t";
+			else
+				return "<label class='$labelTagClass'>".$label."</label>\n\t";
 		}
-		else
-		{
-			return isset($this->labelString) ? "<label class='$labelTagClass'>".$this->labelString."</label>\n\t" : null;
-		}
+		
+		return null;
 	}
 
 	//get the class of the entry

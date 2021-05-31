@@ -372,8 +372,6 @@ class Helper_List extends Helper_Html {
 		foreach ($this->_head as $item) {
 			$temp = $item['action'];
 			
-// 			var_dump($temp);
-			
 			if (preg_match('/\[\[bulkselect:(.*?)\]\]/',$temp,$matches))
 			{
 				$temp = Html_Form::checkbox("bulkselect_".$matches[1],"","BS","bulk_select_checkbox",null,"data-class='".$matches[1]."'");

@@ -479,7 +479,7 @@ class Helper_List extends Helper_Html {
 					
 					$innerWrap = (isset(self::$filtersFormLayout["form"]["innerWrap"]) and is_array(self::$filtersFormLayout["form"]["innerWrap"]) and count(self::$filtersFormLayout["form"]["innerWrap"]) === 2) ? self::$filtersFormLayout["form"]["innerWrap"] : array("","");
 					
-					$formTop = "<form $attributes action='".Url::getFileRoot($this->url)."' method='GET'>\n".$innerWrap[0];
+					$formTop = "<form $attributes action='".Url::getRoot($this->url)."' method='GET'>\n".$innerWrap[0];
 					
 					$imgSrc = Url::getFileRoot('Public/Img/Icons/elementary_2_5/find.png');
 					
@@ -505,12 +505,12 @@ class Helper_List extends Helper_Html {
 						if (isset(self::$filtersFormLayout["clear"]["text"]))
 						{
 							$attributes = isset(self::$filtersFormLayout["clear"]["attributes"]) ? arrayToAttributeString(self::$filtersFormLayout["submit"]["attributes"]) : "";
-							$formBottom .= "<a $attributes href='".Url::getFileRoot($this->url)."?".$emptyFilterStatus."'>".self::$filtersFormLayout["clear"]["text"]."</a>";
+							$formBottom .= "<a $attributes href='".Url::getRoot($this->url)."?".$emptyFilterStatus."'>".self::$filtersFormLayout["clear"]["text"]."</a>";
 						}
 					}
 					else
 					{
-						$formBottom .= "<a class='list_filter_clear_link' title='".$this->strings->gtext('clear the filter')."' href='".Url::getFileRoot($this->url)."?".$emptyFilterStatus."'><img src='".Url::getFileRoot()."/Public/Img/Icons/elementary_2_5/clear_filter.png' /></a>";
+						$formBottom .= "<a class='list_filter_clear_link' title='".$this->strings->gtext('clear the filter')."' href='".Url::getRoot($this->url)."?".$emptyFilterStatus."'><img src='".Url::getFileRoot()."/Public/Img/Icons/elementary_2_5/clear_filter.png' /></a>";
 					}
 					
 					if (isset(self::$filtersFormLayout["submit"]))
@@ -799,7 +799,7 @@ class Helper_List extends Helper_Html {
 	}
 	
 	public function simpleLink($itemArray) {
-		$string = "<a title='".$itemArray['field']."' class='linkItem' href='".Url::getFileRoot(null).$itemArray['action'].$this->viewStatus."'>".$itemArray['name']."</a>\n";
+		$string = "<a title='".$itemArray['field']."' class='linkItem' href='".Url::getRoot(null).$itemArray['action'].$this->viewStatus."'>".$itemArray['name']."</a>\n";
 		return $string;
 	}
 
@@ -828,7 +828,7 @@ class Helper_List extends Helper_Html {
 		if (!isset(self::$actionsLayout[$lowerAction]))
 		{
 			$title = isset($this->submitTitles['edit']) ? $this->submitTitles['edit'] : $itemArray['field'];
-			$string = "<a title='".$title."' class='linkItem' href='".Url::getFileRoot(null).$itemArray['action'].$this->viewStatus."'>$text</a>\n";
+			$string = "<a title='".$title."' class='linkItem' href='".Url::getRoot(null).$itemArray['action'].$this->viewStatus."'>$text</a>\n";
 		}
 		else
 		{
@@ -836,7 +836,7 @@ class Helper_List extends Helper_Html {
 			
 			if (isset(self::$actionsLayout[$lowerAction]["text"])) $text = self::$actionsLayout[$lowerAction]["text"];
 			
-			$string = "<a $attributes href='".Url::getFileRoot(null).$itemArray['action'].$this->viewStatus."'>$text</a>\n";
+			$string = "<a $attributes href='".Url::getRoot(null).$itemArray['action'].$this->viewStatus."'>$text</a>\n";
 		}
 		
 		return $string;
@@ -864,7 +864,7 @@ class Helper_List extends Helper_Html {
 		{
 			$text = isset($this->submitImages['del']) ? "<img src='".$this->submitImages[$submitValue]."'>" : $itemArray['value'];
 			$title = isset($this->submitTitles['del']) ? $this->submitTitles[$submitValue] : $itemArray['value'];
-			$string = "<a title='".$title."' class='linkItem' href='".Url::getFileRoot(null).$itemArray['action'].$viewStatus."'>$text</a>\n";
+			$string = "<a title='".$title."' class='linkItem' href='".Url::getRoot(null).$itemArray['action'].$viewStatus."'>$text</a>\n";
 		}
 		else
 		{
@@ -872,7 +872,7 @@ class Helper_List extends Helper_Html {
 			
 			$text = isset(self::$actionsLayout[$submitValue]["text"]) ? self::$actionsLayout[$submitValue]["text"] : $submitValue;
 			
-			$string = "<a $attributes href='".Url::getFileRoot(null).$itemArray['action'].$viewStatus."'>$text</a>\n";
+			$string = "<a $attributes href='".Url::getRoot(null).$itemArray['action'].$viewStatus."'>$text</a>\n";
 		}
 		
 		return $string;
@@ -936,7 +936,7 @@ class Helper_List extends Helper_Html {
 		}
 		$this->viewArgs[$viewArgsName] = $temp;
 		
-		$action = Url::getFileRoot($this->url).$viewStatus;
+		$action = Url::getRoot($this->url).$viewStatus;
 		$imgSrc = Url::getFileRoot('Public/Img/Icons/elementary_2_5/find.png');
 		$title = $this->strings->gtext('filter');
 		$clearLinkTitle = $this->strings->gtext('clear the filter');

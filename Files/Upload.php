@@ -494,7 +494,19 @@ class Files_Upload
 			}
 		}
 	}
-
+	
+	// return the content type of the file $filename
+	public function getContentType($filename)
+	{
+		//get the MIME type of the file
+		$finfo = finfo_open(FILEINFO_MIME_TYPE);
+		$MIMEtype = finfo_file($finfo, $filename);
+		$this->mimeType = $MIMEtype;
+		finfo_close($finfo);
+		
+		return $MIMEtype;
+	}
+	
 	//upload a file in the current directory
 	//$fileName: name of the file
 	public function uploadFile($fileName = null)

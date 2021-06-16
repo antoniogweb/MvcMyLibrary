@@ -26,7 +26,10 @@ if (!defined('EG')) die('Direct access not allowed!');
 class Helper_List extends Helper_Html {
 
 	//table attributes
-	static public $tableAttributes = array('class'=>'listTable','cellspacing'=>'0');
+	public static $tableAttributes = array('class'=>'listTable','cellspacing'=>'0');
+	
+	public static $getRowListMethod = "getRowList";
+	public static $getAllRowsListMethod = "getAllRowsList";
 	
 	private $__rowArray = array(); //the current associative array representing the database record
 
@@ -666,10 +669,18 @@ class Helper_List extends Helper_Html {
 			}
 		}
 		
+		$rowListData = array();
+		
 		for ($i = 0; $i < count($queryResult); $i++)
 		{
 			$this->ifInBoundaries($i);
 			$temp = $this->getRowList($queryResult[$i]);
+			
+			// Call the model on the method if it does exists
+			if (isset($this->model) and method_exists($this->model, self::$getRowListMethod))
+				$temp = call_user_func_array(array($this->model, self::$getRowListMethod), array($queryResult[$i], $temp, count($this->_itemsList)));
+			
+			$rowListData[] = $temp;
 			
 			if (!$this->renderToCsv)
 			{
@@ -682,16 +693,24 @@ class Helper_List extends Helper_Html {
 						$tempAttr[$k] = $this->replaceFields($v, $queryResult[$i]);
 					}
 					
-					$htmlList .= $this->wrapRow($temp,$tempAttr);
+					$tempFinal = $this->wrapRow($temp,$tempAttr);
 				}
 				else
-					$htmlList .= $this->wrapRow($temp,'listRow');
+					$tempFinal = $this->wrapRow($temp,'listRow');
+				
+				// If the model does not have a method to create the whole html of the records
+				if (!isset($this->model) || !method_exists($this->model, self::$getAllRowsListMethod))
+					$htmlList .= $tempFinal;
 			}
 			else
 			{
 				$htmlList .= rtrim($temp,$this->csvColumnsSeparator)."\n";
 			}
 		}
+		
+		// If it is not updating CSV and the model has a method to create the whole html of the records
+		if (!$this->renderToCsv && isset($this->model) && method_exists($this->model, self::$getAllRowsListMethod))
+			$htmlList .= call_user_func_array(array($this->model, self::$getAllRowsListMethod), array($queryResult, $rowListData, count($this->_itemsList)));
 		
 		if (!$this->renderToCsv)
 		{

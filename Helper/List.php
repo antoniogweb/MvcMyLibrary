@@ -557,7 +557,13 @@ class Helper_List extends Helper_Html {
 				$class = str_replace("+","",$class);
 				$class = str_replace(" ","",$class);
 				$confirm = isset($action[2]) ? "data-confirm='Y'" : "data-confirm='N'";
-				$htmlBulkSelect .= "<option $confirm data-class='$class' value='".$action[0]."'>".$action[1]."</option>";
+				
+				$optionText = $action[1];
+				
+				if (Params::$translatorFunction)
+					$optionText = call_user_func_array(Params::$translatorFunction, array($optionText, false));
+				
+				$htmlBulkSelect .= "<option $confirm data-class='$class' value='".$action[0]."'>".$optionText."</option>";
 			}
 			
 			$htmlBulkSelect .= "</select>";

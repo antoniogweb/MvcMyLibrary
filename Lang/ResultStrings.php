@@ -25,11 +25,16 @@ if (!defined('EG')) die('Direct access not allowed!');
 class Lang_ResultStrings {
 
 	public $string = array();
+	public static $staticStrings = array();
 	
 	//method to get the string $stringName
 	public function getString($stringName)
 	{
-		if (isset($this->string[$stringName]))
+		if (isset(self::$staticStrings[$stringName]))
+		{
+			return self::$staticStrings[$stringName];
+		}
+		else if (isset($this->string[$stringName]))
 		{
 			return $this->string[$stringName];
 		}

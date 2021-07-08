@@ -131,5 +131,18 @@ class Theme {
 		}
 
     }
+    
+    public function getViewStatusUsingVariables($vars = array())
+    {
+		$temp = $this->viewArgs;
+		
+		foreach ($vars as $k => $v)
+		{
+			if (isset($temp[$k]))
+				$temp[$k] = $v;
+		}
+		
+		return Url::createUrl($temp);
+    }
 
 }

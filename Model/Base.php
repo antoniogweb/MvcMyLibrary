@@ -1002,11 +1002,9 @@ abstract class Model_Base
 		
 		return $values;
 	}
-
-	
 	
 	//set the $this->values array taking data from $source
-	public function setValuesFromDataSource($fields, $func = null, $dataSource)
+	public function setValuesFromDataSource($fields, $func = null, $dataSource = array())
 	{
 		if (!isset($func)) $func = Params::$defaultSanitizeFunction;
 		

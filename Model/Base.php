@@ -1396,12 +1396,17 @@ abstract class Model_Base
 	{
 		if (isset($id))
 		{
-			$where = array(
-				"ne"	=>	array(
-					$this->_idFieldsArray[0]	=>	(int)$id,
-				)
-			);
-// 			$where = $this->_idFieldsArray[0].'!='.(int)($id);
+			if ((defined('NEW_WHERE_CLAUSE_STYLE') and NEW_WHERE_CLAUSE_STYLE) || Params::$newWhereClauseStyle)
+				$where = array(
+					"ne"	=>	array(
+						$this->_idFieldsArray[0] => (int)$id,
+					)
+				);
+			else
+				$where = array(
+					$this->_idFieldsArray[0] => '!='.(int)($id),
+				);
+			
 			return $this->checkUnique($fieldsList,$where);
 		} else {
 			$errorString = $this->_resultString->getString('no-id');

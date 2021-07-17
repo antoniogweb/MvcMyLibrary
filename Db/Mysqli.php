@@ -54,7 +54,7 @@ class Db_Mysqli
 
 	//PHP-Mysql charset translation table
 	private $charsetTranslationTable = array(
-		'UTF-8'			=> 	'utf8',
+		'UTF-8'			=> 	'utf8mb4',
 		'ISO-8859-1'	=> 	'latin1',
 		'EUC-JP'		=>	'ujis',
 		'SJIS'			=>	'sjis'

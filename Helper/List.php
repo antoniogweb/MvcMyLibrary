@@ -307,7 +307,7 @@ class Helper_List extends Helper_Html {
 			}
 			else
 			{
-				if (isset($this->model) and method_exists($this->model, $string))
+				if (isset($this->model) and (method_exists($this->model, $string) || method_exists($this->model, "__call")))
 				{
 					$string = call_user_func(array($this->model, $string), $this->__rowArray);
 				}

@@ -143,6 +143,7 @@ class Controller {
 			$this->m[$modelName]->controller = $this->controller;
 			$this->m[$modelName]->action = $this->action;
 			$this->m[$modelName]->currPage = $this->currPage;
+			$this->m[$modelName]->_queryString = $this->_queryString;
 			
 		} else {
 			throw new Exception('Error in '.__METHOD__.': class "'.$modelName.'" has not been defined');

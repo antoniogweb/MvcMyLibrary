@@ -109,6 +109,8 @@ abstract class Model_Base
 	
 	public $applySoftConditionsOnPost = false; // apply soft conditions on $_POST too
 	
+	public $_queryString; //the Query String of the page
+	
 	protected $_tables='itemTable,boxTable,item_boxTable';
 	protected $_idFields='id_item,id_box';
 	protected $_tablesArray=array();

@@ -109,7 +109,7 @@ class Image_Gd_Thumbnail
 	//create the thumbnail
 	//$imageName: the name of the file inside $this->basePath
 	//$outputFile: the name of the output file
-	public function render($imageFile, $outputFile = null, $cachePathForce = null)
+	public function render($imageFile, $outputFile = null, $cachePathForce = null, $dinamicCacheEnabled = true)
 	{
 		//set if it has to create cache or not
 		$createCache = false;
@@ -127,7 +127,7 @@ class Image_Gd_Thumbnail
 		if ((!file_exists($imagePath) or !$isValidPath) and isset($this->params['defaultImage'])) $imagePath = $this->params['defaultImage'];
 		
 		//cache of the thumb
-		if ($this->params['useCache'] and file_exists($imagePath) and $isValidPath)
+		if ($dinamicCacheEnabled && $this->params['useCache'] && file_exists($imagePath) && $isValidPath)
 		{
 			//name of cache folder
 			$cacheFolder = "cache_".$this->params['imgWidth']."_".$this->params['imgHeight'];

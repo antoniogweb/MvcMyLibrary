@@ -215,10 +215,23 @@ function passwordhash($value)
 	return password_hash($value, PASSWORD_DEFAULT);
 }
 
-function passwordhashhDeep($value) {
-	return array_map('password_hash', $value);
+function passwordhashDeep($value) {
+	return array_map('passwordhash', $value);
 }
 
+function passwordverify($pass, $hash)
+{
+	if (PASSWORD_HASH == "passwordhash")
+	{
+		return password_verify($pass, $hash);
+	}
+	else
+	{
+		$hashPassword = call_user_func(PASSWORD_HASH,$pass);
+		
+		return ($hashPassword === $hash) ? true : false;
+	}
+}
 
 
 

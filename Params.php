@@ -28,7 +28,7 @@ class Params
 
 	public static $allowedDb = array('Mysql','Mysqli','PDOMysql','PDOMssql','None'); //allowed database type
 
-	public static $allowedSanitizeFunc = 'sanitizeAll,sanitizeDb,sanitizeHtml,forceInt,forceNat,none,md5,sha1,strip_tags'; //allowed sanitize functions
+	public static $allowedSanitizeFunc = 'sanitizeAll,sanitizeDb,sanitizeHtml,forceInt,forceNat,none,md5,sha1,strip_tags,passwordhash'; //allowed sanitize functions
 
 	//sanitize function used as default in insert and updates
 	public static $defaultSanitizeFunction = "sanitizeAll";
@@ -39,7 +39,7 @@ class Params
 	//HTML sanitize function used as default in scaffolding
 	public static $defaultSanitizeHtmlFunction = null;
 	
-	public static $allowedHashFunc = array('md5','sha1'); //allowed hash functions
+	public static $allowedHashFunc = array('md5','sha1','passwordhash'); //allowed hash functions
 	
 	//conventional null value for the value of the field in the createWhereClause method of the Model class
 	public static $nullQueryValue = false;

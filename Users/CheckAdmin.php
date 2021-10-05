@@ -371,55 +371,98 @@ class Users_CheckAdmin {
 		{
 			throw new Exception('Error in '.__METHOD__.' : the hash func has to be '.implode(' or ',Params::$allowedHashFunc));
 		}
-		//calculate the hash of the password
-		$pwd = call_user_func($this->_params['password_hash'],$pwd);
 		
-		if (isset(self::$usersModel))
+		if ($this->_params['password_hash'] == "passwordhash")
 		{
-			$row=$this->users->clear()->where(array(
-				self::$usernameFieldName	=>	$user,
-				self::$passwordFieldName	=>	$pwd,
-				self::$statusFieldName		=>	self::$statusFieldActiveValue
-			))->send();
-		}
-		else
-			$row=$this->_db->select($this->_usersTable,$this->_usersTable.'.'.self::$idUserFieldName.','.self::$usernameFieldName.','.self::$passwordFieldName.'',self::$usernameFieldName."=\"".$user."\" and ".self::$passwordFieldName."=\"".$pwd."\" and ".self::$statusFieldName."='".self::$statusFieldActiveValue."'");
-		
-// 		$row=$this->_db->select($this->_usersTable,$this->_usersTable.'.'.self::$idUserFieldName.','.self::$usernameFieldName.','.self::$passwordFieldName.'',self::$usernameFieldName."=\"".$user."\" and ".self::$passwordFieldName."=\"".$pwd."\" and ".self::$statusFieldName."='".self::$statusFieldActiveValue."'");
-		
-		if (count($row) === 1 and $row !== false)
-		{
-			$this->status['user'] = $row[0][$this->_usersTable][self::$usernameFieldName];
-			$this->status['status'] = 'accepted';
-			$this->status['id_user'] = $row[0][$this->_usersTable][self::$idUserFieldName];
-		}
-		else
-		{
-			$this->status['user'] = 'unknown';
-			$this->status['status'] = 'login-error';
-			$this->status['id_user'] = '';
-			
 			if (isset(self::$usersModel))
 			{
-				$res = $this->users->clear()->select(self::$idUserFieldName)->where(array(
+				$row=$this->users->clear()->where(array(
 					self::$usernameFieldName	=>	$user,
-				))->send(false);
+					self::$statusFieldName		=>	self::$statusFieldActiveValue
+				))->send();
+			}
+			else
+				$row=$this->_db->select($this->_usersTable,$this->_usersTable.'.'.self::$idUserFieldName.','.self::$usernameFieldName.','.self::$passwordFieldName.'',self::$usernameFieldName."=\"".$user."\" and ".self::$statusFieldName."='".self::$statusFieldActiveValue."'");
 			
-				if (count($res) > 0)
+			if (count($row) === 1 and $row !== false)
+			{
+				if (password_verify($pwd, $row[0][$this->_usersTable][self::$passwordFieldName]))
+					$this->setStatusOk($row);
+				else
 				{
-					$this->users->setValues(array(
-						"last_failure"	=>	time(),
-					));
-					
-					$this->users->update($res[0][self::$idUserFieldName]);
+					$this->setStatusKo();
+				
+					$this->setLastFailure($user);
 				}
 			}
 			else
+				$this->setStatusKo();
+		}
+		else
+		{
+			//calculate the hash of the password
+			$pwd = call_user_func($this->_params['password_hash'],$pwd);
+			
+			if (isset(self::$usersModel))
 			{
-				if ($this->_db->recordExists($this->_usersTable,self::$usernameFieldName,$user))
-				{
-					$this->_db->update($this->_usersTable,'last_failure',array(time()),self::$usernameFieldName.'="'.$user.'"');
-				}
+				$row=$this->users->clear()->where(array(
+					self::$usernameFieldName	=>	$user,
+					self::$passwordFieldName	=>	$pwd,
+					self::$statusFieldName		=>	self::$statusFieldActiveValue
+				))->send();
+			}
+			else
+				$row=$this->_db->select($this->_usersTable,$this->_usersTable.'.'.self::$idUserFieldName.','.self::$usernameFieldName.','.self::$passwordFieldName.'',self::$usernameFieldName."=\"".$user."\" and ".self::$passwordFieldName."=\"".$pwd."\" and ".self::$statusFieldName."='".self::$statusFieldActiveValue."'");
+			
+			if (count($row) === 1 and $row !== false)
+			{
+				$this->setStatusOk($row);
+			}
+			else
+			{
+				$this->setStatusKo();
+				
+				$this->setLastFailure($user);
+			}
+		}
+	}
+	
+	private function setStatusOk($row)
+	{
+		$this->status['user'] = $row[0][$this->_usersTable][self::$usernameFieldName];
+		$this->status['status'] = 'accepted';
+		$this->status['id_user'] = $row[0][$this->_usersTable][self::$idUserFieldName];
+	}
+	
+	private function setStatusKo()
+	{
+		$this->status['user'] = 'unknown';
+		$this->status['status'] = 'login-error';
+		$this->status['id_user'] = '';
+	}
+	
+	private function setLastFailure($user)
+	{
+		if (isset(self::$usersModel))
+		{
+			$res = $this->users->clear()->select(self::$idUserFieldName)->where(array(
+				self::$usernameFieldName	=>	$user,
+			))->send(false);
+		
+			if (count($res) > 0)
+			{
+				$this->users->setValues(array(
+					"last_failure"	=>	time(),
+				));
+				
+				$this->users->update($res[0][self::$idUserFieldName]);
+			}
+		}
+		else
+		{
+			if ($this->_db->recordExists($this->_usersTable,self::$usernameFieldName,$user))
+			{
+				$this->_db->update($this->_usersTable,'last_failure',array(time()),self::$usernameFieldName.'="'.$user.'"');
 			}
 		}
 	}

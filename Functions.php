@@ -210,6 +210,14 @@ function strip_tagsDeep($value) {
 	return array_map('strip_tags', $value);
 }
 
+function passwordhash($value)
+{
+	return password_hash($value, PASSWORD_DEFAULT);
+}
+
+function passwordhashhDeep($value) {
+	return array_map('password_hash', $value);
+}
 
 
 

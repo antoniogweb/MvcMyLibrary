@@ -212,6 +212,9 @@ function strip_tagsDeep($value) {
 
 function passwordhash($value)
 {
+	if (defined('PASSWORD_PEPPER'))
+		$value = hash_hmac("sha256", $value, PASSWORD_PEPPER);
+	
 	return password_hash($value, PASSWORD_DEFAULT);
 }
 
@@ -223,6 +226,9 @@ function passwordverify($pass, $hash)
 {
 	if (PASSWORD_HASH == "passwordhash")
 	{
+		if (defined('PASSWORD_PEPPER'))
+			$pass = hash_hmac("sha256", $pass, PASSWORD_PEPPER);
+		
 		return password_verify($pass, $hash);
 	}
 	else

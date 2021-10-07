@@ -2317,7 +2317,7 @@ abstract class Model_Base
 	}
 	
 	//initialize and populate the ::form property (reference to a Form_Form object)
-	public function setForm($defAction = null, $defSubmit = array(), $defMethod = 'POST', $defEnctype = null)
+	public function setForm($defAction = null, $defSubmit = array(), $defMethod = 'POST', $defEnctype = null, $defAttributes = null)
 	{
 		if (isset($this->id) and isset($this->controller) and isset($this->action))
 		{
@@ -2339,8 +2339,9 @@ abstract class Model_Base
 			$entries = array_key_exists('entries',$this->formStruct) ? $this->formStruct['entries'] : null;
 			$method = array_key_exists('post',$this->formStruct) ? $this->formStruct['post'] : $defMethod;
 			$enctype = array_key_exists('enctype',$this->formStruct) ? $this->formStruct['enctype'] : $defEnctype;
+			$fattributes = array_key_exists('attributes',$this->formStruct) ? $this->formStruct['attributes'] : $defAttributes;
 			
-			$this->form = new Form_Form($action,$submit,$method,$enctype);
+			$this->form = new Form_Form($action,$submit,$method,$enctype,$fattributes);
 			
 			//get the entries from DB definition
 			$types = $this->db->getTypes($this->_tables, "*", true, true);
@@ -2456,7 +2457,7 @@ abstract class Model_Base
 		}
 		else
 		{
-			$this->form = new Form_Form($defAction,$defSubmit,$defMethod,$defEnctype);
+			$this->form = new Form_Form($defAction,$defSubmit,$defMethod,$defEnctype,$defAttributes);
 		}
 	}
 

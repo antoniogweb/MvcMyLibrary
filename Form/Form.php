@@ -44,13 +44,15 @@ class Form_Form {
 	public $method = 'POST'; //the transmission method: POST/GET
 	public $enctype = null; //enctype attribute of the form
 	public $report = false; //if the form has to be shown as report
+	public $attributes = null; // attributes of the form
 	
-	public function __construct($action,$submit = array('generalAction'=>'save'),$method = 'POST',$enctype = null)
+	public function __construct($action,$submit = array('generalAction'=>'save'),$method = 'POST',$enctype = null, $attributes = null)
 	{
 		$this->action = $action; //action of the form: controller/action
 		$this->submit = $submit;
 		$this->method = $method;
 		$this->enctype = $enctype;
+		$this->attributes = $attributes;
 	}
 
 	//method to manage the $this->entry associative array
@@ -157,7 +159,9 @@ class Form_Form {
 		$fname = isset($this->name) ? "name='".$this->name."'" : null;
 		$fclass = isset($this->className) ? "class='".$this->className."'" : null;
 		$fenctype = isset($this->enctype) ? " enctype='".$this->enctype."' " : null;
-		$htmlForm = "<form $fname $fclass $fid action='".Url::getRoot($this->action)."' method='".$this->method."' $fenctype>\n";
+		$fattributes = isset($this->attributes) ? $this->attributes : "";
+		
+		$htmlForm = "<form $fname $fclass $fid action='".Url::getRoot($this->action)."' method='".$this->method."' $fenctype $fattributes>\n";
 
 		if (!isset($subset))
 		{

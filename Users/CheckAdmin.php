@@ -386,7 +386,7 @@ class Users_CheckAdmin {
 			
 			if (count($row) === 1 and $row !== false)
 			{
-				if (password_verify($pwd, $row[0][$this->_usersTable][self::$passwordFieldName]))
+				if (passwordverify($pwd, $row[0][$this->_usersTable][self::$passwordFieldName]))
 					$this->setStatusOk($row);
 				else
 				{

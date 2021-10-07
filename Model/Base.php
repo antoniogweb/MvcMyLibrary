@@ -2339,9 +2339,9 @@ abstract class Model_Base
 			$entries = array_key_exists('entries',$this->formStruct) ? $this->formStruct['entries'] : null;
 			$method = array_key_exists('post',$this->formStruct) ? $this->formStruct['post'] : $defMethod;
 			$enctype = array_key_exists('enctype',$this->formStruct) ? $this->formStruct['enctype'] : $defEnctype;
-			$fattributes = array_key_exists('attributes',$this->formStruct) ? $this->formStruct['attributes'] : $defAttributes;
+			$attributes = array_key_exists('attributes',$this->formStruct) ? $this->formStruct['attributes'] : $defAttributes;
 			
-			$this->form = new Form_Form($action,$submit,$method,$enctype,$fattributes);
+			$this->form = new Form_Form($action,$submit,$method,$enctype,$attributes);
 			
 			//get the entries from DB definition
 			$types = $this->db->getTypes($this->_tables, "*", true, true);

@@ -45,6 +45,17 @@ class Files_Log
 		$finalChar = self::$logFolder[strlen(self::$logFolder) - 1];
 		if (strcmp($finalChar,self::DS) !== 0) self::$logFolder .= self::DS;
 		
+		// create log folder if it does not exist
+		if(!is_dir(self::$logFolder))
+		{
+			if (@mkdir(self::$logFolder))
+			{
+				$fp = fopen(self::$logFolder.'.htaccess', 'w');
+				fwrite($fp, 'deny from all');
+				fclose($fp);
+			}
+		}
+		
 		$path = self::$logFolder . $fileName . self::$logExtension;
 		$this->splFile = new SplFileObject($path,'a+');
 		//change the permission of the file

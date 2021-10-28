@@ -81,7 +81,7 @@ function checkRequestUriLength()
 
 function checkRegisterGlobals()
 {
-    if (ini_get('register_globals')) die('register globals is on: easyGiant works only with register globals off');
+    if (ini_get('register_globals')) die('register globals is on: MvcMyLibrary works only with register globals off');
 }
 
 //geth the name of the current application used
@@ -451,7 +451,8 @@ try {
 	checkPostLength();
 	
 	//check the length of the REQUEST_URI
-	checkRequestUriLength();
+	if (!defined('APP_CONSOLE'))
+		checkRequestUriLength();
 	
 	//connect to the database
 	Factory_Db::getInstance(DATABASE_TYPE,array(HOST,USER,PWD,DB));
@@ -501,14 +502,16 @@ try {
 	checkRegisterGlobals();
 
 	//call the main hook
-	callHook();
+	if (!defined('APP_CONSOLE'))
+		callHook();
 	
 	//include the file containing the set of actions to carry out before ending application
 	if (file_exists(ROOT . DS . APPLICATION_PATH . DS . 'Hooks' . DS . 'BeforeEnding.php'))
 		Hooks::load(ROOT . DS . APPLICATION_PATH . DS . 'Hooks' . DS . 'BeforeEnding.php');
 	
 	//disconnect to the database
-	Factory_Db::disconnect(DATABASE_TYPE);
+	if (!defined('APP_CONSOLE'))
+		Factory_Db::disconnect(DATABASE_TYPE);
 
 } catch (Exception $e) {
 

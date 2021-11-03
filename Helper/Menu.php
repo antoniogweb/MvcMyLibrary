@@ -107,7 +107,7 @@ class Helper_Menu extends Helper_Html
 			if (array_key_exists($linkName,$this->links))
 			{
 				//check that the text and the ure are defined
-				if (isset($this->links[$linkName]['text']) and isset($this->links[$linkName]['url']))
+				if (isset($this->links[$linkName]['text']) and (isset($this->links[$linkName]['url']) || isset($this->links[$linkName]['absolute_url'])))
 				{
 					$title = isset($this->links[$linkName]['title']) ? "title=\"".$this->links[$linkName]['title']."\"" : null;
 					
@@ -128,34 +128,39 @@ class Helper_Menu extends Helper_Html
 					
 					$viewStatus = (strcmp($linkName,'panel') === 0) ? null : $this->viewStatus;
 					
-					$href = Url::getRoot($controller.$this->links[$linkName]['url'].$viewStatus);
-					
-					$qString = Params::$rewriteStatusVariables ? "?" : "";
-					
-					if (isset($this->links[$linkName]['queryString']))
+					if (isset($this->links[$linkName]['absolute_url']))
+						$href = $this->links[$linkName]['absolute_url'];
+					else
 					{
-						parse_str($this->links[$linkName]['queryString'], $qsArray);
+// 						$href = Url::getRoot($controller.$this->links[$linkName]['url'].$viewStatus);
 						
-						$qStringArray = array();
+						$qString = Params::$rewriteStatusVariables ? "?" : "";
 						
-						foreach ($qsArray as $k => $v)
+						if (isset($this->links[$linkName]['queryString']))
 						{
-							if (array_key_exists($k,$this->viewArgs))
+							parse_str($this->links[$linkName]['queryString'], $qsArray);
+							
+							$qStringArray = array();
+							
+							foreach ($qsArray as $k => $v)
 							{
-								$this->viewArgs[$k] = $v;
+								if (array_key_exists($k,$this->viewArgs))
+								{
+									$this->viewArgs[$k] = $v;
+								}
+								else
+								{
+									$qStringArray[] = "$k=$v";
+								}
 							}
-							else
-							{
-								$qStringArray[] = "$k=$v";
-							}
+							
+							$qString = !empty($qStringArray) ? "&".implode("&",$qStringArray) : "";
+							
+							$viewStatus = Url::createUrl($this->viewArgs);
 						}
 						
-						$qString = !empty($qStringArray) ? "&".implode("&",$qStringArray) : "";
-						
-						$viewStatus = Url::createUrl($this->viewArgs);
+						$href = Url::getRoot($controller.$this->links[$linkName]['url'].$viewStatus.$qString);
 					}
-					
-					$href = Url::getRoot($controller.$this->links[$linkName]['url'].$viewStatus.$qString);
 					
 					$text = $this->links[$linkName]['text'];
 					$htmlBefore = isset($this->links[$linkName]["htmlBefore"]) ? $this->links[$linkName]["htmlBefore"] : "<div $class>$icon ";

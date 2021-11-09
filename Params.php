@@ -143,4 +143,6 @@ class Params
 	
 	// the function to be used ny helper and other components
 	public static $translatorFunction = null;
+	
+	public static $sanitizeQueriesFunction = false;
 }

@@ -414,7 +414,7 @@ abstract class Model_Base
 	
 	public function sanitizeValue($value)
 	{
-		if (defined("SANITIZE_QUERIES") and SANITIZE_QUERIES)
+		if ((defined("SANITIZE_QUERIES") and SANITIZE_QUERIES) || Params::$sanitizeQueriesFunction)
 		{
 			$deep = is_array($value) ? "Deep" : "";
 			

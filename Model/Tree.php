@@ -169,7 +169,22 @@ class Model_Tree extends Model_Base {
 		
 		return $row;
 	}
-
+	
+	public function findAll($showTable = true, $sanitizeFunction = null)
+	{
+		$temp = Params::$defaultSanitizeDbFunction;
+		
+		Params::$sanitizeQueriesFunction = true;
+		Params::$defaultSanitizeDbFunction = $sanitizeFunction ? $sanitizeFunction : Params::$defaultSanitizeFunction;
+		
+		$res = $this->send($showTable);
+		
+		Params::$sanitizeQueriesFunction = false;
+		Params::$defaultSanitizeDbFunction = $temp;
+		
+		return $res;
+	}
+	
 	public function send($showTable = true)
 	{
 		$table = $this->getFields($this->select,"all",$showTable);

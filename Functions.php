@@ -507,6 +507,38 @@ function callFunction($function, $string, $caller = "CallFunction")
 	}
 }
 
+function callFunctionCheck($function, $string, $check = false)
+{
+	if (strstr($function,'::')) //static method
+	{
+		$temp = explode('::',$function);
+		
+		if (!method_exists($temp[0],$temp[1]) && $check)
+			return false;
+			
+		return call_user_func_array(array($temp[0], $temp[1]),$string);
+	}
+	else if (strstr($function,'.')) //method
+	{
+		$temp = explode('.',$function);
+		
+		if (!method_exists($obj,$temp[1]) && $check)
+			return false;
+		
+		$obj = new $temp[0]; //new instance of the object
+
+		return call_user_func_array(array($obj, $temp[1]),$string);
+	}
+	else //function
+	{
+		if (!function_exists($function) && $check)
+			return false;
+		
+		//apply the function
+		return call_user_func_array($function,$string);
+	}
+}
+
 function xml_encode($string)
 {
 	$trans = get_html_translation_table(HTML_ENTITIES, ENT_QUOTES);

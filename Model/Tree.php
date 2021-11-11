@@ -170,24 +170,56 @@ class Model_Tree extends Model_Base {
 		return $row;
 	}
 	
-	public function findAll($showTable = true, $sanitizeFunction = null)
+	protected function s($sanitizeFunction = null)
 	{
-		$temp = Params::$defaultSanitizeDbFunction;
+		$this->backupSanitizeDbFunction = Params::$defaultSanitizeDbFunction;
+		$this->backupSanitizeQueriesFunction = Params::$sanitizeQueriesFunction;
 		
 		Params::$sanitizeQueriesFunction = true;
 		Params::$defaultSanitizeDbFunction = $sanitizeFunction ? $sanitizeFunction : Params::$defaultSanitizeFunction;
 		
-		$res = $this->send($showTable);
+		return $this;
+	}
+	
+	protected function sanitizeRestore()
+	{
+		if ($this->backupSanitizeQueriesFunction || $this->backupSanitizeDbFunction)
+		{
+			Params::$sanitizeQueriesFunction = $this->backupSanitizeQueriesFunction;
+			Params::$defaultSanitizeDbFunction = $this->backupSanitizeDbFunction;
+			
+			$this->backupSanitizeQueriesFunction = $this->backupSanitizeDbFunction = null;
+		}
+	}
+	
+	public function count($sanitizeFunction = null)
+	{
+		$res = $this->s($sanitizeFunction)->rowNumber();
 		
-		Params::$sanitizeQueriesFunction = false;
-		Params::$defaultSanitizeDbFunction = $temp;
+		$this->sanitizeRestore();
 		
 		return $res;
+	}
+	
+	public function find($sanitizeFunction = null)
+	{
+		$res = $this->s($sanitizeFunction)->record($sanitizeFunction);
+		
+		$this->sanitizeRestore();
+		
+		return $res;
+	}
+	
+	public function findAll($showTable = true, $sanitizeFunction = null)
+	{
+		return $this->s($sanitizeFunction)->send($showTable);
 	}
 	
 	public function send($showTable = true)
 	{
 		$table = $this->getFields($this->select,"all",$showTable);
+		
+		$this->sanitizeRestore();
 		
 		if ($this->toList)
 		{

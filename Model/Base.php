@@ -165,6 +165,9 @@ abstract class Model_Base
 	
 	protected $id = null; //the ID of the record that have to be managed
 	
+	protected $backupSanitizeDbFunction = null;
+	protected $backupSanitizeQueriesFunction = null;
+	
 	public function __construct() {
 		$this->_tablesArray = explode(',',$this->_tables);
 		$this->_idFieldsArray = explode(',',$this->_idFields);

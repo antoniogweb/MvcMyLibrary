@@ -183,7 +183,7 @@ class Model_Tree extends Model_Base {
 	
 	protected function sanitizeRestore()
 	{
-		if ($this->backupSanitizeQueriesFunction || $this->backupSanitizeDbFunction)
+		if (isset($this->backupSanitizeQueriesFunction) || isset($this->backupSanitizeDbFunction))
 		{
 			Params::$sanitizeQueriesFunction = $this->backupSanitizeQueriesFunction;
 			Params::$defaultSanitizeDbFunction = $this->backupSanitizeDbFunction;
@@ -194,20 +194,12 @@ class Model_Tree extends Model_Base {
 	
 	public function count($sanitizeFunction = null)
 	{
-		$res = $this->s($sanitizeFunction)->rowNumber();
-		
-		$this->sanitizeRestore();
-		
-		return $res;
+		return $this->s($sanitizeFunction)->rowNumber();
 	}
 	
 	public function find($sanitizeFunction = null)
 	{
-		$res = $this->s($sanitizeFunction)->record($sanitizeFunction);
-		
-		$this->sanitizeRestore();
-		
-		return $res;
+		return $this->s($sanitizeFunction)->record($sanitizeFunction);
 	}
 	
 	public function findAll($showTable = true, $sanitizeFunction = null)
@@ -269,6 +261,9 @@ class Model_Tree extends Model_Base {
 	//the number of records of the table $tableName is returned
 	public function rowNumber() {
 		$elements = $this->treeQueryElements($this->_tablesArray[0]);
+		
+		$this->sanitizeRestore();
+		
 		return $this->db->get_num_rows($elements['tables'],$elements['where'],$this->groupBy,$elements['on'],$this->using,$this->join, $elements['binded'],"distinct ".$this->_tables.".".$this->_idFields);
 	}
 	
@@ -439,6 +434,8 @@ class Model_Tree extends Model_Base {
 	public function record()
 	{
 		$res = $this->getFields($this->select);
+		
+		$this->sanitizeRestore();
 		
 		if (count($res) > 0)
 		{

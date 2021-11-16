@@ -2549,5 +2549,14 @@ abstract class Model_Base
 	
 	//define the abstract method to get the fields from the tables
 	abstract public function getFields();
-
+	
+	// If it can be deleted
+	public function deletable($id) {
+		return true;
+	}
+	
+	// If it can be managed
+	public function manageable($id) {
+		return true;
+	}
 }

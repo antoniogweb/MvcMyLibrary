@@ -170,9 +170,6 @@ class Helper_List extends Helper_Html {
 			throw new Exception('"'.$type. '" argument not allowed in '.__METHOD__.' method');
 		}
 		
-		$primaryKey = $this->model->getPrimaryKey();
-		$table = $this->model->table();
-		
 		$temp=array();
 		$temp['type'] = $type;
 		$temp['action'] = $action;
@@ -180,7 +177,14 @@ class Helper_List extends Helper_Html {
 		$temp['name'] = $name;
 		$temp['value'] = $value;
 		$temp['title'] = $title;
-		$temp['primaryKey'] = ";$table.$primaryKey;";
+		
+		if (isset($this->model))
+		{
+			$primaryKey = $this->model->getPrimaryKey();
+			$table = $this->model->table();
+			
+			$temp['primaryKey'] = ";$table.$primaryKey;";
+		}
 		
 		$this->_itemsList[] = $temp;
 
@@ -329,7 +333,9 @@ class Helper_List extends Helper_Html {
 		$item['name'] = $this->replaceFields($item['name'],$rowArray);
 		$item['value'] = $this->replaceFields($item['value'],$rowArray);
 		$item['title'] = $this->replaceFields($item['title'],$rowArray);
-		$item['primaryKey'] = $this->replaceFields($item['primaryKey'],$rowArray);
+		
+		if (isset($this->model) && isset($item['primaryKey']))
+			$item['primaryKey'] = $this->replaceFields($item['primaryKey'],$rowArray);
 		
 		return $item;
 	}
@@ -842,7 +848,7 @@ class Helper_List extends Helper_Html {
 
 	public function ledit($itemArray)
 	{
-		if (!$this->model->manageable($itemArray['primaryKey']))
+		if (isset($this->model) && !$this->model->manageable($itemArray['primaryKey']))
 			return "";
 		
 		if (isset(self::$submitEditText["edit"]))
@@ -916,7 +922,7 @@ class Helper_List extends Helper_Html {
 	//link to del a record
 	public function ldel($itemArray)
 	{
-		if (!$this->model->deletable($itemArray['primaryKey']))
+		if (isset($this->model) && !$this->model->deletable($itemArray['primaryKey']))
 			return "";
 		
 		return $this->genericLinkAction($itemArray, "delAction", "del");
@@ -925,7 +931,7 @@ class Helper_List extends Helper_Html {
 	//link to move up a record
 	public function lmoveup($itemArray)
 	{
-		if (!$this->model->manageable($itemArray['primaryKey']))
+		if (isset($this->model) && !$this->model->manageable($itemArray['primaryKey']))
 			return "";
 		
 		return $this->genericLinkAction($itemArray, "moveupAction", "up");
@@ -934,7 +940,7 @@ class Helper_List extends Helper_Html {
 	//link to move down a record
 	public function lmovedown($itemArray)
 	{
-		if (!$this->model->manageable($itemArray['primaryKey']))
+		if (isset($this->model) && !$this->model->manageable($itemArray['primaryKey']))
 			return "";
 		
 		return $this->genericLinkAction($itemArray, "movedownAction", "down");

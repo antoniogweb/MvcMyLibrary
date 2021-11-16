@@ -658,6 +658,9 @@ class Model_Tree extends Model_Base {
 		
 		$this->convertValuesToDb();
 		
+		if (isset($id) && !$this->manageable($id))
+			return false;
+		
 		if ($this->checkOnUpdateIntegrity("update"))
 		{
 			//set the values conditions from the table description
@@ -694,6 +697,9 @@ class Model_Tree extends Model_Base {
 		$this->errors = array();
 		
 		$this->queryResult = false;
+		
+		if (isset($id) && !$this->deletable($id))
+			return false;
 		
 		if ($this->checkOnDeleteIntegrity($id, $whereClause))
 		{

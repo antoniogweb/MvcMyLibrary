@@ -32,6 +32,7 @@ class Form_Form {
 		"idName"		=>	null,
 		"submitClass"	=>	"btn btn-primary",
 		"formWrap"		=>	null,
+		"entryAttributes"	=>	array(),
 	);
 	
 	public $entry = array(); //associative array containing the entries of the form (objects that inherit the class form_entryModel). Each element of the array corresponds to one field of the table
@@ -96,6 +97,7 @@ class Form_Form {
 			$deleteButton = array_key_exists('deleteButton',$entry) ? $entry['deleteButton'] : null;
 			$reverse = array_key_exists('reverse',$entry) ? $entry['reverse'] : null;
 			$attributes = array_key_exists('attributes',$entry) ? $entry['attributes'] : null;
+			$entryAttributes = array_key_exists('entryAttributes',$entry) ? $entry['entryAttributes'] : self::$defaultEntryAttributes['entryAttributes'];
 			
 			if (array_key_exists('fill',$entry))
 			{
@@ -124,6 +126,7 @@ class Form_Form {
 			$this->entry[$name]->reverse = $reverse;
 			$this->entry[$name]->attributes = $attributes;
 			$this->entry[$name]->fill = $fill;
+			$this->entry[$name]->entryAttributes = $entryAttributes;
 		}
 	}
 

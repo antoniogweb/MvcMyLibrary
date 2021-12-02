@@ -31,6 +31,7 @@ abstract class Form_Entry {
 	
 	public $entryName = null; //the name of the entry
 	public $entryClass = null; //the class of the entry
+	public $entryAttributes = array(); //the attributes of the entry (key => value array)
 	public $idName = null; //the id of the input entry
 	public $className = null; //the class of the input entry
 	public $labelString = null; //label of the form
@@ -67,7 +68,20 @@ abstract class Form_Entry {
 		
 		return null;
 	}
-
+	
+	//get the attributes of the entry
+	public function getEntryAttributes()
+	{
+		$attrsArray = array();
+		
+		foreach ($this->entryAttributes as $k => $v)
+		{
+			$attrsArray[] = $k.'="'.$v.'"';
+		}
+		
+		return implode(" ", $attrsArray);
+	}
+	
 	//get the class of the entry
 	public function getEntryClass()
 	{

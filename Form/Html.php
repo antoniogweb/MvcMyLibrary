@@ -35,7 +35,7 @@ class Form_Html extends Form_Entry
 	{
 		$entryValue = $this->fill ? $value : null;
 		
-		$returnString = "<div class='".$this->getEntryClass()."'>\n\t$entryValue\n</div>\n";
+		$returnString = "<div class='".$this->getEntryClass()."' ".$this->getEntryAttributes().">\n\t$entryValue\n</div>\n";
 		return $returnString;
 	}
 

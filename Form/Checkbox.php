@@ -35,7 +35,7 @@ class Form_Checkbox extends Form_Entry
 	{
 		$wrap = $this->getWrapElements($value);
 		$returnString = $wrap[0];
-		$returnString .= "<div class='".$this->getEntryClass()."'>\n\t";
+		$returnString .= "<div class='".$this->getEntryClass()."' ".$this->getEntryAttributes().">\n\t";
 		$returnString .= $wrap[1];
 		$returnString .= $this->getLabelTag();
 		$returnString .= $wrap[2];

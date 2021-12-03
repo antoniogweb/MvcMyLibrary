@@ -28,6 +28,8 @@ class Theme {
 	protected $_viewFiles = array(); //view files to require
 	protected $_lastView = null;
 	
+	public static $alternativeViewFolders = array(); // Other path where to look for theme files
+	
 	public $baseUrl = null; //the base url of the website: http://domainname
 	public $baseUrlSrc = null; //the base url of the website (http://domainname) in the case MOD_REWRITE_MODULE has been set to false
 
@@ -121,15 +123,48 @@ class Theme {
 	
 	public function render() {
 		extract($this->_data);
-
+		
 		foreach ($this->_viewFiles as $file) {
-			include ($this->viewPath($file));
+			$path = $this->viewPath($file);
+			
+			if (file_exists($path))
+				include ($path);
+			else if (count(self::$alternativeViewFolders) > 0)
+			{
+				foreach (self::$alternativeViewFolders as $aPath)
+				{
+					$aPath = rtrim($aPath, DS);
+					$pathController = $aPath . DS . ucwords($this->controller) . DS . $file . '.php';
+					$pathRoot = $aPath . DS . $file . '.php';
+					
+					if (file_exists($pathController))
+						include($pathController);
+					else if (file_exists($pathRoot))
+						include($pathRoot);
+				}
+			}
 		}
 
 		if (isset($this->_lastView)) {
-			include ($this->viewPath($this->_lastView));
+			$path = $this->viewPath($this->_lastView);
+			
+			if (file_exists($path))
+				include ($path);
+			else if (count(self::$alternativeViewFolders) > 0)
+			{
+				foreach (self::$alternativeViewFolders as $aPath)
+				{
+					$aPath = rtrim($aPath, DS);
+					$pathController = $aPath . DS . ucwords($this->controller) . DS . $this->_lastView . '.php';
+					$pathRoot = $aPath . DS . $this->_lastView . '.php';
+					
+					if (file_exists($pathController))
+						include($pathController);
+					else if (file_exists($pathRoot))
+						include($pathRoot);
+				}
+			}
 		}
-
     }
     
     public function getViewStatusUsingVariables($vars = array())

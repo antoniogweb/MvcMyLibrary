@@ -269,7 +269,22 @@ function callHook()
 	//check that the controller class belongs to the application/controllers folder
 	//otherwise set the controller to the default controller
 	// 	if (!file_exists(ROOT.DS.APPLICATION_PATH.DS.'Controllers'.DS.ucwords($controller).'Controller.php') and !file_exists(ROOT.DS.APPLICATION_PATH.DS.getApplicationPath().'Controllers'.DS.ucwords($controller).'Controller.php'))
-	if (!file_exists(ROOT.DS.APPLICATION_PATH.DS.getApplicationPath().'Controllers'.DS.ucwords($controller).'Controller.php'))
+	$controllerFolders = array(ROOT.DS.APPLICATION_PATH.DS.getApplicationPath().'Controllers');
+	$controllerFolders = array_merge($controllerFolders, Controller::$alternativeControllerFolders);
+	
+	$folderOk = false;
+	
+	foreach ($controllerFolders as $folder)
+	{
+		if (file_exists($folder.DS.ucwords($controller).'Controller.php'))
+		{
+			$folderOk = true;
+			break;
+		}
+	}
+	
+// 	if (!file_exists(ROOT.DS.APPLICATION_PATH.DS.getApplicationPath().'Controllers'.DS.ucwords($controller).'Controller.php'))
+	if (!$folderOk)
 	{
 		Params::$currentApplication = null;
 		$controller = $errorController;

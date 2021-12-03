@@ -31,6 +31,9 @@ class Controller {
 
 	protected $_queryString = array(); //the array of args coming from the url
 
+	// Folder with controllers. If empty, look for inside Application/Controllers
+	public static $alternativeControllerFolders = array();
+	
 	public $application = null;
 	public $applicationUrl = null; //the url of the application
 	public $controller;

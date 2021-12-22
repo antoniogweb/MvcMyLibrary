@@ -523,7 +523,10 @@ class Users_CheckAdmin {
 					$expirationTime = $this->_params['cookie_permanent'] ? time() + $this->_params['session_expire'] : 0;
 					
 					$this->_db->insert($this->_sessionsTable,self::$idUserFieldName.',uid,token,creation_date,user_agent',array($this->status['id_user'],$this->uid,$this->_token,time(),$userAgent));
-					setcookie($this->_params['cookie_name'],$this->uid,$expirationTime,$this->_params['cookie_path']); #magic cookie
+					
+					Cookie::set($this->_params['cookie_name'], $this->uid, $expirationTime, $this->_params['cookie_path']);
+					
+// 					setcookie($this->_params['cookie_name'],$this->uid,$expirationTime,$this->_params['cookie_path']); #magic cookie
 					$this->updateAccesses();
 					
 					if (!$this->_params['allow_multiple_accesses'])

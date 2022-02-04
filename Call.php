@@ -436,6 +436,10 @@ function EG_autoload($className)
 	{
 		require_once(ROOT . DS . APPLICATION_PATH . DS . 'Models' . DS . $backupName . '.php');
 	}
+	else if (getApplicationName() and file_exists(ROOT . DS . APPLICATION_PATH . DS . getApplicationPath() . 'Modules' . DS . $backupName . '.php'))
+	{
+		require_once(ROOT . DS . APPLICATION_PATH . DS . getApplicationPath() . 'Modules' . DS . $backupName . '.php');
+	}
 	else if (file_exists(ROOT . DS . APPLICATION_PATH . DS . 'Modules' . DS . $backupName . '.php'))
 	{
 		require_once(ROOT . DS . APPLICATION_PATH . DS . 'Modules' . DS . $backupName . '.php');

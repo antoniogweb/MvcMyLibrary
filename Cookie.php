@@ -35,11 +35,12 @@ class Cookie
 			$cookieOptions = array (
 				'expires' => $expires,
 				'path' => $path,
-				'secure' => $secure,     // or false
+				'secure' => $secure,
+				'samesite'	=>	$samesite,
 			);
 			
-			if (Params::$useHttps)
-				$cookieOptions['samesite'] = $samesite;
+			if (!Params::$useHttps && $samesite == 'None')
+				$cookieOptions['samesite'] = 'Strict';
 			
 			setcookie($name,$value,$cookieOptions);
 		}

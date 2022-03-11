@@ -40,7 +40,7 @@ class Cookie
 			);
 			
 			if (!Params::$useHttps && $samesite == 'None')
-				$cookieOptions['samesite'] = 'Strict';
+				$cookieOptions['samesite'] = 'Lax';
 			
 			setcookie($name,$value,$cookieOptions);
 		}

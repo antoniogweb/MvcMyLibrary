@@ -524,7 +524,7 @@ class Users_CheckAdmin {
 					
 					$this->_db->insert($this->_sessionsTable,self::$idUserFieldName.',uid,token,creation_date,user_agent',array($this->status['id_user'],$this->uid,$this->_token,time(),$userAgent));
 					
-					Cookie::set($this->_params['cookie_name'], $this->uid, $expirationTime, $this->_params['cookie_path'], true, 'Strict');
+					Cookie::set($this->_params['cookie_name'], $this->uid, $expirationTime, $this->_params['cookie_path'], true, 'Lax');
 					
 // 					setcookie($this->_params['cookie_name'],$this->uid,$expirationTime,$this->_params['cookie_path']); #magic cookie
 					$this->updateAccesses();

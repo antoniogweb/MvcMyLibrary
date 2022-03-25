@@ -58,6 +58,9 @@ class Form_Select extends Form_Entry
 		}
 		else
 		{
+			if (isset(self::$defaultInputClasses["select"]))
+				 $this->className .= " ".self::$defaultInputClasses["select"];
+			
 			$returnString .= Html_Form::select($this->entryName,$entryValue,$this->options,$this->className, $this->idName, $this->reverse, $this->attributes);
 		}
 		

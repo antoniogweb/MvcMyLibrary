@@ -28,6 +28,7 @@ abstract class Form_Entry {
 	public static $defaultWrap = array();
 	public static $defaultEntryClass = null;
 	public static $defaultLabelClass = 'entryLabel';
+	public static $defaultInputClasses = array();
 	
 	public $entryName = null; //the name of the entry
 	public $entryClass = null; //the class of the entry

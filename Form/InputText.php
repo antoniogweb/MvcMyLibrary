@@ -50,6 +50,9 @@ class Form_InputText extends Form_Entry
 		}
 		else
 		{
+			if (isset(self::$defaultInputClasses["input"]))
+				 $this->className .= " ".self::$defaultInputClasses["input"];
+			
 			$returnString .= Html_Form::input($this->entryName, $entryValue, $this->className, $this->idName, $this->attributes);
 		}
 		

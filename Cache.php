@@ -141,4 +141,14 @@ class Cache {
 				self::$cachedQueries[md5($query)] = $data;
 		}
 	}
+	
+	public static function removeTablesFromCache($tables)
+	{
+		foreach ($tables as $table)
+		{
+			if (($key = array_search($table, self::$cachedTables)) !== false) {
+				unset(self::$cachedTables[$key]);
+			}
+		}
+	}
 }

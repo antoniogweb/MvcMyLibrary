@@ -76,7 +76,10 @@ class Helper_List extends Helper_Html {
 
 	//properties of columns
 	public $colProperties = array();
-
+	
+	//properties of columns, starting from the last column
+	public $inverseColProperties = array();
+	
 	//$position: array. First element: page number, second element: number of pages
 	public $position = array();
 
@@ -106,6 +109,11 @@ class Helper_List extends Helper_Html {
 	
 	//layout of the filters form
 	public static $filtersFormLayout = array();
+	
+	// default classes of the filter input/select
+	public static $defaultFilterAttributes = array();
+	
+	public static $bulkActionsSelectAdditionalClass = "";
 	
 	//if the resulting table has to be wrapped with <table></table>
 	public $wrapTable = true;
@@ -379,7 +387,18 @@ class Helper_List extends Helper_Html {
 			return $string;
 		}
 	}
-
+	
+	public function setColumnProp($prop, $count, $maxCount)
+	{
+		if (isset($this->colProperties[$count]))
+			$prop = $this->colProperties[$count];
+		
+		if (isset($this->inverseColProperties[($count + 1 - $maxCount)*(-1)]))
+			$prop = $this->inverseColProperties[($count +1 - $maxCount)*(-1)];
+		
+		return $prop;
+	}
+	
 	//method to create the HTML of the head of the table
 	public function createHead() {
 		$htmlHead = null;
@@ -402,11 +421,14 @@ class Helper_List extends Helper_Html {
 				continue;
 			}
 			
-			$prop = $item['type'];
-			if (isset($this->colProperties[$count]))
-			{
-				$prop = $this->colProperties[$count];
-			}
+			$prop = $this->setColumnProp($item['type'], $count, count($this->_head));
+			
+// 			$prop = $item['type'];
+// 			if (isset($this->colProperties[$count]))
+// 				$prop = $this->colProperties[$count];
+// 			
+// 			if (isset($this->inverseColProperties[($count + 1 - count($this->_head))*(-1)]))
+// 				$prop = $this->inverseColProperties[($count +1 - count($this->_head))*(-1)];
 			
 			$htmlHead .= $this->wrapColumn($temp, $prop, "th");
 			
@@ -452,11 +474,14 @@ class Helper_List extends Helper_Html {
 
 					if (!$this->aggregateFilters)
 					{
-						$prop = $item['type'];
-						if (isset($this->colProperties[$count]))
-						{
-							$prop = $this->colProperties[$count];
-						}
+// 						$prop = $item['type'];
+						
+						$prop = $this->setColumnProp($item['type'], $count, count($list));
+						
+// 						if (isset($this->colProperties[$count]))
+// 						{
+// 							$prop = $this->colProperties[$count];
+// 						}
 					}
 
 					$html = '&nbsp';
@@ -561,7 +586,7 @@ class Helper_List extends Helper_Html {
 		
 		if (count($this->_bulkActions) > 0)
 		{
-			$htmlBulkSelect .= "<span class='bulk_actions_select_label'>".$this->strings->gtext('Actions')."</span>: <select data-url='".Url::getFileRoot(null).$this->url.$this->viewStatus."' class='bulk_actions_select' name='bulk_select'>";
+			$htmlBulkSelect .= "<span class='bulk_actions_select_label'>".$this->strings->gtext('Actions')."</span>: <select data-url='".Url::getFileRoot(null).$this->url.$this->viewStatus."' class='bulk_actions_select ".self::$bulkActionsSelectAdditionalClass."' name='bulk_select'>";
 			
 			$htmlBulkSelect .= "<option data-class='0' value='0'>".$this->strings->gtext('-- Select bulk action --')."</option>";
 			
@@ -602,11 +627,14 @@ class Helper_List extends Helper_Html {
 			
 			$item = $this->replaceAll($item,$rowArray);
 			
-			$prop = $item['type']." scaffold_field_$count";
-			if (isset($this->colProperties[$count]))
-			{
-				$prop = $this->colProperties[$count];
-			}
+// 			$prop = $item['type']." scaffold_field_$count";
+// 			if (isset($this->colProperties[$count]))
+// 			{
+// 				$prop = $this->colProperties[$count];
+// 			}
+			
+			$prop = $this->setColumnProp($item['type']." scaffold_field_$count", $count, count($this->_itemsList));
+			
 
 			if (($this->_boundaries === 'top' and ($item['type'] === 'moveupForm' or $item['type'] === 'lmoveup')) or ($this->_boundaries === 'bottom' and ($item['type'] === 'movedownForm' or $item['type'] === 'lmovedown')) or ($this->_boundaries === 'both' and ($item['type'] === 'moveupForm' or $item['type'] === 'movedownForm' or $item['type'] === 'lmoveup' or $item['type'] === 'lmovedown')))
 			{
@@ -1000,7 +1028,9 @@ class Helper_List extends Helper_Html {
 		
 		$html .= isset($filterString) ? " <span class='list_filter_span list_filter_span_$cleanName'>".$filterString."</span> " : null;
 		
-		if (!isset(self::$filtersFormLayout["filters"][$viewArgsName]))
+		$type = isset($filterValues) ? "select" : "input";
+		
+		if (!isset(self::$filtersFormLayout["filters"][$viewArgsName]) && !isset(self::$defaultFilterAttributes[$type]))
 		{
 			if (!isset($filterValues))
 			{
@@ -1014,11 +1044,17 @@ class Helper_List extends Helper_Html {
 		}
 		else
 		{
-			$filterLayout = self::$filtersFormLayout["filters"][$viewArgsName];
+			if (isset(self::$filtersFormLayout["filters"][$viewArgsName]))
+				$filterLayout = self::$filtersFormLayout["filters"][$viewArgsName];
 			
-			$attributes = isset($filterLayout["attributes"]) ? arrayToAttributeString($filterLayout["attributes"]) : "";
+			$defaultAttributes = isset(self::$defaultFilterAttributes[$type]) ? self::$defaultFilterAttributes[$type] : array();
 			
-			$type = isset($filterLayout["type"]) ? $filterLayout["type"] : "input";
+			if ($type == "input" && !isset($defaultAttributes["placeholder"]))
+				$defaultAttributes["placeholder"] = ucfirst(sanitizeAll($viewArgsName))."..";
+			
+			$attributes = isset($filterLayout["attributes"]) ? arrayToAttributeString($filterLayout["attributes"]) : arrayToAttributeString($defaultAttributes);
+			
+			$type = isset($filterLayout["type"]) ? $filterLayout["type"] : $type;
 			
 			$wrap = (isset(self::$filtersFormLayout["filters"][$viewArgsName]["wrap"]) and is_array(self::$filtersFormLayout["filters"][$viewArgsName]["wrap"]) and count(self::$filtersFormLayout["filters"][$viewArgsName]["wrap"]) === 2) ? self::$filtersFormLayout["filters"][$viewArgsName]["wrap"] : array("","");
 			

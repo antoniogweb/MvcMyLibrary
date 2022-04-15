@@ -1042,6 +1042,8 @@ class Helper_List extends Helper_Html {
 				{
 					$valueArray = explode("|",$value);
 					
+					$html .= "<span class='list_filter_checkbox_box'>";
+					
 					foreach ($filterValues as $k => $v)
 					{
 						if ($k == Params::$nullQueryValue)
@@ -1057,6 +1059,8 @@ class Helper_List extends Helper_Html {
 						
 						$html .= "<span class='list_filter_checkbox list_filter_checkbox_$cleanName'>".Html_Form::checkbox($viewArgsName."[]",$valoreFinale,$k,null)." <span class='list_filter_checkbox_label'>$v</span>"."</span>";
 					}
+					
+					$html .= "</span>";
 				}
 				else
 				{

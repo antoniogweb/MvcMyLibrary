@@ -69,7 +69,7 @@ function fixArray($array, $depth = 1)
 		{
 			if (defined("MULTI_DIMENSIONAL_QUERY_STRING") && is_array(MULTI_DIMENSIONAL_QUERY_STRING) && in_array($key, MULTI_DIMENSIONAL_QUERY_STRING) && (int)$depth === 1)
 			{
-				$value = fixArray($value, $depth++);
+				$value = fixArray($value, $depth+1);
 				
 				$temp[$key] = implode("|",$value);
 			}

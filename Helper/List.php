@@ -1038,8 +1038,6 @@ class Helper_List extends Helper_Html {
 			}
 			else
 			{
-				$filterValues = array(Params::$nullQueryValue => $this->strings->gtext('All')) + $filterValues;
-				
 				if ($multi)
 				{
 					$valueArray = explode("|",$value);
@@ -1047,7 +1045,10 @@ class Helper_List extends Helper_Html {
 					foreach ($filterValues as $k => $v)
 					{
 						if ($k == Params::$nullQueryValue)
+						{
+							$html .= $v.":";
 							continue;
+						}
 						
 						$valoreFinale = "";
 						
@@ -1058,7 +1059,10 @@ class Helper_List extends Helper_Html {
 					}
 				}
 				else
+				{
+					$filterValues = array(Params::$nullQueryValue => $this->strings->gtext('All')) + $filterValues;
 					$html .= Html_Form::select($viewArgsName,$value,$filterValues,"list_filter_input list_filter_input_$cleanName",null,"yes");
+				}
 			}
 		}
 		else

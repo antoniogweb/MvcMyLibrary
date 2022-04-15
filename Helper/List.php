@@ -987,7 +987,7 @@ class Helper_List extends Helper_Html {
 	}
 	
 	//create the HTML of the filter
-	public function filterForm($viewArgsName, $filterString = null, $filterValues = null)
+	public function filterForm($viewArgsName, $filterString = null, $filterValues = null, $multi = false)
 	{
 		$cleanName = str_replace('n!',null,$viewArgsName);
 		$cleanName = str_replace('-',null,$cleanName);
@@ -1039,7 +1039,26 @@ class Helper_List extends Helper_Html {
 			else
 			{
 				$filterValues = array(Params::$nullQueryValue => $this->strings->gtext('All')) + $filterValues;
-				$html .= Html_Form::select($viewArgsName,$value,$filterValues,"list_filter_input list_filter_input_$cleanName",null,"yes");
+				
+				if ($multi)
+				{
+					$valueArray = explode("|",$value);
+					
+					foreach ($filterValues as $k => $v)
+					{
+						if ($k == Params::$nullQueryValue)
+							continue;
+						
+						$valoreFinale = "";
+						
+						if (in_array($k, $valueArray))
+							$valoreFinale = $k;
+						
+						$html .= "<span class='list_filter_checkbox list_filter_checkbox_$cleanName'>".Html_Form::checkbox($viewArgsName."[]",$valoreFinale,$k,null)." <span class='list_filter_checkbox_label'>$v</span>"."</span>";
+					}
+				}
+				else
+					$html .= Html_Form::select($viewArgsName,$value,$filterValues,"list_filter_input list_filter_input_$cleanName",null,"yes");
 			}
 		}
 		else
@@ -1068,7 +1087,25 @@ class Helper_List extends Helper_Html {
 				case "select":
 					if (isset($filterValues))
 					{
-						$html .= Html_Form::select($viewArgsName,$value,$filterValues,"",null,"yes",$attributes);
+						if ($multi)
+						{
+							if (isset($filterLayout["attributes"]["placeholder"]))
+								$html .= $filterLayout["attributes"]["placeholder"].":";
+							
+							$valueArray = explode("|",$value);
+							
+							foreach ($filterValues as $k => $v)
+							{
+								$valoreFinale = "";
+								
+								if (in_array($k, $valueArray))
+									$valoreFinale = $k;
+								
+								$html .= "<span class='list_filter_checkbox list_filter_checkbox_$cleanName'>".Html_Form::checkbox($viewArgsName."[]",$valoreFinale,$k,null,$attributes)." <span class='list_filter_checkbox_label'>$v</span>"."</span>";
+							}
+						}
+						else
+							$html .= Html_Form::select($viewArgsName,$value,$filterValues,"",null,"yes",$attributes);
 					}
 					break;
 			}

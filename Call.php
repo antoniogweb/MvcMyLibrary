@@ -59,13 +59,27 @@ function checkPostLength($checkArray = null)
 
 //remove elements that are arrays
 //applied to $_POST and $_GET
-function fixArray($array)
+function fixArray($array, $depth = 1)
 {
 	$temp = array();
 	
 	foreach ($array as $key => $value)
 	{
-		$temp[$key] = is_array($value) ? "" : $value;
+		if (is_array($value))
+		{
+			if (defined("MULTI_DIMENSIONAL_QUERY_STRING") && is_array(MULTI_DIMENSIONAL_QUERY_STRING) && in_array($key, MULTI_DIMENSIONAL_QUERY_STRING) && (int)$depth === 1)
+			{
+				$value = fixArray($value, $depth++);
+				
+				$temp[$key] = implode("|",$value);
+			}
+			else
+				$temp[$key] = "";
+		}
+		else
+			$temp[$key] = $value;
+		
+// 		$temp[$key] = is_array($value) ? "" : $value;
 	}
 	
 	return $temp;

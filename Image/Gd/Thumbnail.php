@@ -33,6 +33,7 @@ class Image_Gd_Thumbnail
 	public static $cacheFolderFilesPermission = 0777;
 	
 	public $textOverlay = array();
+	public $imageRotations = array();
 	
 	public function __construct($basePath,$params = null)
 	{
@@ -420,6 +421,14 @@ class Image_Gd_Thumbnail
 				}
 				
 				imagettftext($img, $text["size"], $text["angle"], $x, $text["y"], $color, $text["font"], $text["text"]);
+			}
+		}
+		
+		foreach ($this->imageRotations as $rotation)
+		{
+			if (isset($rotation["angle"]))
+			{
+				$img = imagerotate($img, $rotation["angle"], 0);
 			}
 		}
 		

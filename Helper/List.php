@@ -557,7 +557,7 @@ class Helper_List extends Helper_Html {
 					if (isset(self::$filtersFormLayout["submit"]))
 					{
 						$attributes = isset(self::$filtersFormLayout["submit"]["attributes"]) ? arrayToAttributeString(self::$filtersFormLayout["submit"]["attributes"]) : "";
-						$text = isset(self::$filtersFormLayout["submit"]["text"]) ? self::$filtersFormLayout["submit"]["text"] : "Filter";
+						$text = isset(self::$filtersFormLayout["submit"]["text"]) ? $this->strings->gtext(self::$filtersFormLayout["submit"]["text"]) : "Filter";
 						$formBottom .= "<button $attributes>".$text."</button>\n";
 					}
 					else
@@ -1078,6 +1078,9 @@ class Helper_List extends Helper_Html {
 			
 			if ($type == "input" && !isset($defaultAttributes["placeholder"]))
 				$defaultAttributes["placeholder"] = ucfirst(sanitizeAll($viewArgsName))."..";
+			
+			if (isset($filterLayout["attributes"]["placeholder"]))
+				$filterLayout["attributes"]["placeholder"] = $this->strings->gtext($filterLayout["attributes"]["placeholder"]);
 			
 			$attributes = isset($filterLayout["attributes"]) ? arrayToAttributeString($filterLayout["attributes"]) : arrayToAttributeString($defaultAttributes);
 			

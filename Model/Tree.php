@@ -116,9 +116,7 @@ class Model_Tree extends Model_Base {
 	{
 		$elements = $this->treeQueryElements($this->_tablesArray[0],$choice);
 		
-		$fields = nullToBlank($fields);
-		
-		$queryFields = (strcmp($fields,'') === 0) ? $elements['fields'] : $fields;
+		$queryFields = (strcmp(nullToBlank($fields),'') === 0) ? $elements['fields'] : $fields;
 		
 		$queryFields = preg_replace_callback('/(\[)([a-zA-Z0-9]{1,})(\])/', array($this, 'replaceQueryFields') ,$queryFields);
 		
@@ -635,6 +633,7 @@ class Model_Tree extends Model_Base {
 						if ($this->applyValidateConditions("insert",'soft',true))
 						{
 							$this->restoreConditions("soft");
+							
 							return parent::insert();
 						}
 						$this->restoreConditions("soft");

@@ -112,8 +112,7 @@ class Files_Upload
 	//obtain the current directory
 	public function setDirectory($directory = null)
 	{
-		$directory = nullToBlank($directory);
-		$relDir = (strcmp($directory,"") !== 0) ? $this->addTrailingSlash($directory) : null;
+		$relDir = (strcmp(nullToBlank($directory),"") !== 0) ? $this->addTrailingSlash($directory) : null;
 		$absDir = $this->addTrailingSlash($this->base.$directory);
 		
 		if (@is_dir($absDir))
@@ -300,8 +299,7 @@ class Files_Upload
 	}
 	
 	protected function parentDir() { #individuo la cartella madre
-		$this->directory = nullToBlank($this->directory);
-		$folders = explode(self::DS,$this->directory);
+		$folders = explode(self::DS,nullToBlank($this->directory));
 		array_pop($folders);
 		array_pop($folders);
 		$parent = implode(self::DS,$folders);

@@ -75,6 +75,7 @@ function sanitizeDb($stringa) {
 
 	if (DATABASE_TYPE === 'Mysql')
 	{
+		$stringa = nullToBlank($stringa);
 		$stringa = sanitizeQuery($stringa);
 		$stringa = mysql_real_escape_string($stringa);
 		return $stringa;
@@ -82,6 +83,7 @@ function sanitizeDb($stringa) {
 
 	if (DATABASE_TYPE === 'Mysqli')
 	{
+		$stringa = nullToBlank($stringa);
 		$stringa = sanitizeQuery($stringa);
 		$mysqli = Db_Mysqli::getInstance();
 		$db = $mysqli->getDb();

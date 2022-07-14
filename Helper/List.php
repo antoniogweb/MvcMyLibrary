@@ -255,7 +255,10 @@ class Helper_List extends Helper_Html {
 		foreach ($this->_filters as $field)
 		{
 			$key = !is_array($field) ? $field : $field[0];
-			if (!array_key_exists($key,$this->viewArgs) and strcmp($key,null) !== 0) return false;
+			
+			$key = nullToBlank($key);
+			
+			if (!array_key_exists($key,$this->viewArgs) and strcmp($key,"") !== 0) return false;
 		}
 		return true;
 	}
@@ -989,8 +992,8 @@ class Helper_List extends Helper_Html {
 	//create the HTML of the filter
 	public function filterForm($viewArgsName, $filterString = null, $filterValues = null, $multi = false)
 	{
-		$cleanName = str_replace('n!',null,$viewArgsName);
-		$cleanName = str_replace('-',null,$cleanName);
+		$cleanName = str_replace('n!',"",$viewArgsName);
+		$cleanName = str_replace('-',"",$cleanName);
 
 		if (isset($this->viewArgs[$this->pageArg]))
 		{

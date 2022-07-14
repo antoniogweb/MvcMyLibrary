@@ -384,6 +384,8 @@ class Db_Mysqli
 			}
 			else
 			{
+				$row[$feature] = nullToBlank($row[$feature]);
+				
 				$e = explode('(',$row[$feature]);
 				$temp[$row['Field']] = strcmp($feature,"Type") === 0 ? strtolower(reset($e)) : reset($e);
 			}

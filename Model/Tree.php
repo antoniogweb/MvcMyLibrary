@@ -115,7 +115,9 @@ class Model_Tree extends Model_Base {
 	public function getFields($fields = '',$choice = 'all', $showTable = true)
 	{
 		$elements = $this->treeQueryElements($this->_tablesArray[0],$choice);
-
+		
+		$fields = nullToBlank($fields);
+		
 		$queryFields = (strcmp($fields,'') === 0) ? $elements['fields'] : $fields;
 		
 		$queryFields = preg_replace_callback('/(\[)([a-zA-Z0-9]{1,})(\])/', array($this, 'replaceQueryFields') ,$queryFields);

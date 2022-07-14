@@ -66,6 +66,8 @@ class Html_Form {
 			$a = $optionName;
 			$b = $optionValue;
 			
+			$reverse = nullToBlank($reverse);
+			
 			if (strcmp($reverse,'yes') === 0)
 			{
 				$b = $optionName;

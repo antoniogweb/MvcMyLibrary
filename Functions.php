@@ -585,3 +585,11 @@ function arrayToAttributeString($array)
 	
 	return $html;
 }
+
+function nullToBlank($string)
+{
+	if ($string === null)
+		return "";
+	
+	return $string;
+}

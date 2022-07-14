@@ -57,6 +57,8 @@ class Url {
 	//create an url string (element1/element2/element4) from the values of the array $valuesArray considering only the elements indicated in the numeric string $numericString 
 	//$forceRewrite: if true it always rewrite the status variables
 	public static function createUrl($variablesArray, $numericString = null, $forceRewrite = false) {
+		$numericString = nullToBlank($numericString);
+		
 		$elementsArray = explode(',',$numericString);
 		$valuesArray = array_values($variablesArray);
 		$keysArray = array_keys($variablesArray);
@@ -73,6 +75,8 @@ class Url {
 				}
 			}
 		}
+		$urlString = nullToBlank($urlString);
+		
 		return (Params::$rewriteStatusVariables or $forceRewrite) ? $urlString : "?".ltrim($urlString,"&");
 	}
 

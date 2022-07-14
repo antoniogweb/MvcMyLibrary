@@ -591,7 +591,7 @@ abstract class Model_Base
 						
 						$tableName = (strstr($fieldName,'n!') or $this->hasTableName($fieldName)) ? null : $this->getTableName($fieldName).'.';
 						
-						$fieldName = str_replace('n!',null,$fieldName);
+						$fieldName = str_replace('n!',"",$fieldName);
 						$fieldName = $tableName.$this->dropStartChar($fieldName,'-');
 						
 						$value = reset($value);
@@ -656,7 +656,7 @@ abstract class Model_Base
 				if (isset($field))
 				{
 					//drop the 'n:' and '-' chars from $field
-					$fieldClean = str_replace('n!',null,$field);
+					$fieldClean = str_replace('n!','',$field);
 					$fieldClean = $this->dropStartChar($fieldClean,'-');
 					
 					$tableName = (strstr($field,'n!') or $this->hasTableName($field)) ? null : $this->getTableName($field).'.';
@@ -1764,8 +1764,8 @@ abstract class Model_Base
 		{
 // 			if (array_key_exists($field,$this->_where))
 // 			{
-			$fieldClean = str_replace('n!',null,$field);
-			$itemNameClean = str_replace('n!',null,$itemName);
+			$fieldClean = str_replace('n!',"",$field);
+			$itemNameClean = str_replace('n!',"",$itemName);
 			$fieldClean = $this->dropStartChar($fieldClean,'-');
 			$itemNameClean = $this->dropStartChar($itemNameClean,'-');
 			

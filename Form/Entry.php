@@ -129,6 +129,7 @@ abstract class Form_Entry {
 		//replace the ;;value;; variable
 		for ($i = 0; $i < count($this->wrap); $i++)
 		{
+			$this->wrap[$i] = nullToBlank($this->wrap[$i]);
 			if ( preg_match('/;;(.*)\|value;;/',$this->wrap[$i],$m) )
 			{
 				if (!function_exists($m[1])) {

@@ -141,7 +141,7 @@ abstract class Form_Entry {
 			}
 			else if ( preg_match('/;;value;;/',$this->wrap[$i]) )
 			{
-				$this->wrap[$i] = str_replace(';;value;;',$value,$this->wrap[$i]);
+				$this->wrap[$i] = str_replace(';;value;;',nullToBlank($value),$this->wrap[$i]);
 			}
 		}
 		

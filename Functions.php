@@ -105,7 +105,7 @@ function sanitizeAll($stringa) {
 function sanitizeHtml($stringa) {
 
 	$charset = Params::$htmlentititiesCharset;
-	$stringa=htmlentities($stringa,ENT_QUOTES,$charset);
+	$stringa=htmlentities(nullToBlank($stringa),ENT_QUOTES,$charset);
 	return $stringa;
 
 }

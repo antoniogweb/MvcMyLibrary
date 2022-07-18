@@ -689,7 +689,7 @@ abstract class Model_Base
 					}
 					else
 					{
-						if (Params::$nullQueryValue === false or strcmp($value,Params::$nullQueryValue) !== 0)
+						if (Params::$nullQueryValue === false or strcmp(nullToBlank($value),Params::$nullQueryValue) !== 0)
 						{
 							if (DATABASE_TYPE === 'PDOMysql')
 							{

@@ -26,6 +26,8 @@ if (!defined('EG')) die('Direct access not allowed!');
 //singleton!
 class Db_Mysqli
 {
+	use QueryLog;
+	
 	private $autocommit = true;
 	private $transactionBatchSize = 100;
 	
@@ -237,7 +239,9 @@ class Db_Mysqli
 		$this->query = $query;
 		$this->queries[] = $query;
 		
+		$this->startLog();
 		$ris = $this->db->query($query);
+		$this->endLog();
 		if ($ris) {
 			
 			if (isset($group_by))
@@ -315,7 +319,9 @@ class Db_Mysqli
 		$this->query = $query;
 		$this->queries[] = $query;
 		
+		$this->startLog();
 		$result = $this->db->query($query);
+		$this->endLog();
 		
 		$data = $this->getData($result, $showTable);
 		
@@ -751,7 +757,9 @@ class Db_Mysqli
 		$this->query = $query;
 		$this->queries[] = $query;
 		
+		$this->startLog();
 		$result = $this->db->query($query);
+		$this->endLog();
 		if ($result === true)
 		{
 			return $forceSelect ? array() : true;

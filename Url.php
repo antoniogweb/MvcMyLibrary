@@ -23,7 +23,14 @@
 if (!defined('EG')) die('Direct access not allowed!');
 
 class Url {
-
+	
+	public static $virtualFolder = "";
+	
+	public static function getDomainName()
+	{
+		return self::$virtualFolder ? DOMAIN_NAME . "/" . self::$virtualFolder : DOMAIN_NAME;
+	}
+	
 	//get the url starting from the root folder
 	public static function getRoot($pathFromRootFolder = null) {
 		
@@ -31,7 +38,7 @@ class Url {
 		
 		$protocol = Params::$useHttps ? "https" : "http";
 		
-		$url = MOD_REWRITE_MODULE === true ? "$protocol://" . DOMAIN_NAME . $langUrl . '/' . $pathFromRootFolder : "$protocol://" . DOMAIN_NAME . '/index.php/' . $langUrl . $pathFromRootFolder;
+		$url = MOD_REWRITE_MODULE === true ? "$protocol://" . self::getDomainName() . $langUrl . '/' . $pathFromRootFolder : "$protocol://" . self::getDomainName() . '/index.php/' . $langUrl . $pathFromRootFolder;
 		return $url;
 	}
 

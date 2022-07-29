@@ -127,19 +127,37 @@ function languageInUrl($url)
 	{
 		return $url."/";
 	}
-	return false;
+	return "";
+}
+
+function removeVirtualSubfolder($url)
+{
+	if (!defined('VIRTUAL_SUBFOLDERS'))
+		return $url;
+	
+	$regExpr = '/^('.implode("|", VIRTUAL_SUBFOLDERS).')/';
+	
+	if (preg_match($regExpr,$url, $matches))
+	{
+		Url::$virtualFolder = $matches[1];
+		
+		$url = str_replace($matches[1]."/", "", $url);
+	}
+	
+	return $url;
 }
 
 function callHook()
 {
-	
 	$currentUrl = null;
 	
 	if (MOD_REWRITE_MODULE === true)
 	{
 		if (isset($_GET['url']))
 		{
-			if (!languageInUrl($_GET['url']))
+			$_GET['url'] = removeVirtualSubfolder($_GET['url']);
+			
+			if ($_GET['url'] && !languageInUrl($_GET['url']))
 			{
 				$url = $_GET['url'];
 			}
@@ -155,15 +173,19 @@ function callHook()
 	}
 	else
 	{
-		if (strcmp(getQueryString(),"") !== 0)
+		$qString = getQueryString();
+		
+		if (strcmp($qString,"") !== 0)
 		{
-			if (!languageInUrl(getQueryString()))
+			$qString = removeVirtualSubfolder($qString);
+			
+			if ($qString && !languageInUrl($qString))
 			{
-				$url = getQueryString();
+				$url = $qString;
 			}
 			else
 			{
-				$url = languageInUrl(getQueryString()) . DEFAULT_CONTROLLER . '/' . DEFAULT_ACTION;
+				$url = languageInUrl($qString) . DEFAULT_CONTROLLER . '/' . DEFAULT_ACTION;
 			}
 		}
 		else

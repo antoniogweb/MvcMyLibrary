@@ -49,7 +49,7 @@ class Theme {
 		$langUrl = isset(Params::$lang) ? "/".Params::$lang : null;
 		$protocol = Params::$useHttps ? "https" : "http";
 		
-		$this->baseUrl = MOD_REWRITE_MODULE === true ? "$protocol://" . DOMAIN_NAME . $langUrl : "$protocol://" . DOMAIN_NAME . '/index.php' . $langUrl;
+		$this->baseUrl = MOD_REWRITE_MODULE === true ? "$protocol://" . Url::getDomainName() . $langUrl : "$protocol://" . Url::getDomainName() . '/index.php' . $langUrl;
 		
 		$this->baseUrlSrc = "$protocol://" . DOMAIN_NAME;
 		

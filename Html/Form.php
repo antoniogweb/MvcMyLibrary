@@ -246,7 +246,7 @@ class Html_Form {
 	//$idName: name of the id
 	//$image: url of the image (if it is an image button)
 	//$attributes: list of attributes
-	static public function submit($name, $value, $className = null, $idName = null, $image = null, $attributes = null)
+	static public function submit($name, $value, $className = null, $idName = null, $image = null, $attributes = null, $html = null)
 	{
 		$strClass = isset($className) ? "class='".$className."'" : null;
 		$idStr = isset($idName) ? "id='".$idName."'" : null;
@@ -258,7 +258,8 @@ class Html_Form {
 		}
 		else
 		{
-			$returnString = '<button '.$idStr.' '.$attributes.' '.$strClass.' type="submit" name="' .$name. '">'.$value.'</button>';
+			$html = $html ? $html : $value;
+			$returnString = '<button '.$idStr.' '.$attributes.' '.$strClass.' type="submit" name="' .$name. '">'.$html.'</button>';
 			$returnString .= "<input type='hidden' name='".$name."' value='$value'>";
 		}
 		

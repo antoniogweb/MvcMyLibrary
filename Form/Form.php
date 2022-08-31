@@ -33,6 +33,7 @@ class Form_Form {
 		"submitClass"	=>	"btn btn-primary",
 		"formWrap"		=>	null,
 		"entryAttributes"	=>	array(),
+		"submitHtml"	=>	null,
 	);
 	
 	public $entry = array(); //associative array containing the entries of the form (objects that inherit the class form_entryModel). Each element of the array corresponds to one field of the table
@@ -243,7 +244,7 @@ class Form_Form {
 							$submitClass = self::$defaultEntryAttributes['submitClass'][$value];
 						}
 					}
-					$htmlForm .= "<span class='submit_entry_$value'>".Html_Form::submit($name, $value, $submitClass, $name)."</span>";
+					$htmlForm .= "<span class='submit_entry_$value'>".Html_Form::submit($name, $value, $submitClass, $name,null,null,self::$defaultEntryAttributes["submitHtml"])."</span>";
 				}
 				else
 				{

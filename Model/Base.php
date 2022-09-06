@@ -1054,6 +1054,16 @@ abstract class Model_Base
 		$this->setValuesFromDataSource($fields, $func, $dataSource);
 	}
 	
+	// like setValues but does not set $this->fields
+	public function sValues($dataSource, $func = null)
+	{
+		if (!isset($func)) $func = Params::$defaultSanitizeFunction;
+		
+		$fields = implode(",",array_keys($dataSource));
+		
+		$this->values = $this->arrayExt->subset($dataSource,$fields,$func);
+	}
+	
 	//set a single value
 	public function setValue($field, $value, $func = null)
 	{

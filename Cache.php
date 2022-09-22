@@ -151,4 +151,14 @@ class Cache {
 			}
 		}
 	}
+	
+	public static function addTablesToCache($tables)
+	{
+		foreach ($tables as $table)
+		{
+			if (!in_array($table, Cache::$cachedTables)) {
+				Cache::$cachedTables[] = $table;
+			}
+		}
+	}
 }

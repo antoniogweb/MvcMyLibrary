@@ -145,4 +145,10 @@ class Params
 	public static $translatorFunction = null;
 	
 	public static $sanitizeQueriesFunction = false;
+	
+	// the originale $_GET
+	public static $rawGET = array();
+	
+	// the originale $_POST
+	public static $rawPOST = array();
 }

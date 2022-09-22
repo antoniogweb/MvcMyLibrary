@@ -499,6 +499,10 @@ try {
 	if (function_exists("Custom_autoload"))
 		spl_autoload_register('Custom_autoload');
 	
+	// Save the originale $_GET and $_POST
+	Params::$rawGET = $_GET;
+	Params::$rawPOST = $_POST;
+	
 	$_POST = fixArray($_POST);
 	$_GET = fixArray($_GET);
 	

@@ -146,9 +146,9 @@ class Params
 	
 	public static $sanitizeQueriesFunction = false;
 	
-	// the originale $_GET
+	// the original $_GET
 	public static $rawGET = array();
 	
-	// the originale $_POST
+	// the original $_POST
 	public static $rawPOST = array();
 }

@@ -28,6 +28,35 @@ class Model_Tree extends Model_Base {
 		parent::__construct();
 	}
 	
+	public function arrayToWhereClause($where)
+	{
+		$arrayQuery = array();
+		$arrayValues = array();
+		
+		if (DATABASE_TYPE === 'PDOMysql' || DATABASE_TYPE === 'PDOMssql')
+		{
+			foreach ($where as $k => $v)
+			{
+				$arrayQuery[] = "$k = ?";
+				$arrayValues[] = $v;
+			}
+			
+			return array(
+				implode(" AND ", $arrayQuery),
+				$arrayValues
+			);
+		}
+		else
+		{
+			foreach ($where as $k => $v)
+			{
+				$arrayQuery[] = "$k = '$v'";
+			}
+			
+			return implode(" AND ", $arrayQuery);
+		}
+	}
+	
 	public function getSWhereClause()
 	{
 		$sWhereArray = array();
@@ -701,6 +730,9 @@ class Model_Tree extends Model_Base {
 		
 		if (isset($id) && !$this->deletable($id))
 			return false;
+		
+		if (is_array($whereClause))
+			$whereClause = $this->arrayToWhereClause($whereClause);
 		
 		if ($this->checkOnDeleteIntegrity($id, $whereClause))
 		{

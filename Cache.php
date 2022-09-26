@@ -30,6 +30,7 @@ class Cache {
 	public static $cacheMinutes = 10;
 	public static $cacheTimeString = null;
 	public static $cleanCacheEveryXMinutes = 60;
+	public static $folderExists = false;
 	
 	public static function roundToLastSet()
 	{
@@ -117,7 +118,7 @@ class Cache {
 		{
 			if (self::$cacheFolder)
 			{
-				if(!is_dir(self::$cacheFolder))
+				if(!is_dir(self::$cacheFolder) && !self::$folderExists)
 				{
 					if (@mkdir(self::$cacheFolder))
 					{
@@ -127,6 +128,8 @@ class Cache {
 						$fp = fopen(self::$cacheFolder.'/.htaccess', 'w');
 						fwrite($fp, 'deny from all');
 						fclose($fp);
+						
+						self::$folderExists = true;
 					}
 				}
 				

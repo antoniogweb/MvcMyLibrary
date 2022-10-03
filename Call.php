@@ -116,14 +116,46 @@ function getApplicationPath()
 	{
 		return "Apps".DS.ucfirst(Params::$currentApplication).DS;
 	}
+	
 	return null;
+}
+
+// get all combinations of language and country
+function createArrayLanguagesCountries()
+{
+	static $combinations = array();
+	
+	if ($combinations)
+		return $combinations;
+	
+	if (Params::$frontEndLanguages)
+	{
+		if (count(Params::$frontEndCountries) > 0)
+		{
+			$combinations = array();
+			
+			foreach (Params::$frontEndLanguages as $lang)
+			{
+				foreach (Params::$frontEndCountries as $country)
+				{
+					$combinations[] = $lang . Params::$languageCountrySeparator . $country;
+				}
+			}
+			
+			return $combinations;
+		}
+		else
+			return Params::$frontEndLanguages;
+	}
+	
+	return array();
 }
 
 function languageInUrl($url)
 {
 	$url = trim($url,"/");
 	
-	if (in_array($url,Params::$frontEndLanguages))
+	if (in_array($url,createArrayLanguagesCountries()))
 	{
 		return $url."/";
 	}
@@ -202,24 +234,35 @@ function callHook()
 	//get the language
 	if (count(Params::$frontEndLanguages) > 0)
 	{
-		if (in_array($urlArray[0],Params::$frontEndLanguages))
+		if (count(Params::$frontEndCountries) > 0)
 		{
-			Params::$lang = sanitizeAll($urlArray[0]);
-			array_shift($urlArray);
+			if (in_array($urlArray[0],createArrayLanguagesCountries()))
+			{
+				list(Params::$lang, Params::$country) = explode(Params::$languageCountrySeparator, $urlArray[0]);
+				Params::$lang = sanitizeAll(Params::$lang);
+				Params::$country = sanitizeAll(Params::$country);
+				array_shift($urlArray);
+			}
+			else
+			{
+				Params::$lang = Params::$defaultFrontEndLanguage;
+				Params::$country = Params::$defaultFrontEndCountry;
+			}
 		}
 		else
 		{
-			Params::$lang = Params::$defaultFrontEndLanguage;
-/*			
-			if (isset($_GET['url']) and Params::$redirectToDefaultLanguage)
+			if (in_array($urlArray[0],Params::$frontEndLanguages))
 			{
-				$h = new HeaderObj(DOMAIN_NAME);
-				
-				$h->redirect($arriveUrl);
-			}*/
+				Params::$lang = sanitizeAll($urlArray[0]);
+				array_shift($urlArray);
+			}
+			else
+			{
+				Params::$lang = Params::$defaultFrontEndLanguage;
+			}
 		}
 	}
-
+	
 	$url = implode("/",$urlArray);
 	
 // 	rewrite the URL

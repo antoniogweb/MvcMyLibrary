@@ -46,7 +46,8 @@ class Theme {
 		$this->controller = $controller;
 		$this->application = $application;
 		
-		$langUrl = isset(Params::$lang) ? "/".Params::$lang : null;
+// 		$langUrl = isset(Params::$lang) ? "/".Params::$lang : null;
+		$langUrl = Url::getLangUrl();
 		$protocol = Params::$useHttps ? "https" : "http";
 		
 		$this->baseUrl = MOD_REWRITE_MODULE === true ? "$protocol://" . Url::getDomainName() . $langUrl : "$protocol://" . Url::getDomainName() . '/index.php' . $langUrl;

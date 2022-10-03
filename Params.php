@@ -84,6 +84,18 @@ class Params
 	//current front-end language
 	public static $lang = null;
 	
+	//array of countries allowed for the website front-end
+	public static $frontEndCountries = array();
+	
+	//default front-end country
+	public static $defaultFrontEndCountry = "it";
+	
+	//current front-end country
+	public static $country = null;
+	
+	// the char beetween language and country in the URL
+	public static $languageCountrySeparator = "_";
+	
 	//if true, it redirect to current language if language is expected ($frontEndLanguages not empty) but not present
 	public static $redirectToDefaultLanguage = false;
 	

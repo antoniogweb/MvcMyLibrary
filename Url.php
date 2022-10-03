@@ -31,10 +31,20 @@ class Url {
 		return self::$virtualFolder ? DOMAIN_NAME . "/" . self::$virtualFolder : DOMAIN_NAME;
 	}
 	
+	public static function getLangUrl()
+	{
+		$langUrl = isset(Params::$lang) ? "/".Params::$lang : null;
+		
+		if ($langUrl && isset(Params::$country))
+			$langUrl .= Params::$languageCountrySeparator . Params::$country;
+		
+		return $langUrl;
+	}
+	
 	//get the url starting from the root folder
 	public static function getRoot($pathFromRootFolder = null) {
 		
-		$langUrl = isset(Params::$lang) ? "/".Params::$lang : null;
+		$langUrl = self::getLangUrl();
 		
 		$protocol = Params::$useHttps ? "https" : "http";
 		

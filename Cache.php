@@ -32,7 +32,6 @@ class Cache {
 	public static $cleanCacheEveryXMinutes = 60;
 	public static $folderExists = false;
 	public static $maxNumberOfFilesCached = 0; // if 0, there is no limit
-	public static $numberOfFilesCached = 0; // the number of file in cache
 	public static $skipWritingCache = false; // if true, the cache won't be written anymore
 	
 	public static function roundToLastSet()
@@ -143,13 +142,10 @@ class Cache {
 				{
 					if (self::$maxNumberOfFilesCached)
 					{
-						if (!self::$numberOfFilesCached)
-						{
-							$iterator = new FilesystemIterator(self::$cacheFolder, FilesystemIterator::SKIP_DOTS);
-							self::$numberOfFilesCached = iterator_count($iterator);
-						}
+						$iterator = new FilesystemIterator(self::$cacheFolder, FilesystemIterator::SKIP_DOTS);
+						$numberOfFilesCached = iterator_count($iterator);
 						
-						if (self::$numberOfFilesCached > self::$maxNumberOfFilesCached)
+						if ($numberOfFilesCached > self::$maxNumberOfFilesCached)
 						{
 							self::$skipWritingCache = true;
 							return;

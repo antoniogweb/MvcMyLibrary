@@ -31,6 +31,9 @@ class Cache {
 	public static $cacheTimeString = null;
 	public static $cleanCacheEveryXMinutes = 60;
 	public static $folderExists = false;
+	public static $maxNumberOfFilesCached = 0; // if 0, there is no limit
+	public static $numberOfFilesCached = 0; // the number of file in cache
+	public static $skipWritingCache = false; // if true, the cache won't be written anymore
 	
 	public static function roundToLastSet()
 	{
@@ -118,6 +121,9 @@ class Cache {
 		{
 			if (self::$cacheFolder)
 			{
+				if (self::$skipWritingCache)
+					return;
+				
 				if(!is_dir(self::$cacheFolder) && !self::$folderExists)
 				{
 					if (@mkdir(self::$cacheFolder))
@@ -135,9 +141,24 @@ class Cache {
 				
 				if(is_dir(self::$cacheFolder))
 				{
+					if (self::$maxNumberOfFilesCached)
+					{
+						if (!self::$numberOfFilesCached)
+						{
+							$iterator = new FilesystemIterator(self::$cacheFolder, FilesystemIterator::SKIP_DOTS);
+							self::$numberOfFilesCached = iterator_count($iterator);
+						}
+						
+						if (self::$numberOfFilesCached > self::$maxNumberOfFilesCached)
+						{
+							self::$skipWritingCache = true;
+							return;
+						}
+					}
+					
 					$fileName = self::getCacheTimeString()."_".md5($query).".txt";
 					
-					file_put_contents(self::$cacheFolder."/".$fileName, serialize($data));
+					file_put_contents(self::$cacheFolder."/".$fileName, serialize($data), LOCK_EX);
 				}
 			}
 			else

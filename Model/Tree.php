@@ -674,7 +674,6 @@ class Model_Tree extends Model_Base {
 		}
 
 		return false;
-
 	}
 	
 	public function update($id = null, $whereClause = null)

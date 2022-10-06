@@ -595,3 +595,36 @@ function nullToBlank($string)
 	
 	return $string;
 }
+
+function createFolderFull($relativePath, $basePath = null, $index = true, $deny = true)
+{
+	$relativePath = rtrim($relativePath,"/");
+	
+	if (!$basePath)
+		$basePath = ROOT;
+	
+	$relativePathArray = explode("/", $relativePath);
+	
+	$path = $basePath;
+	
+	foreach ($relativePathArray as $rPath)
+	{
+		$path .= "/$rPath";
+		
+		if (@!is_dir($path))
+			@mkdir($path);
+		
+		if ($index)
+		{
+			$fp = @fopen($path . "/index.html", 'w');
+			fclose($fp);
+		}
+		
+		if ($deny)
+		{
+			$fp = @fopen($path . "/.htaccess", 'w');
+			fwrite($fp, 'deny from all');
+			fclose($fp);
+		}
+	}
+}

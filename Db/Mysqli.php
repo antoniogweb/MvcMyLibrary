@@ -74,7 +74,9 @@ class Db_Mysqli
 		$this->fieldsType = array_merge($this->integerTypes, $this->floatTypes);
 		
 		$this->db = new mysqli($host,$user,$pwd,$db_name);
-
+		
+		mysqli_report(MYSQLI_REPORT_OFF);
+		
 		if (mysqli_connect_error())
 		{
 			die('Connect Error (' . mysqli_connect_errno() . ') ' . mysqli_connect_error());

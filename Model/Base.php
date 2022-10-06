@@ -1212,7 +1212,15 @@ abstract class Model_Base
 			
 			$el = $this->setSupplValues('insert');
 			
-			$result = $this->db->insert($this->_tablesArray[0],$el[0],$el[1]);
+			try
+			{
+				$result = $this->db->insert($this->_tablesArray[0],$el[0],$el[1]);
+			}
+			catch (Exception $e)
+			{
+				$result = false;
+			}
+			
 			$this->setNotice($result);
 			return $result;
 		}

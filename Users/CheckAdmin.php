@@ -364,7 +364,25 @@ class Users_CheckAdmin {
 			return false;
 		}
 	}
-
+	
+	private function checkUser($user)
+	{
+		if (isset(self::$usersModel))
+		{
+			$row=$this->users->clear()->where(array(
+				self::$usernameFieldName	=>	$user,
+				self::$statusFieldName		=>	self::$statusFieldActiveValue
+			))->send();
+		}
+		else
+			$row=$this->_db->select($this->_usersTable,$this->_usersTable.'.'.self::$idUserFieldName.','.self::$usernameFieldName.','.self::$passwordFieldName.'',self::$usernameFieldName."=\"".$user."\" and ".self::$statusFieldName."='".self::$statusFieldActiveValue."'");
+		
+		if (count($row) === 1 and $row !== false)
+			$this->setStatusOk($row);
+		else
+			$this->setStatusKo();
+	}
+	
 	private function checkPassword($user,$pwd) { #check username and password
 
 		if (!in_array($this->_params['password_hash'],Params::$allowedHashFunc))
@@ -498,7 +516,7 @@ class Users_CheckAdmin {
 		}
 	}
 
-	public function login($user,$pwd)
+	public function login($user, $pwd, $force = false)
 	{
 		$user = sanitizeAll($user);
 		$this->checkStatus();
@@ -510,9 +528,13 @@ class Users_CheckAdmin {
 		}
 		else
 		{
-			if ($this->checkLastFailure($user))
+			if ($force || $this->checkLastFailure($user))
 			{
-				$this->checkPassword($user,$pwd);
+				if ($force)
+					$this->checkUser($user);
+				else
+					$this->checkPassword($user,$pwd);
+				
 				if ($this->status['status']==='accepted')
 				{
 					$this->uid = md5(randString(10).uniqid(mt_rand(),true));

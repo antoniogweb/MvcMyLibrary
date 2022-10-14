@@ -241,7 +241,10 @@ function passwordverify($pass, $hash)
 	}
 }
 
-
+function getPaswordHash($password)
+{
+	return sanitizeAll(call_user_func(PASSWORD_HASH,$password));
+}
 
 function sanitizeAlnum($string)
 {
@@ -627,4 +630,9 @@ function createFolderFull($relativePath, $basePath = null, $index = true, $deny 
 			fclose($fp);
 		}
 	}
+}
+
+function randomToken($salt = 20)
+{
+	return md5(randString($salt).uniqid(mt_rand(),true));
 }

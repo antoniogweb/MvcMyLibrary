@@ -38,6 +38,7 @@ class Cache {
 	public static $skipWritingCache = false; // if true, the cache won't be written anymore
 	public static $useRandomPeriods = false;
 	public static $minutesOfPeriod = 10;
+	public static $folderCookieName = "cookie_folder";
 	
 	public static function roundToLastSet()
 	{
@@ -94,7 +95,7 @@ class Cache {
 						if ($fileInfo->getFilename() == "index.html" || $fileInfo->getFilename() == ".htaccess")
 							continue;
 						
-						if ($fileInfo->isDir() && ((time() - (int)$fileInfo->getFilename()) >= 60 * $cacheDuration))
+						if ($fileInfo->isDir() && ((time() - (int)$fileInfo->getFilename()) >= (60 * $cacheDuration)))
 						{
 							$fName = $fileInfo->getRealPath();
 							array_map('unlink', glob("$fName/*.*"));
@@ -120,14 +121,33 @@ class Cache {
 	
 	public static function getCacheTimeString()
 	{
-		if (!self::$cacheTimeString)
+		if (!self::$cacheUnixTime)
 		{
-			$date = self::roundToLastSet();
-			self::$cacheTimeString = $date->format("Y_m_d_H_i");
-			self::$cacheUnixTime = strtotime($date->format("Y-m-d H:i"));
+			if (
+				self::$useRandomPeriods && 
+				isset($_COOKIE[self::$folderCookieName]) && 
+				$_COOKIE[self::$folderCookieName] && 
+				is_numeric($_COOKIE[self::$folderCookieName]) && 
+				(int)$_COOKIE[self::$folderCookieName] > time() && 
+				@is_dir(rtrim(self::$cacheFolder,"/")."/".(int)basename($_COOKIE[self::$folderCookieName]))
+			)
+			{
+				self::$cacheUnixTime = (int)basename($_COOKIE[self::$folderCookieName]);
+			}
+			else
+			{
+				$date = self::roundToLastSet();
+				self::$cacheUnixTime = strtotime($date->format("Y-m-d H:i"));
+				
+				// save the cache folder in cookie
+				if (self::$useRandomPeriods)
+				{
+					$_COOKIE[self::$folderCookieName] = self::$cacheUnixTime;
+					$time = time() + (self::$cacheMinutes * 60);
+					Cookie::set(self::$folderCookieName, self::$cacheUnixTime, $time);
+				}
+			}
 		}
-		
-		return self::$cacheTimeString;
 	}
 	
 	public static function getData($table, $query)
@@ -138,7 +158,7 @@ class Cache {
 			{
 				$cacheFolderFull = rtrim(self::$cacheFolder,"/")."/".self::getCacheUnixTime();
 				
-				$fileName = self::getCacheTimeString()."_".md5($query).".txt";
+				$fileName = md5($query).".txt";
 				
 				if (file_exists($cacheFolderFull."/".$fileName))
 					return unserialize(file_get_contents($cacheFolderFull."/".$fileName));
@@ -200,7 +220,7 @@ class Cache {
 						}
 					}
 					
-					$fileName = self::getCacheTimeString()."_".md5($query).".txt";
+					$fileName = md5($query).".txt";
 					
 					file_put_contents($cacheFolderFull."/".$fileName, serialize($data), LOCK_EX);
 				}

@@ -74,7 +74,7 @@ class Cache {
 		return $date;
 	}
 	
-	public static function deleteExpired($force = true)
+	public static function deleteExpired($force = false)
 	{
 		$path = self::$cacheFolder."/last_clean.txt";
 		

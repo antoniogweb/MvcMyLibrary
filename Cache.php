@@ -35,7 +35,8 @@ class Cache {
 	public static $cleanCacheEveryXMinutes = 60;
 	public static $folderExists = false;
 	public static $maxNumberOfFilesCached = 0; // if 0, there is no limit
-	public static $skipWritingCache = false; // if true, the cache won't be written anymore
+	public static $skipWritingCache = false; // if true, the cache won't be written
+	public static $skipReadingCache = false; // if true, the cache won't be read
 	public static $useRandomPeriods = false;
 	public static $minutesOfPeriod = 10;
 	public static $folderCookieName = "cookie_folder";
@@ -73,7 +74,7 @@ class Cache {
 		return $date;
 	}
 	
-	public static function deleteExpired()
+	public static function deleteExpired($force = true)
 	{
 		$path = self::$cacheFolder."/last_clean.txt";
 		
@@ -95,7 +96,7 @@ class Cache {
 						if ($fileInfo->getFilename() == "index.html" || $fileInfo->getFilename() == ".htaccess")
 							continue;
 						
-						if ($fileInfo->isDir() && ((time() - (int)$fileInfo->getFilename()) >= (60 * $cacheDuration)))
+						if ($force || ($fileInfo->isDir() && ((time() - (int)$fileInfo->getFilename()) >= (60 * $cacheDuration))))
 						{
 							$fName = $fileInfo->getRealPath();
 							array_map('unlink', glob("$fName/*.*"));
@@ -156,6 +157,9 @@ class Cache {
 		{
 			if (self::$cacheFolder)
 			{
+				if (self::$skipReadingCache)
+					return null;
+				
 				$cacheFolderFull = rtrim(self::$cacheFolder,"/")."/".self::getCacheUnixTime();
 				
 				$fileName = md5($query).".txt";

@@ -319,7 +319,7 @@ class Scaffold
 
 	//method to create the HTML of the scaffold
 	//$values: the values to insert in the from entries
-	public function render($values = null,$subset = null)
+	public function render($values = null,$subset = null, $beforeValues = null, $afterValues = null)
 	{
 		
 		if ($this->_type === 'main')
@@ -353,7 +353,13 @@ class Scaffold
 
 			$queryFields = isset($this->fields) ? $this->fields : $this->model->select;
 			$values = $this->model->getTable($queryFields);
-
+			
+			if ($beforeValues)
+				$values = array_merge($beforeValues, $values);
+			
+			if ($afterValues)
+				$values = array_merge($values, $afterValues);
+			
 			$primaryKey = $this->_primaryKey;
 			
 			//pass the variable position

@@ -259,7 +259,12 @@ class Files_Upload
 		}
 		return $file;
 	}
-
+	
+	public static function isJpeg($ext)
+	{
+		return in_array(strtolower($ext),array("jpg","jpeg")) ? true : false;
+	}
+	
 	//get a not existing file name if the one retrieved from the upload process already exists in the current directory
 	public function getUniqueName($file,$int = 0)
 	{

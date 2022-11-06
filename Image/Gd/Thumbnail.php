@@ -35,6 +35,8 @@ class Image_Gd_Thumbnail
 	public $textOverlay = array();
 	public $imageRotations = array();
 	
+	public static $defaultJpegImgQuality = 75;
+	
 	public function __construct($basePath,$params = null)
 	{
 		$finalChar = $basePath[strlen($basePath) - 1];
@@ -54,6 +56,7 @@ class Image_Gd_Thumbnail
 			'outputFormat'	=>	'jpeg',
 			'backgroundColor' => null, //must be hex color
 			'useCache'		=>	false,
+			'forceToFormat'	=>	null, // if null, keet the same output format (it can be jpeg or png)
 		);
 
 		//set the $this->params array
@@ -432,6 +435,12 @@ class Image_Gd_Thumbnail
 			}
 		}
 		
+		if ($this->params['forceToFormat'] && in_array($this->params['forceToFormat'], array("jpeg","png")))
+		{
+			$type = $this->params['forceToFormat'];
+			$contentType = 'image/'.$this->params['forceToFormat'];
+		}
+		
 		//print the image
 		if (!isset($outputFile))
 		{
@@ -452,7 +461,7 @@ class Image_Gd_Thumbnail
 			}
 			
 			if ($cachePathForce)
-				imagepng($img,ROOT."/".$cachePathForce."/".$imageFile);
+				imagepng($img,ROOT."/".$cachePathForce."/".$imageFile, 9);
 		}
 		else if (strcmp($type,'gif') === 0)
 		{
@@ -468,15 +477,15 @@ class Image_Gd_Thumbnail
 		}
 		else
 		{
-			imagejpeg($img,$outputFile,90);
+			imagejpeg($img,$outputFile,self::$defaultJpegImgQuality);
 			
 			if ($createCache)
 			{
-				imagejpeg($img,$outputFileCache,90);
+				imagejpeg($img,$outputFileCache,self::$defaultJpegImgQuality);
 			}
 			
 			if ($cachePathForce)
-				imagejpeg($img,ROOT."/".$cachePathForce."/".$imageFile);
+				imagejpeg($img,ROOT."/".$cachePathForce."/".$imageFile, self::$defaultJpegImgQuality);
 		}
 		
 	}

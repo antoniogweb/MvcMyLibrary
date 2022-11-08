@@ -62,6 +62,8 @@ class Db_Mysqli
 		'SJIS'			=>	'sjis'
 	);
 	
+	private $transactionCount = 0;
+	
 	/**
 
 	*connect to the database
@@ -522,13 +524,19 @@ class Db_Mysqli
 	//begin transaction
 	public function beginTransaction()
 	{
-		$this->db->begin_transaction(MYSQLI_TRANS_START_READ_WRITE);
+		if ($this->transactionCount <= 0)
+			$this->db->begin_transaction(MYSQLI_TRANS_START_READ_WRITE);
+		
+		$this->transactionCount++;
 	}
 	
 	//commit transaction
 	public function commit()
 	{
-		$this->db->commit();
+		$this->transactionCount--;
+		
+		if ($this->transactionCount <= 0)
+			$this->db->commit();
 	}
 	
 	//commit a batch of queries

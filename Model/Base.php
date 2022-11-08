@@ -2039,6 +2039,15 @@ abstract class Model_Base
 		return $this;
 	}
 	
+	public function whereId($id)
+	{
+		$this->appendWhereQueryClause(array(
+			$this->_tables.".".$this->_idFields => (int)$id,
+		));
+		
+		return $this;
+	}
+	
 	//set the $groupBy property and return the current object
 	public function groupBy($groupBy = null)
 	{

@@ -559,7 +559,7 @@ abstract class Model_Base
 		return $querySelect;
 	}
 	
-	private function skipLike($string = "")
+	private function addBackSlashLike($string = "")
 	{
 		$string = str_replace("%", '\%', $string);
 		$string = str_replace("_", '\_', $string);
@@ -611,10 +611,10 @@ abstract class Model_Base
 							switch(strtolower(trim($field)))
 							{
 								case "nlk":
-									$newValue  = $fieldName . " not like '%" . $this->skipLike($value) . "%' ";
+									$newValue  = $fieldName . " not like '%" . $this->addBackSlashLike($value) . "%' ";
 									break;
 								case "lk":
-									$newValue  = $fieldName . " like '%" . $this->skipLike($value) . "%' ";
+									$newValue  = $fieldName . " like '%" . $this->addBackSlashLike($value) . "%' ";
 									break;
 								case "nin":
 									$newValue  = $fieldName . " not in ('" . implode("','",$value) . "') ";

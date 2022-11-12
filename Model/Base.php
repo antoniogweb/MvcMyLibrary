@@ -559,6 +559,14 @@ abstract class Model_Base
 		return $querySelect;
 	}
 	
+	private function skipLike($string = "")
+	{
+		$string = str_replace("%", '\%', $string);
+		$string = str_replace("_", '\_', $string);
+		
+		return $string;
+	}
+	
 	//method to create the where clause of the select query from the $this->where array
 	//$level: level of the ricorsion
 	//$whereClauseLevel: array containing the field=>value statements of the where clause. If $whereClause = null than $this->where is considered
@@ -603,10 +611,10 @@ abstract class Model_Base
 							switch(strtolower(trim($field)))
 							{
 								case "nlk":
-									$newValue  = $fieldName . " not like '%" . $value . "%' ";
+									$newValue  = $fieldName . " not like '%" . $this->skipLike($value) . "%' ";
 									break;
 								case "lk":
-									$newValue  = $fieldName . " like '%" . $value . "%' ";
+									$newValue  = $fieldName . " like '%" . $this->skipLike($value) . "%' ";
 									break;
 								case "nin":
 									$newValue  = $fieldName . " not in ('" . implode("','",$value) . "') ";

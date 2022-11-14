@@ -226,7 +226,7 @@ class Cache {
 					
 					$fileName = md5($query).".txt";
 					
-					file_put_contents($cacheFolderFull."/".$fileName, serialize($data), LOCK_EX);
+					file_put_contents($cacheFolderFull."/".$fileName, serialize($data));
 				}
 			}
 			else

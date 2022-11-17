@@ -54,6 +54,9 @@ class Helper_Pages extends Helper_Html
 	public static $staticDividerPre = "";
 	public static $staticDividerPost = "";
 	public static $staticShowDivider = "none";
+	public static $staticShowNext = null;
+	public static $staticShowPrev = null;
+	
 	public static $showOnlyNext = false;
 	
 	public static $staticShowFirstLast = false; //if to show the first and last element
@@ -119,6 +122,12 @@ class Helper_Pages extends Helper_Html
 		{
 			$this->firstLastDividerHtml = self::$staticFirstLastDividerHtml;
 		}
+		
+		if (isset(self::$staticShowNext))
+			$this->showNext = self::$staticShowNext;
+		
+		if (isset(self::$staticShowPrev))
+			$this->showPrev = self::$staticShowPrev;
 	}
 	
 	public function build($urlViewAction = '' , $variableArg = 'page', $previousString = 'previous', $nextString = 'next', $model = null)

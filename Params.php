@@ -96,6 +96,9 @@ class Params
 	// the char beetween language and country in the URL
 	public static $languageCountrySeparator = "_";
 	
+	//current front-end language and country URL string
+	public static $langCountry = null;
+	
 	//if true, it redirect to current language if language is expected ($frontEndLanguages not empty) but not present
 	public static $redirectToDefaultLanguage = false;
 	

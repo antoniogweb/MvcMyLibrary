@@ -248,6 +248,8 @@ function callHook()
 				Params::$lang = Params::$defaultFrontEndLanguage;
 				Params::$country = Params::$defaultFrontEndCountry;
 			}
+			
+			Params::$langCountry = Params::$lang.Params::$languageCountrySeparator.Params::$country;
 		}
 		else
 		{
@@ -260,6 +262,8 @@ function callHook()
 			{
 				Params::$lang = Params::$defaultFrontEndLanguage;
 			}
+			
+			Params::$langCountry = Params::$lang;
 		}
 	}
 	

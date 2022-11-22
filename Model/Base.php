@@ -478,6 +478,14 @@ abstract class Model_Base
 								$newValue  = $fieldName . " like ?";
 								$this->bindedValues[] = "%".$value."%";
 								break;
+							case "slk":
+								$newValue  = $fieldName . " like ?";
+								$this->bindedValues[] = $value."%";
+								break;
+							case "elk":
+								$newValue  = $fieldName . " like ?";
+								$this->bindedValues[] = "%".$value;
+								break;
 							case "nin":
 								$newValue  = $fieldName . " not in ($placeholders) ";
 								break;
@@ -615,6 +623,12 @@ abstract class Model_Base
 									break;
 								case "lk":
 									$newValue  = $fieldName . " like '%" . $this->addBackSlashLike($value) . "%' ";
+									break;
+								case "slk":
+									$newValue  = $fieldName . " like '" . $this->addBackSlashLike($value) . "%' ";
+									break;
+								case "elk":
+									$newValue  = $fieldName . " like '%" . $this->addBackSlashLike($value) . "' ";
 									break;
 								case "nin":
 									$newValue  = $fieldName . " not in ('" . implode("','",$value) . "') ";

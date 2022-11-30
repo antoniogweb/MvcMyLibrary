@@ -63,6 +63,7 @@ class Helper_Pages extends Helper_Html
 	public static $staticFirstLastDividerHtml = ""; //html before the current pagination and the first/last element
 	public static $staticPreviousString = "";
 	public static $staticNextString = "";
+	public static $staticAttributesPageFromSecond = "";
 	
 	//instance of Lang_{language}_Generic
 	public $strings = null;
@@ -242,14 +243,17 @@ class Helper_Pages extends Helper_Html
 		$this->viewArgs[$this->_variableArg] = $pageNumber;
 		$viewStatus = Url::createUrl($this->viewArgs);
 		$href= Url::getRoot(null) . $this->_urlViewAction .$viewStatus;
-		return $this->getATag($href,$strNumber,$strClass);
+		
+		$linkAttributes = ($pageNumber > 1) ? self::$staticAttributesPageFromSecond : "";
+		
+		return $this->getATag($href,$strNumber,$strClass,$linkAttributes);
 	}
 
 	//get the HTMl of the tag
 	//$href: href of the link
 	//$text: the text of the link
 	//$strClass: the class of the link
-	public function getATag($href,$text,$strClass)
+	public function getATag($href,$text,$strClass, $linkAttributes = "")
 	{
 		switch ($this->showDivider)
 		{
@@ -277,7 +281,7 @@ class Helper_Pages extends Helper_Html
 			$linkStrClass = "";
 		}
 		
-		$html = "$dividerPre<a $linkStrClass href='$href'>$text</a>$dividerPost";
+		$html = "$dividerPre<a $linkAttributes $linkStrClass href='$href'>$text</a>$dividerPost";
 		
 		$indice = 0;
 		foreach (Helper_Pages::$pageLinkWrap as $k)

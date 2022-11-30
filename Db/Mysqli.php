@@ -271,7 +271,11 @@ class Db_Mysqli
 	public function getMath($func,$table,$field,$where=null,$group_by = null, $on=array(),$using=array(),$join=array())
 	{
 		$query = $this->createSelectQuery($table,"$func($field) AS m",$where,$group_by,null,null,$on,$using,$join);
-
+		
+		$dataCached = Cache::getData($table, "MATH ".$query);
+		if (isset($dataCached))
+			return $dataCached;
+		
 		$this->query = $query;
 		$this->queries[] = $query;
 		
@@ -280,7 +284,12 @@ class Db_Mysqli
 		{
 			$row = $result->fetch_array();
 			$result->close();
-			return $row['m'];
+			
+			$data = $row['m'];
+			
+			Cache::setData($table, "MATH ".$query, $data);
+			
+			return $data;
 		}
 		else
 		{

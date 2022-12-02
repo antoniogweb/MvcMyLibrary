@@ -122,7 +122,7 @@ class Helper_Popup extends Helper_Html {
 				$tempArg = $this->viewArgs[$field];
 				$this->legend[$field] = $tempArg;
 				
-				$returnString .= $this->replacePlaceholders(self::$popupHtml["top"],$field,$popup->name);
+				$returnString .= $this->replacePlaceholders(self::$popupHtml["top"],$field,(string)$popup->name);
 				
 				for ($i = 0; $i < count($popup->itemsValue); $i++)
 				{

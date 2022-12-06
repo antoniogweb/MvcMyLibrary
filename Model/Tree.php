@@ -35,25 +35,44 @@ class Model_Tree extends Model_Base {
 		
 		if (DATABASE_TYPE === 'PDOMysql' || DATABASE_TYPE === 'PDOMssql')
 		{
-			foreach ($where as $k => $v)
+			if (count($where) === 2 && isset($where[0]) && isset($where[1]) && is_string($where[0]) && is_array($where[1]))
+				return $where;
+			else
 			{
-				$arrayQuery[] = "$k = ?";
-				$arrayValues[] = $v;
+				foreach ($where as $k => $v)
+				{
+					$arrayQuery[] = "$k = ?";
+					$arrayValues[] = $v;
+				}
+				
+				return array(
+					implode(" AND ", $arrayQuery),
+					$arrayValues
+				);
 			}
-			
-			return array(
-				implode(" AND ", $arrayQuery),
-				$arrayValues
-			);
 		}
 		else
 		{
-			foreach ($where as $k => $v)
+			if (count($where) === 2 && isset($where[0]) && isset($where[1]) && is_string($where[0]) && is_array($where[1]))
 			{
-				$arrayQuery[] = "$k = '$v'";
+				$whereClause = $where[0];
+				
+				foreach ($where[1] as $v)
+				{
+					$whereClause = preg_replace('/\?/', "'$v'", $whereClause, 1);
+				}
+				
+				return $whereClause;
 			}
-			
-			return implode(" AND ", $arrayQuery);
+			else
+			{
+				foreach ($where as $k => $v)
+				{
+					$arrayQuery[] = "$k = '$v'";
+				}
+				
+				return implode(" AND ", $arrayQuery);
+			}
 		}
 	}
 	
@@ -689,6 +708,9 @@ class Model_Tree extends Model_Base {
 		
 		if (isset($id) && !$this->manageable($id))
 			return false;
+		
+		if (is_array($whereClause))
+			$whereClause = $this->arrayToWhereClause($whereClause);
 		
 		if ($this->checkOnUpdateIntegrity("update"))
 		{

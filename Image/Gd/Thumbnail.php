@@ -35,7 +35,7 @@ class Image_Gd_Thumbnail
 	public $textOverlay = array();
 	public $imageRotations = array();
 	
-	public static $defaultJpegImgQuality = 75;
+	public static $defaultJpegImgQuality = 75; // the default JPEG quality
 	
 	public function __construct($basePath,$params = null)
 	{
@@ -57,6 +57,7 @@ class Image_Gd_Thumbnail
 			'backgroundColor' => null, //must be hex color
 			'useCache'		=>	false,
 			'forceToFormat'	=>	null, // if null, keet the same output format (it can be jpeg or png)
+			'defaultJpegImgQuality'	=>	self::$defaultJpegImgQuality, // the default JPEG quality
 		);
 
 		//set the $this->params array
@@ -67,6 +68,7 @@ class Image_Gd_Thumbnail
 				$defaultParams[$key] = $value;
 			}
 		}
+		
 		$this->params = $defaultParams;
 	}
 	
@@ -477,15 +479,15 @@ class Image_Gd_Thumbnail
 		}
 		else
 		{
-			imagejpeg($img,$outputFile,self::$defaultJpegImgQuality);
+			imagejpeg($img,$outputFile, $this->params['defaultJpegImgQuality']);
 			
 			if ($createCache)
 			{
-				imagejpeg($img,$outputFileCache,self::$defaultJpegImgQuality);
+				imagejpeg($img,$outputFileCache, $this->params['defaultJpegImgQuality']);
 			}
 			
 			if ($cachePathForce)
-				imagejpeg($img,ROOT."/".$cachePathForce."/".$imageFile, self::$defaultJpegImgQuality);
+				imagejpeg($img,ROOT."/".$cachePathForce."/".$imageFile, $this->params['defaultJpegImgQuality']);
 		}
 		
 	}

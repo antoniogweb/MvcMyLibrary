@@ -155,7 +155,9 @@ class Cache {
 	{
 		if (in_array($table, self::$cachedTables))
 		{
-			if (self::$cacheFolder)
+			if (isset(self::$cachedQueries[md5($query)]))
+				return self::$cachedQueries[md5($query)];
+			else if (self::$cacheFolder)
 			{
 				if (self::$skipReadingCache)
 					return null;
@@ -164,11 +166,13 @@ class Cache {
 				
 				$fileName = md5($query).".txt";
 				
-				if (file_exists($cacheFolderFull."/".$fileName))
-					return unserialize(file_get_contents($cacheFolderFull."/".$fileName));
+				if (@is_file($cacheFolderFull."/".$fileName))
+				{
+					self::$cachedQueries[md5($query)] = unserialize(file_get_contents($cacheFolderFull."/".$fileName));
+					
+					return self::$cachedQueries[md5($query)];
+				}
 			}
-			else if (isset(self::$cachedQueries[md5($query)]))
-				return self::$cachedQueries[md5($query)];
 		}
 		
 		return null;
@@ -185,7 +189,7 @@ class Cache {
 				
 				$cacheFolderFull = rtrim(self::$cacheFolder,"/")."/".self::getCacheUnixTime();
 				
-				if(!is_dir($cacheFolderFull) && !self::$folderExists)
+				if(!self::$folderExists && !is_dir($cacheFolderFull))
 				{
 					if (@mkdir(self::$cacheFolder))
 					{
@@ -227,6 +231,7 @@ class Cache {
 					$fileName = md5($query).".txt";
 					
 					file_put_contents($cacheFolderFull."/".$fileName, serialize($data));
+					self::$cachedQueries[md5($query)] = $data;
 				}
 			}
 			else

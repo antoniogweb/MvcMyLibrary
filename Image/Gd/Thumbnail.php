@@ -57,7 +57,7 @@ class Image_Gd_Thumbnail
 			'backgroundColor' => null, //must be hex color
 			'useCache'		=>	false,
 			'forceToFormat'	=>	null, // if null, keet the same output format (it can be jpeg or png)
-			'defaultJpegImgQuality'	=>	self::$defaultJpegImgQuality, // the default JPEG quality
+			'jpegImgQuality'	=>	self::$defaultJpegImgQuality, // the default JPEG quality
 		);
 
 		//set the $this->params array
@@ -479,15 +479,15 @@ class Image_Gd_Thumbnail
 		}
 		else
 		{
-			imagejpeg($img,$outputFile, $this->params['defaultJpegImgQuality']);
+			imagejpeg($img,$outputFile, $this->params['jpegImgQuality']);
 			
 			if ($createCache)
 			{
-				imagejpeg($img,$outputFileCache, $this->params['defaultJpegImgQuality']);
+				imagejpeg($img,$outputFileCache, $this->params['jpegImgQuality']);
 			}
 			
 			if ($cachePathForce)
-				imagejpeg($img,ROOT."/".$cachePathForce."/".$imageFile, $this->params['defaultJpegImgQuality']);
+				imagejpeg($img,ROOT."/".$cachePathForce."/".$imageFile, $this->params['jpegImgQuality']);
 		}
 		
 	}

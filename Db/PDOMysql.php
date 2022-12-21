@@ -78,8 +78,6 @@ class Db_PDOMysql
 		
 		$dsn = "mysql:dbname=$db_name;host=$host;charset=$charset";
 		
-// 		$this->db = new mysqli($host,$user,$pwd,$db_name);
-		
 		try {
 			$this->db = new PDO($dsn, $user, $pwd);
 			
@@ -88,13 +86,6 @@ class Db_PDOMysql
 			echo 'Connect Error (' . $e->getMessage() . ') ';
 			die();
 		}
-		
-// 		if (mysqli_connect_error())
-// 		{
-// 			die('Connect Error (' . mysqli_connect_errno() . ') ' . mysqli_connect_error());
-// 		}
-		
-// 		if (!@$this->db->set_charset($charset)) $this->charsetError = false;
 		
 		$this->charset = $charset;
 

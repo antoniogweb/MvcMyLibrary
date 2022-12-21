@@ -235,7 +235,11 @@ class Db_PDOMysql
 		$select = isset($group_by) ? $selectField : 'count('.$selectField.') as number';
 		
 		$query = $this->createSelectQuery($table,$select,$where,$group_by,null,null,$on,$using,$join);
-
+		
+		$dataCached = Cache::getData($table, "COUNT ".md5(json_encode($binded)).$query);
+		if (isset($dataCached))
+			return $dataCached;
+		
 		$this->query = $query;
 		$this->queries[] = $query . $this->bindedValuesString($binded);
 		
@@ -263,6 +267,8 @@ class Db_PDOMysql
 			
 			$ris = $stmt = null;
 			
+			Cache::setData($table, "COUNT ".md5(json_encode($binded)).$query, $num_rows);
+			
 			return (int)$num_rows;
 		} else {
 			return 0;
@@ -272,7 +278,11 @@ class Db_PDOMysql
 	public function getMath($func,$table,$field,$where=null,$group_by = null, $on=array(),$using=array(),$join=array(), $binded=array())
 	{
 		$query = $this->createSelectQuery($table,"$func($field) AS m",$where,$group_by,null,null,$on,$using,$join);
-
+		
+		$dataCached = Cache::getData($table, "MATH ".md5(json_encode($binded)).$query);
+		if (isset($dataCached))
+			return $dataCached;
+		
 		$this->query = $query;
 		$this->queries[] = $query;
 		
@@ -289,7 +299,11 @@ class Db_PDOMysql
 		{
 			$row = $stmt->fetch(PDO::FETCH_ASSOC);
 			$result = $stmt = null;
-			return $row['m'];
+			$data = $row['m'];
+			
+			Cache::setData($table, "MATH ".md5(json_encode($binded)).$query, $data);
+			
+			return $data;
 		}
 		else
 		{
@@ -333,6 +347,10 @@ class Db_PDOMysql
 	{
 		$query = $this->createSelectQuery($table,$fields,$where,$group_by,$order_by,$limit,$on,$using,$join);
 		
+		$dataCached = Cache::getData($table, "SELECT ".md5(json_encode($bindValues)).$query);
+		if (isset($dataCached))
+			return $dataCached;
+		
 		$this->query = $query;
 		
 		if (empty($bindValues))
@@ -348,7 +366,11 @@ class Db_PDOMysql
 			$this->queries[] = $query . $this->bindedValuesString($bindValues);
 		}
 		
-		return $this->getData($stmt, $showTable);
+		$data = $this->getData($stmt, $showTable);
+		
+		Cache::setData($table, "SELECT ".md5(json_encode($bindValues)).$query, $data);
+		
+		return $data;
 	}
 
 

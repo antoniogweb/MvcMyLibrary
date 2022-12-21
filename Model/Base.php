@@ -2567,6 +2567,9 @@ abstract class Model_Base
 	//send a free query
 	public function query($query)
 	{
+		if (is_array($query))
+			$query = $this->arrayToWhereClause($query);
+		
 		return $this->db->query($query);
 	}
 	
@@ -2609,6 +2612,47 @@ abstract class Model_Base
 		}
 		
 		return $whereClause;
+	}
+	
+	public function arrayToWhereClause($where)
+	{
+		$arrayQuery = array();
+		$arrayValues = array();
+		
+		if (DATABASE_TYPE === 'PDOMysql' || DATABASE_TYPE === 'PDOMssql')
+		{
+			if (count($where) === 2 && isset($where[0]) && isset($where[1]) && is_string($where[0]) && is_array($where[1]))
+				return $where;
+			else
+			{
+				foreach ($where as $k => $v)
+				{
+					$arrayQuery[] = "$k = ?";
+					$arrayValues[] = $v;
+				}
+				
+				return array(
+					implode(" AND ", $arrayQuery),
+					$arrayValues
+				);
+			}
+		}
+		else
+		{
+			if (count($where) === 2 && isset($where[0]) && isset($where[1]) && is_string($where[0]) && is_array($where[1]))
+			{
+				return $this->arrayToWhereSimple($where);
+			}
+			else
+			{
+				foreach ($where as $k => $v)
+				{
+					$arrayQuery[] = "$k = '$v'";
+				}
+				
+				return implode(" AND ", $arrayQuery);
+			}
+		}
 	}
 	
 	public function processArray($jElement, $bindValues = "bindedValues")

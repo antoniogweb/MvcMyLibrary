@@ -28,55 +28,6 @@ class Model_Tree extends Model_Base {
 		parent::__construct();
 	}
 	
-	public function arrayToWhereClause($where)
-	{
-		$arrayQuery = array();
-		$arrayValues = array();
-		
-		if (DATABASE_TYPE === 'PDOMysql' || DATABASE_TYPE === 'PDOMssql')
-		{
-			if (count($where) === 2 && isset($where[0]) && isset($where[1]) && is_string($where[0]) && is_array($where[1]))
-				return $where;
-			else
-			{
-				foreach ($where as $k => $v)
-				{
-					$arrayQuery[] = "$k = ?";
-					$arrayValues[] = $v;
-				}
-				
-				return array(
-					implode(" AND ", $arrayQuery),
-					$arrayValues
-				);
-			}
-		}
-		else
-		{
-			if (count($where) === 2 && isset($where[0]) && isset($where[1]) && is_string($where[0]) && is_array($where[1]))
-			{
-				return $this->arrayToWhereSimple($where);
-// 				$whereClause = $where[0];
-// 				
-// 				foreach ($where[1] as $v)
-// 				{
-// 					$whereClause = preg_replace('/\?/', "'$v'", $whereClause, 1);
-// 				}
-// 				
-// 				return $whereClause;
-			}
-			else
-			{
-				foreach ($where as $k => $v)
-				{
-					$arrayQuery[] = "$k = '$v'";
-				}
-				
-				return implode(" AND ", $arrayQuery);
-			}
-		}
-	}
-	
 	public function getSWhereClause()
 	{
 		$sWhereArray = array();

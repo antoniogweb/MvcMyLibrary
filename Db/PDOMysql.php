@@ -61,6 +61,8 @@ class Db_PDOMysql
 		'SJIS'			=>	'sjis'
 	);
 	
+	private $transactionCount = 0;
+	
 	/**
 
 	*connect to the database
@@ -78,13 +80,15 @@ class Db_PDOMysql
 		
 // 		$this->db = new mysqli($host,$user,$pwd,$db_name);
 		
-		
 		try {
 			$this->db = new PDO($dsn, $user, $pwd);
+			
+			$this->db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_SILENT);
 		} catch (PDOException $e) {
 			echo 'Connect Error (' . $e->getMessage() . ') ';
 			die();
 		}
+		
 // 		if (mysqli_connect_error())
 // 		{
 // 			die('Connect Error (' . mysqli_connect_errno() . ') ' . mysqli_connect_error());
@@ -415,7 +419,7 @@ class Db_PDOMysql
 			}
 			else
 			{
-				$e = explode('(',$row[$feature]);
+				$e = explode('(',nullToBlank($row[$feature]));
 				$temp[$row['Field']] = strcmp($feature,"Type") === 0 ? strtolower(reset($e)) : reset($e);
 			}
 		}
@@ -474,7 +478,7 @@ class Db_PDOMysql
 		
 		$values = array_values($values);
 // 		if (isset($where)) {
-			$where='WHERE '.$where;
+// 			$where='WHERE '.$where;
 // 		}
 		#get the array from the $fields string
 		if (strcmp($fields,'') !== 0)
@@ -486,13 +490,30 @@ class Db_PDOMysql
 
 			for ($i=0;$i<count($fields);$i++)
 			{
-				$preparedValues[":".$fields[$i]] = $values[$i];
-				$str[$i]= $fields[$i].'=:'.$fields[$i];
+// 				$preparedValues[":".$fields[$i]] = $values[$i];
+// 				$str[$i]= $fields[$i].'=:'.$fields[$i];
+				
+				$preparedValues[] = $values[$i];
+				$str[$i]= $fields[$i].'= ?';
 			}
-
+			
+			$str = implode(',', $str);
+			
+			if (is_array($where))
+			{
+				$query="UPDATE $table SET $str WHERE ".$where[0].";";
+				
+				foreach ($where[1] as $v)
+				{
+					$preparedValues[] = $v;
+				}
+			}
+			else
+				$query="UPDATE $table SET $str WHERE ".$where.";";
+			
 			#set the string name1=value1,name2=...
-			$str=implode(',',$str);
-			$query="UPDATE $table SET $str $where;";
+// 			$str = implode(',', $str);
+// 			$query="UPDATE $table SET $str $where;";
 			$this->query=$query;
 			$this->queries[] = $query . $this->bindedValuesString($preparedValues);
 			
@@ -590,13 +611,19 @@ class Db_PDOMysql
 	//begin transaction
 	public function beginTransaction()
 	{
-		$this->db->beginTransaction();
+		if ($this->transactionCount <= 0)
+			$this->db->beginTransaction();
+		
+		$this->transactionCount++;
 	}
 	
 	//commit transaction
 	public function commit()
 	{
-		$this->db->commit();
+		$this->transactionCount--;
+		
+		if ($this->transactionCount <= 0)
+			$this->db->commit();
 	}
 	
 	//commit a batch of queries
@@ -665,13 +692,32 @@ class Db_PDOMysql
 
 		#$table and $where are two strings
 // 		if (isset($where)) {
-			$where='WHERE '.$where;
+// 			$where='WHERE '.$where;
 // 		}
-		$query="DELETE FROM $table $where;";
-		$this->query=$query;
-		$this->queries[] = $query;
 		
-		$ris = $this->db->query($query);
+		if (isset($where) && is_array($where))
+		{
+			$query="DELETE FROM $table WHERE ".$where[0].";";
+			
+			$stmt = $this->db->prepare($query);
+			$ris = $stmt->execute($where[1]);
+			
+			$this->query = $query . $this->bindedValuesString($where[1]);
+			$this->queries[] = $query . $this->bindedValuesString($where[1]);
+		}
+		else
+		{
+			if (isset($where))
+				$where='WHERE '.$where;
+				
+			$query="DELETE FROM $table $where;";
+			
+			$this->query=$query;
+			$this->queries[] = $query;
+		
+			$ris = $this->db->query($query);
+		}
+		
 		#check the result
 
 		if ($ris) {

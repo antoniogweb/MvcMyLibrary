@@ -184,7 +184,7 @@ class Html_Form {
 		
 		$returnString = null;
 		
-		if (is_string($options)) {
+		if (!is_array($options)) {
 			$tempArray = explode(',',$options);
 			foreach ($tempArray as $item)
 			{

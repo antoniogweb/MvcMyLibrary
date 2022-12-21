@@ -452,9 +452,11 @@ abstract class Model_Base
 				{
 					$fieldName = key($value);
 					
-					$tableName = $this->hasTableName($fieldName) ? null : $this->getTableName($fieldName).'.';
+					$tableName = (strstr($fieldName,'n!') or $this->hasTableName($fieldName)) ? null : $this->getTableName($fieldName).'.';
+// 					$tableName = $this->hasTableName($fieldName) ? null : $this->getTableName($fieldName).'.';
 					
-					$fieldName = $tableName.trim($fieldName);
+					$fieldName = str_replace('n!',"",$fieldName);
+					$fieldName = $tableName.$this->dropStartChar($fieldName,'-');
 					
 					$value = reset($value);
 					
@@ -462,7 +464,7 @@ abstract class Model_Base
 					{
 						if (in_array(strtolower(trim($field)),array("in","nin")))
 						{
-							$placeholders = str_repeat ('?, ',  count ($value) - 1) . '?';
+							$placeholders = count($value) > 0 ? str_repeat ('?, ',  count ($value) - 1) . '?' : "";
 							foreach ($value as $v)
 							{
 								$this->bindedValues[] = $v;
@@ -528,9 +530,12 @@ abstract class Model_Base
 			}
 			else
 			{
-				$fieldClean = trim($field);
+// 				$fieldClean = trim($field);
+				$fieldClean = str_replace('n!','',$field);
+				$fieldClean = $this->dropStartChar($fieldClean,'-');
 				
-				$tableName = $this->hasTableName($fieldClean) ? null : $this->getTableName($fieldClean).'.';
+// 				$tableName = $this->hasTableName($fieldClean) ? null : $this->getTableName($fieldClean).'.';
+				$tableName = (strstr($field,'n!') or $this->hasTableName($field)) ? null : $this->getTableName($field).'.';
 				
 				if (Params::$nullQueryValue === false or strcmp($value,Params::$nullQueryValue) !== 0)
 				{

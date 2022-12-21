@@ -86,8 +86,22 @@ class Model_Tree extends Model_Base {
 			{
 				if (is_array($sWhere))
 				{
-					$sWhereArray[] = $sWhere[0];
-					$this->bindedValues = array_merge($this->bindedValues,$sWhere[1]);
+					if (count($sWhere) === 2 && isset($sWhere[0]) && isset($sWhere[1]) && is_string($sWhere[0]) && is_array($sWhere[1]))
+					{
+						$sWhereArray[] = $sWhere[0];
+						$this->bindedValues = array_merge($this->bindedValues,$sWhere[1]);
+					}
+					else
+					{
+						foreach ($sWhere as $k => $v)
+						{
+							$arrayQuery[] = "$k = ?";
+							$arrayValues[] = $v;
+						}
+						
+						$sWhereArray[] = implode(" AND ", $arrayQuery);
+						$this->bindedValues = $arrayValues;
+					}
 				}
 				else
 				{

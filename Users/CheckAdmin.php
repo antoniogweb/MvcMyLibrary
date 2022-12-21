@@ -143,7 +143,16 @@ class Users_CheckAdmin {
 				}
 			}
 		}
-		$this->_db->del($this->_sessionsTable,"creation_date + " . $this->_params['session_expire'] . " <= ".time());
+		
+		if (isset(self::$sessionsModel))
+			$this->sessions->del(null, array(
+				"creation_date + ? <= ".time(),
+				array(
+					$this->_params['session_expire']
+				)
+			));
+		else
+			$this->_db->del($this->_sessionsTable,"creation_date + " . $this->_params['session_expire'] . " <= ".time());
 	}
 
 	public function checkStatus()
@@ -544,7 +553,20 @@ class Users_CheckAdmin {
 					//set the expiration time
 					$expirationTime = $this->_params['cookie_permanent'] ? time() + $this->_params['session_expire'] : 0;
 					
-					$this->_db->insert($this->_sessionsTable,self::$idUserFieldName.',uid,token,creation_date,user_agent',array($this->status['id_user'],$this->uid,$this->_token,time(),$userAgent));
+					if (isset(self::$sessionsModel))
+					{
+						$this->sessions->sValues(array(
+							self::$idUserFieldName	=>	$this->status['id_user'],
+							"uid"	=>	$this->uid,
+							"token"	=>	$this->_token,
+							"creation_date"	=>	time(),
+							"user_agent"	=>	$userAgent,
+						));
+						
+						$this->sessions->insert();
+					}
+					else
+						$this->_db->insert($this->_sessionsTable,self::$idUserFieldName.',uid,token,creation_date,user_agent',array($this->status['id_user'],$this->uid,$this->_token,time(),$userAgent));
 					
 					Cookie::set($this->_params['cookie_name'], $this->uid, $expirationTime, $this->_params['cookie_path'], true, 'Lax');
 					
@@ -578,7 +600,16 @@ class Users_CheckAdmin {
 							{
 								$beforeTime = $rows[count($rows)-1][$this->_sessionsTable]["creation_date"];
 								
-								$this->_db->del($this->_sessionsTable,self::$idUserFieldName.'='.$this->status['id_user'].' AND creation_date < '.$beforeTime);
+								if (isset(self::$sessionsModel))
+									$this->sessions->del(null, array(
+										self::$idUserFieldName.'= ? AND creation_date < ?',
+										array(
+											(int)$this->status['id_user'],
+											$beforeTime
+										),
+									));
+								else
+									$this->_db->del($this->_sessionsTable,self::$idUserFieldName.'='.(int)$this->status['id_user'].' AND creation_date < '.$beforeTime);
 							}
 						}
 					}
@@ -608,8 +639,24 @@ class Users_CheckAdmin {
 			$ip=getIp(); #ip
 			$date=date('d'). "-" . date('m') . "-" . date('Y'); #date
 			$ora=date('H') . ":" . date('i'); #time
-			$values=array($ip,$date,$ora,$this->status['user']);
-			$res=$this->_db->insert($this->_accessesTable,'ip,data,ora,'.self::$usernameFieldName,$values);
+			
+			if (isset(self::$accessesModel))
+			{
+				$this->accesses->sValues(array(
+					"ip"	=>	$ip,
+					"data"	=>	$date,
+					"ora"	=>	$ora,
+					self::$usernameFieldName	=>	$this->status['user'],
+				));
+				
+				$this->accesses->insert();
+			}
+			else
+			{
+				$values=array($ip,$date,$ora,$this->status['user']);
+				$res=$this->_db->insert($this->_accessesTable,'ip,data,ora,'.self::$usernameFieldName,$values);
+			}
+			
 			$this->lastAccessId = $this->_db->lastId();
 		}
 	}
@@ -619,7 +666,7 @@ class Users_CheckAdmin {
 	public function forceOut($id)
 	{
 		$id = (int)$id;
-		if ($this->_db->del($this->_sessionsTable,'id_user='.$id))
+		if ($this->_db->del($this->_sessionsTable,'id_user='.(int)$id))
 		{
 			return true;
 		}
@@ -635,15 +682,25 @@ class Users_CheckAdmin {
 			
 			if (!$this->_params['allow_multiple_accesses'])
 			{
-				$delClause = self::$idUserFieldName.'='.$this->status['id_user'];
+				$delClause = self::$idUserFieldName.'='.(int)$this->status['id_user'];
 			}
 			else
 			{
-				$delClause = "uid = '".$this->uid."'";
-// 				$delClause = 'uid = "'.$this->uid.'"';
+				if (isset(self::$sessionsModel))
+					$delClause = array(
+						"uid = ?",
+						array(
+							$this->uid,
+						),
+					);
+				else
+					$delClause = "uid = '".$this->uid."'";
 			}
 			
-			if ($this->_db->del($this->_sessionsTable, $delClause))
+			$res = isset(self::$sessionsModel) ? $this->sessions->del(null, $delClause) : $this->_db->del($this->_sessionsTable, $delClause);
+			
+// 			if ($this->_db->del($this->_sessionsTable, $delClause))
+			if ($res)
 			{
 				return 'was-logged';
 			} 

@@ -23,7 +23,7 @@
 if (!defined('EG')) die('Direct access not allowed!');
 
 class Model_Tree extends Model_Base {
-
+	
 	public function __construct() {
 		parent::__construct();
 	}
@@ -55,14 +55,15 @@ class Model_Tree extends Model_Base {
 		{
 			if (count($where) === 2 && isset($where[0]) && isset($where[1]) && is_string($where[0]) && is_array($where[1]))
 			{
-				$whereClause = $where[0];
-				
-				foreach ($where[1] as $v)
-				{
-					$whereClause = preg_replace('/\?/', "'$v'", $whereClause, 1);
-				}
-				
-				return $whereClause;
+				return $this->arrayToWhereSimple($where);
+// 				$whereClause = $where[0];
+// 				
+// 				foreach ($where[1] as $v)
+// 				{
+// 					$whereClause = preg_replace('/\?/', "'$v'", $whereClause, 1);
+// 				}
+// 				
+// 				return $whereClause;
 			}
 			else
 			{
@@ -110,9 +111,30 @@ class Model_Tree extends Model_Base {
 			}
 		}
 		else
-			$sWhereArray = $this->sWhere;
+		{
+			foreach ($this->sWhere as $sWhere)
+			{
+				if (is_array($sWhere))
+					$sWhereArray[] = $this->arrayToWhereSimple($sWhere);
+				else
+					$sWhereArray[] = $sWhere;
+			}
+		}
+// 			$sWhereArray = $this->sWhere;
 		
 		return implode(" AND ", $sWhereArray);
+	}
+	
+	public function processAttribute($attributo, $bindValues = "bindedValues")
+	{
+		$joinArray = array();
+		
+		foreach ($this->{$attributo} as $jElement)
+		{
+			$joinArray[] = $this->processArray($jElement, $bindValues);
+		}
+		
+		$this->{$attributo} = $joinArray;
 	}
 	
 	//method to create the where clause and the list of tables and fields of the select query
@@ -121,7 +143,10 @@ class Model_Tree extends Model_Base {
 	//return: $elements = array('tables'=>$tables,'where'=>$where,'fields'=>$fields)
 	public function treeQueryElements($tableName,$choice = 'all')
 	{
-		$this->bindedValues = array();
+		$this->bindedValues  = $this->jBindedValues;
+		
+		$this->processAttribute("on");
+		
 		if (DATABASE_TYPE === 'PDOMysql' || DATABASE_TYPE === 'PDOMssql')
 			$where = $this->createWhereClausePDO();
 		else
@@ -180,7 +205,8 @@ class Model_Tree extends Model_Base {
 		
 		$queryFields = (strcmp(nullToBlank($fields),'') === 0) ? $elements['fields'] : $fields;
 		
-		$queryFields = preg_replace_callback('/(\[)([a-zA-Z0-9]{1,})(\])/', array($this, 'replaceQueryFields') ,$queryFields);
+		if (DATABASE_TYPE === 'PDOMssql')
+			$queryFields = preg_replace_callback('/(\[)([a-zA-Z0-9]{1,})(\])/', array($this, 'replaceQueryFields') ,$queryFields);
 		
 		//if pagination active
 		if ($this->recordsPerPage > 0)

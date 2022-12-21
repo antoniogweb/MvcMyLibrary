@@ -106,6 +106,7 @@ abstract class Model_Base
 	public $currPage; //the URL of the current page
 	
 	public $bindedValues = array(); //array with values for prepared statement array(":name"=>"Johm",":surname"=>"Doe")
+	public $jBindedValues = array(); //array with values for prepared statement of JOIN clause array(":name"=>"Johm",":surname"=>"Doe")
 	
 	public $applySoftConditionsOnPost = false; // apply soft conditions on $_POST too
 	
@@ -474,19 +475,19 @@ abstract class Model_Base
 						{
 							case "nlk":
 								$newValue  = $fieldName . " not like ?";
-								$this->bindedValues[] = "%".$value."%";
+								$this->bindedValues[] = "%".addBackSlashLike($value)."%";
 								break;
 							case "lk":
 								$newValue  = $fieldName . " like ?";
-								$this->bindedValues[] = "%".$value."%";
+								$this->bindedValues[] = "%".addBackSlashLike($value)."%";
 								break;
 							case "slk":
 								$newValue  = $fieldName . " like ?";
-								$this->bindedValues[] = $value."%";
+								$this->bindedValues[] = addBackSlashLike($value)."%";
 								break;
 							case "elk":
 								$newValue  = $fieldName . " like ?";
-								$this->bindedValues[] = "%".$value;
+								$this->bindedValues[] = "%".addBackSlashLike($value);
 								break;
 							case "nin":
 								$newValue  = $fieldName . " not in ($placeholders) ";
@@ -572,14 +573,6 @@ abstract class Model_Base
 		return $querySelect;
 	}
 	
-	private function addBackSlashLike($string = "")
-	{
-		$string = str_replace("%", '\%', $string);
-		$string = str_replace("_", '\_', $string);
-		
-		return $string;
-	}
-	
 	//method to create the where clause of the select query from the $this->where array
 	//$level: level of the ricorsion
 	//$whereClauseLevel: array containing the field=>value statements of the where clause. If $whereClause = null than $this->where is considered
@@ -624,16 +617,16 @@ abstract class Model_Base
 							switch(strtolower(trim($field)))
 							{
 								case "nlk":
-									$newValue  = $fieldName . " not like '%" . $this->addBackSlashLike($value) . "%' ";
+									$newValue  = $fieldName . " not like '%" . addBackSlashLike($value) . "%' ";
 									break;
 								case "lk":
-									$newValue  = $fieldName . " like '%" . $this->addBackSlashLike($value) . "%' ";
+									$newValue  = $fieldName . " like '%" . addBackSlashLike($value) . "%' ";
 									break;
 								case "slk":
-									$newValue  = $fieldName . " like '" . $this->addBackSlashLike($value) . "%' ";
+									$newValue  = $fieldName . " like '" . addBackSlashLike($value) . "%' ";
 									break;
 								case "elk":
-									$newValue  = $fieldName . " like '%" . $this->addBackSlashLike($value) . "' ";
+									$newValue  = $fieldName . " like '%" . addBackSlashLike($value) . "' ";
 									break;
 								case "nin":
 									$newValue  = $fieldName . " not in ('" . implode("','",$value) . "') ";
@@ -1942,9 +1935,23 @@ abstract class Model_Base
 		return $this;
 	}
 	
+	public function processAttribute($attributo, $bindValues = "bindedValues")
+	{
+		$joinArray = array();
+		
+		foreach ($this->{$attributo} as $jElement)
+		{
+			$joinArray[] = $this->processArray($jElement, $bindValues);
+		}
+		
+		$this->{$attributo} = $joinArray;
+	}
+	
 	//set the $join property and return the current object
 	public function left($string = null)
 	{
+		$string = $this->processArray($string, "jBindedValues");
+		
 		if (is_array($string))
 		{
 			foreach ($string as $s)
@@ -1958,14 +1965,13 @@ abstract class Model_Base
 		}
 		
 		return $this;
-		
-// 		$this->join[] = "l:$string";
-// 		return $this;
 	}
 
 	//set the $join property and return the current object
 	public function right($string = null)
 	{
+		$string = $this->processArray($string, "jBindedValues");
+		
 		if (is_array($string))
 		{
 			foreach ($string as $s)
@@ -1979,14 +1985,13 @@ abstract class Model_Base
 		}
 		
 		return $this;
-		
-// 		$this->join[] = "r:$string";
-// 		return $this;
 	}
 
 	//set the $join property and return the current object
 	public function inner($string = null)
 	{
+		$string = $this->processArray($string, "jBindedValues");
+		
 		if (is_array($string))
 		{
 			foreach ($string as $s)
@@ -2241,6 +2246,7 @@ abstract class Model_Base
 		$this->on = array();
 		$this->using = array();
 		$this->join = array();
+		$this->jBindedValues = array();
 		$this->toList = false;
 		$this->convert = false;
 		$this->process = false;
@@ -2266,6 +2272,7 @@ abstract class Model_Base
 		$tmp["on"] = $this->on;
 		$tmp["using"] = $this->using;
 		$tmp["join"] = $this->join;
+		$tmp["jBindedValues"] = $this->jBindedValues;
 		$tmp["toList"] = $this->toList;
 		$tmp["convert"] = $this->convert;
 		$tmp["process"] = $this->process;
@@ -2302,6 +2309,7 @@ abstract class Model_Base
 			$this->on = $back["on"];
 			$this->using = $back["using"];
 			$this->join = $back["join"];
+			$this->jBindedValues = $back["jBindedValues"];
 			$this->toList = $back["toList"];
 			$this->convert = $back["convert"];
 			$this->process = $back["process"];
@@ -2313,30 +2321,6 @@ abstract class Model_Base
 		
 		return $this;
 	}
-	
-// 	//restored all the saved clauses of the select query
-// 	public function restore()
-// 	{
-// 		if (count($this->backupSelect) > 0)
-// 		{
-// 			$back = array_pop($this->backupSelect);
-// 			
-// 			$this->select = $back["select"];
-// 			$this->where = $back["where"];
-// 			$this->sWhere = $back["sWhere"];
-// 			$this->groupBy = $back["groupBy"];
-// 			$this->orderBy = $back["orderBy"];
-// 			$this->limit = $back["limit"];
-// 			$this->from = $back["from"];
-// 			$this->on = $back["on"];
-// 			$this->using = $back["using"];
-// 			$this->join = $back["join"];
-// 			$this->toList = $back["toList"];
-// 			$this->convert = $back["convert"];
-// 		}
-// 		
-// 		return $this;
-// 	}
 	
 	public function getSelectArrayFromEnumField($fieldName)
 	{
@@ -2612,5 +2596,39 @@ abstract class Model_Base
 	// If it can be managed
 	public function manageable($id) {
 		return true;
+	}
+	
+	// Array clause to simple string for not prepared statement cases
+	protected function arrayToWhereSimple($where)
+	{
+		$whereClause = $where[0];
+		
+		foreach ($where[1] as $v)
+		{
+			$whereClause = preg_replace('/\?/', "'$v'", $whereClause, 1);
+		}
+		
+		return $whereClause;
+	}
+	
+	public function processArray($jElement, $bindValues = "bindedValues")
+	{
+		$string = "";
+		
+		if (is_array($jElement) && count($jElement) === 2 && isset($jElement[0]) && isset($jElement[1]) && is_string($jElement[0]) && is_array($jElement[1]))
+		{
+			if (DATABASE_TYPE === 'PDOMysql' || DATABASE_TYPE === 'PDOMssql')
+			{
+				$string = $jElement[0];
+				$this->{$bindValues} = array_merge($this->{$bindValues} ,$jElement[1]);
+				
+			}
+			else
+				$string = $this->arrayToWhereSimple($jElement);
+		}
+		else
+			$string = $jElement;
+		
+		return $string;
 	}
 }

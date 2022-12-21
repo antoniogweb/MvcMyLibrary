@@ -636,3 +636,11 @@ function randomToken($salt = 20)
 {
 	return md5(randString($salt).uniqid(mt_rand(),true));
 }
+
+function addBackSlashLike($string = "")
+{
+	$string = str_replace("%", '\%', $string);
+	$string = str_replace("_", '\_', $string);
+	
+	return $string;
+}

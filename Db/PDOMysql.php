@@ -347,17 +347,6 @@ class Db_PDOMysql
 	{
 		$query = $this->createSelectQuery($table,$fields,$where,$group_by,$order_by,$limit,$on,$using,$join);
 		
-// 		echo "4: $query\n";
-// 		$numeroPlaceholders = substr_count($query, '?');
-// 		$numeroValori = count($bindValues);
-		
-// 		if ((int)$numeroPlaceholders !== (int)$numeroValori)
-// 		{
-// 			print_r($bindValues);
-// 			echo $query;
-// 			die();
-// 		}
-		
 		$dataCached = Cache::getData($table, "SELECT ".md5(json_encode($bindValues)).$query);
 		if (isset($dataCached))
 			return $dataCached;

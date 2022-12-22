@@ -152,7 +152,20 @@ class Controller {
 			throw new Exception('Error in '.__METHOD__.': class "'.$modelName.'" has not been defined');
 		}
 	}
-
+	
+	//get a model class
+	//call $this->model($name) if model has not been loaded
+	//$name: the name of the model class
+	final public function m($name = null)
+	{
+		$modelName = isset($name) ? $name : $this->modelName;
+		
+		if (!array_key_exists($modelName, $this->m))
+			$this->model($name);
+		
+		return $this->m[$modelName];
+	}
+	
 	//load a controller
 	//$controllerName: the name of the controller class to load
 	final public function controller($controller)

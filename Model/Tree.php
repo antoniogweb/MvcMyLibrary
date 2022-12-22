@@ -94,9 +94,7 @@ class Model_Tree extends Model_Base {
 	//return: $elements = array('tables'=>$tables,'where'=>$where,'fields'=>$fields)
 	public function treeQueryElements($tableName,$choice = 'all')
 	{
-		$this->bindedValues  = $this->jBindedValues;
-		
-		$this->processAttribute("on");
+		$this->bindedValues  = array_merge($this->jBindedValues, $this->oBindedValues);
 		
 		if (DATABASE_TYPE === 'PDOMysql' || DATABASE_TYPE === 'PDOMssql')
 			$where = $this->createWhereClausePDO();

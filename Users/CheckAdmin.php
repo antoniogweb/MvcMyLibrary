@@ -146,9 +146,10 @@ class Users_CheckAdmin {
 		
 		if (isset(self::$sessionsModel))
 			$this->sessions->del(null, array(
-				"creation_date + ? <= ".time(),
+				"creation_date + ? <= ?",
 				array(
-					$this->_params['session_expire']
+					$this->_params['session_expire'],
+					time()
 				)
 			));
 		else

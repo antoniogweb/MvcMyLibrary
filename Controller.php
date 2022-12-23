@@ -426,5 +426,13 @@ class Controller {
 			$this->scaffold->popupMenu = $this->h['Popup'];
 		}
 	}
-
+	
+	//call http_response_code using code $code
+	final public function responseCode($code)
+	{
+		http_response_code($code);
+		
+		die();
+	}
+	
 }

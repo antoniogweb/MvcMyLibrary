@@ -539,7 +539,7 @@ abstract class Model_Base
 // 				$tableName = $this->hasTableName($fieldClean) ? null : $this->getTableName($fieldClean).'.';
 				$tableName = (strstr($field,'n!') or $this->hasTableName($field)) ? null : $this->getTableName($field).'.';
 				
-				if (Params::$nullQueryValue === false or strcmp($value,Params::$nullQueryValue) !== 0)
+				if (Params::$nullQueryValue === false or strcmp(nullToBlank($value),Params::$nullQueryValue) !== 0)
 				{
 					$whereClauseArray[] = $tableName.$fieldClean.'=?';
 					$this->bindedValues[] = $value;

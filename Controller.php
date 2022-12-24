@@ -180,7 +180,7 @@ class Controller {
 
 	//load a users_checkAdmin class
 	//$sessonType: the type of session. It can be 'admin' (in the case of the access of an admin user) or 'registered' (in the case of the access of a registerd user)
-	final public function session($sessionType = 'admin') {
+	final public function session($sessionType = 'admin', $model = array()) {
 		$sessionTypeArray = array('admin','registered');
 		if (!in_array($sessionType,$sessionTypeArray)) {
 			throw new Exception('Error in '.__METHOD__.': the session type can be \'admin\' or \'registered\' only');
@@ -227,6 +227,10 @@ class Controller {
 				'allow_multiple_accesses'	=>	ADMIN_ALLOW_MULTIPLE_ACCESSES,
 				'max_client_sessions'	=>	ADMIN_MAX_CLIENT_SESSIONS,
 				'cookie_permanent'		=>	ADMIN_COOKIE_PERMANENT,
+				'u_model'				=>	$model[0] ?? null,
+				's_model'				=>	$model[1] ?? null,
+				'a_model'				=>	$model[2] ?? null,
+				'g_model'				=>	$model[3] ?? null,
 			);
 			$this->s['admin'] = new Users_CheckAdmin($params);
 		}
@@ -272,6 +276,10 @@ class Controller {
 				'allow_multiple_accesses'	=>	REG_ALLOW_MULTIPLE_ACCESSES,
 				'max_client_sessions'	=>	REG_MAX_CLIENT_SESSIONS,
 				'cookie_permanent'		=>	REG_COOKIE_PERMANENT,
+				'u_model'				=>	$model[0] ?? null,
+				's_model'				=>	$model[1] ?? null,
+				'a_model'				=>	$model[2] ?? null,
+				'g_model'				=>	$model[3] ?? null,
 			);
 			$this->s['registered'] = new Users_CheckAdmin($params);
 		}

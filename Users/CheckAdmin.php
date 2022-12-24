@@ -60,8 +60,9 @@ class Users_CheckAdmin {
 	protected $_params = array(); //the parameters of the object
 
 	public function __construct($params = null) {
+		
 		$this->_params = $params;
-
+		
 		$this->_sessionsTable = $params['sessionsTable'];
 		$this->_usersTable = $params['usersTable'];
 		$this->_groupsTable = $params['groupsTable'];
@@ -71,17 +72,21 @@ class Users_CheckAdmin {
 		$this->_main = Url::getRoot(null) . $params['panel_controller'] . '/' . $params['panel_main_action'] ;
 		$this->_retype = Url::getRoot(null) . $params['users_controller'] . '/' . $params['hijacking_action'] ;
 		$this->_db = Factory_Db::getInstance($params['database_type']);
+		$this->users = $params['u_model'];
+		$this->sessions = $params['s_model'];
+		$this->accesses = $params['a_model'];
+		$this->groups = $params['g_model'];
 		
-		if (isset(self::$usersModel))
+		if (isset(self::$usersModel) && !isset($this->users))
 			$this->users = new self::$usersModel();
 		
-		if (isset(self::$sessionsModel))
+		if (isset(self::$sessionsModel) && !isset($this->sessions))
 			$this->sessions = new self::$sessionsModel();
 		
-		if (isset(self::$accessesModel))
+		if (isset(self::$accessesModel) && !isset($this->accesses))
 			$this->accesses = new self::$accessesModel();
 		
-		if (isset(self::$groupsModel))
+		if (isset(self::$groupsModel) && !isset($this->groups))
 			$this->groups = new self::$groupsModel();
 	}
 
@@ -124,7 +129,7 @@ class Users_CheckAdmin {
 	{
 		#cancello le sessioni scadute
 		
-		if (isset(self::$sessionsModel))
+		if (isset($this->sessions))
 		{
 			$row = $this->sessions->clear()->where(array(
 				"uid"	=>	$this->uid,
@@ -144,7 +149,7 @@ class Users_CheckAdmin {
 			}
 		}
 		
-		if (isset(self::$sessionsModel))
+		if (isset($this->sessions))
 			$this->sessions->del(null, array(
 				"creation_date + ? <= ?",
 				array(
@@ -161,7 +166,7 @@ class Users_CheckAdmin {
 		$this->acquireCookie(); #ottengo il cookie
 		$this->cleanSessions(); #elimino le sessioni vecchie
 		
-		if (isset(self::$usersModel))
+		if (isset($this->users))
 		{
 			$row=$this->users->clear()->select($this->_usersTable.".*,".$this->_sessionsTable.".*")->inner($this->_sessionsTable)->on($this->_sessionsTable.".".self::$idUserFieldName." = ".$this->_usersTable.".".self::$idUserFieldName)->where(array(
 				$this->_sessionsTable.".uid"=>	$this->uid,
@@ -223,7 +228,7 @@ class Users_CheckAdmin {
 	//obtain the group of the user
 	public function obtainGroups()
 	{
-		if (isset(self::$groupsModel))
+		if (isset($this->groups))
 		{
 			$groups = $this->groups->clear()
 				->inner($this->_manyToManyTable)->on($this->_groupsTable.'.'.self::$idGroupFieldName.'='.$this->_manyToManyTable.'.'.self::$idGroupFieldName)
@@ -333,7 +338,7 @@ class Users_CheckAdmin {
 	public function getUsersLogged()
 	{
 		$usersLogged = array();
-		if (isset(self::$usersModel))
+		if (isset($this->users))
 		{
 			$data=$this->users->clear()->inner($this->_sessionsTable)->on($this->_sessionsTable.".".self::$idUserFieldName." = ".$this->_usersTable.".".self::$idUserFieldName)->send();
 // 			print_r($row);
@@ -356,7 +361,7 @@ class Users_CheckAdmin {
 	//get the password of the current user
 	public function getPassword()
 	{
-		if (isset(self::$usersModel))
+		if (isset($this->users))
 		{
 			$row=$this->users->clear()->where(array(
 				self::$idUserFieldName	=>	$this->status['id_user'],
@@ -377,7 +382,7 @@ class Users_CheckAdmin {
 	
 	private function checkUser($user)
 	{
-		if (isset(self::$usersModel))
+		if (isset($this->users))
 		{
 			$row=$this->users->clear()->where(array(
 				self::$usernameFieldName	=>	$user,
@@ -402,7 +407,7 @@ class Users_CheckAdmin {
 		
 		if ($this->_params['password_hash'] == "passwordhash")
 		{
-			if (isset(self::$usersModel))
+			if (isset($this->users))
 			{
 				$row=$this->users->clear()->where(array(
 					self::$usernameFieldName	=>	$user,
@@ -431,7 +436,7 @@ class Users_CheckAdmin {
 			//calculate the hash of the password
 			$pwd = call_user_func($this->_params['password_hash'],$pwd);
 			
-			if (isset(self::$usersModel))
+			if (isset($this->users))
 			{
 				$row=$this->users->clear()->where(array(
 					self::$usernameFieldName	=>	$user,
@@ -471,7 +476,7 @@ class Users_CheckAdmin {
 	
 	private function setLastFailure($user)
 	{
-		if (isset(self::$usersModel))
+		if (isset($this->users))
 		{
 			$res = $this->users->clear()->select(self::$idUserFieldName)->where(array(
 				self::$usernameFieldName	=>	$user,
@@ -505,7 +510,7 @@ class Users_CheckAdmin {
 		
 // 		$data = $this->_db->select($this->_usersTable,'last_failure',self::$usernameFieldName.'="'.$user.'"');
 		
-		if (isset(self::$usersModel))
+		if (isset($this->users))
 			$data = $this->users->clear()->where(array(
 				self::$usernameFieldName	=>	$user,
 			))->send();
@@ -554,7 +559,7 @@ class Users_CheckAdmin {
 					//set the expiration time
 					$expirationTime = $this->_params['cookie_permanent'] ? time() + $this->_params['session_expire'] : 0;
 					
-					if (isset(self::$sessionsModel))
+					if (isset($this->sessions))
 					{
 						$this->sessions->sValues(array(
 							self::$idUserFieldName	=>	$this->status['id_user'],
@@ -588,7 +593,7 @@ class Users_CheckAdmin {
 						{
 // 							$rows = $this->_db->select($this->_sessionsTable,"creation_date",self::$idUserFieldName.'='.$this->status['id_user'],null,"creation_date desc",$maxAllowedSessionNumber);
 							
-							if (isset(self::$sessionsModel))
+							if (isset($this->sessions))
 							{
 								$rows = $this->sessions->clear()->where(array(
 									self::$idUserFieldName	=>	$this->status['id_user'],
@@ -601,7 +606,7 @@ class Users_CheckAdmin {
 							{
 								$beforeTime = $rows[count($rows)-1][$this->_sessionsTable]["creation_date"];
 								
-								if (isset(self::$sessionsModel))
+								if (isset($this->sessions))
 									$this->sessions->del(null, array(
 										self::$idUserFieldName.'= ? AND creation_date < ?',
 										array(
@@ -641,7 +646,7 @@ class Users_CheckAdmin {
 			$date=date('d'). "-" . date('m') . "-" . date('Y'); #date
 			$ora=date('H') . ":" . date('i'); #time
 			
-			if (isset(self::$accessesModel))
+			if (isset($this->accesses))
 			{
 				$this->accesses->sValues(array(
 					"ip"	=>	$ip,
@@ -687,7 +692,7 @@ class Users_CheckAdmin {
 			}
 			else
 			{
-				if (isset(self::$sessionsModel))
+				if (isset($this->sessions))
 					$delClause = array(
 						"uid = ?",
 						array(
@@ -698,7 +703,7 @@ class Users_CheckAdmin {
 					$delClause = "uid = '".$this->uid."'";
 			}
 			
-			$res = isset(self::$sessionsModel) ? $this->sessions->del(null, $delClause) : $this->_db->del($this->_sessionsTable, $delClause);
+			$res = isset($this->sessions) ? $this->sessions->del(null, $delClause) : $this->_db->del($this->_sessionsTable, $delClause);
 			
 // 			if ($this->_db->del($this->_sessionsTable, $delClause))
 			if ($res)

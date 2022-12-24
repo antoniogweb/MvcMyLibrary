@@ -2681,4 +2681,10 @@ abstract class Model_Base
 		
 		return $string;
 	}
+	
+	// make ? placeholders from array for prepared statements
+	public function placeholdersFromArray($array)
+	{
+		return str_repeat ('?, ',  count ($array) - 1) . '?';
+	}
 }

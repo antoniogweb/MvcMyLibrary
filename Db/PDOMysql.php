@@ -26,6 +26,7 @@ if (!defined('EG')) die('Direct access not allowed!');
 //singleton!
 class Db_PDOMysql
 {
+	use Db_Generic;
 	
 	private $autocommit = true;
 	private $transactionBatchSize = 100;
@@ -193,42 +194,41 @@ class Db_PDOMysql
 		}
 	}
 	
-	public function createSelectQuery($table,$fields='*',$where=null,$group_by=null,$order_by=null,$limit=null,$on=array(),$using=array(),$join=array())
-	{
-// 		$maxValue = max(count($on),count($using),count($join));
-		$maxValue = max(count((array)$on),count((array)$using),count((array)$join));
-		
-		$joinString = null;
-		for ($i=0; $i < $maxValue; $i++)
-		{
-			$joinString .= isset($join[$i]) ? $this->getJoinString($join[$i]) : null;
-			if (isset($using[$i]))
-			{
-				$joinString .= ' USING ('.$using[$i].')';
-			}
-			else if (isset($on[$i]))
-			{
-				$joinString .= ' ON '.$on[$i];
-			}
-		}
-		
-		if (isset($where))
-		{
-			$where='WHERE '.$where;
-		}
-		if (isset($order_by)) {
-			$order_by='ORDER BY '.$order_by;
-		}
-		if (isset($group_by)) {
-			$group_by='GROUP BY '.$group_by;
-		}
-		if (isset($limit)) {
-			$limit='LIMIT '.$limit;
-		}
-
-		$query="SELECT $fields FROM $table $joinString $where $group_by $order_by $limit;";
-		return $query;
-	}
+// 	public function createSelectQuery($table,$fields='*',$where=null,$group_by=null,$order_by=null,$limit=null,$on=array(),$using=array(),$join=array())
+// 	{
+// 		$maxValue = max(count((array)$on),count((array)$using),count((array)$join));
+// 		
+// 		$joinString = null;
+// 		for ($i=0; $i < $maxValue; $i++)
+// 		{
+// 			$joinString .= isset($join[$i]) ? $this->getJoinString($join[$i]) : null;
+// 			if (isset($using[$i]))
+// 			{
+// 				$joinString .= ' USING ('.$using[$i].')';
+// 			}
+// 			else if (isset($on[$i]))
+// 			{
+// 				$joinString .= ' ON '.$on[$i];
+// 			}
+// 		}
+// 		
+// 		if (isset($where))
+// 		{
+// 			$where='WHERE '.$where;
+// 		}
+// 		if (isset($order_by)) {
+// 			$order_by='ORDER BY '.$order_by;
+// 		}
+// 		if (isset($group_by)) {
+// 			$group_by='GROUP BY '.$group_by;
+// 		}
+// 		if (isset($limit)) {
+// 			$limit='LIMIT '.$limit;
+// 		}
+// 
+// 		$query="SELECT $fields FROM $table $joinString $where $group_by $order_by $limit;";
+// 		return $query;
+// 	}
 	
 	public function get_num_rows($table,$where=null,$group_by=null,$on=array(),$using=array(),$join=array(),$binded=array(),$selectField = "*") {
 
@@ -343,9 +343,9 @@ class Db_PDOMysql
 		return " (VALUES: ".implode(",",array_values($bindValues)).")";
 	}
 	
-	public function select($table,$fields='*',$where=null,$group_by=null,$order_by=null,$limit=null,$on=array(),$using=array(),$join=array(), $showTable = true, $bindValues = array())
+	public function select($table,$fields='*',$where=null,$group_by=null,$order_by=null,$limit=null,$on=array(),$using=array(),$join=array(), $showTable = true, $bindValues = array(), $forUpdateShare = null)
 	{
-		$query = $this->createSelectQuery($table,$fields,$where,$group_by,$order_by,$limit,$on,$using,$join);
+		$query = $this->createSelectQuery($table,$fields,$where,$group_by,$order_by,$limit,$on,$using,$join,$forUpdateShare);
 		
 		$dataCached = Cache::getData($table, "SELECT ".md5(json_encode($bindValues)).$query);
 		if (isset($dataCached))

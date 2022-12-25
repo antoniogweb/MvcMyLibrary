@@ -81,6 +81,7 @@ abstract class Model_Base
 	public $on = array(); //on array
 	public $using = array(); //using array
 	public $join = array(); //join array
+	public $forUpdateShare = null; // used for SELECT FOR UPDATE or SELECT FRO SHARE
 	
 	public $toList = false; //if the result have to be given in a list format
 	public $listArray = array(); //array containing the $key and the $value to be used to extract a list from a resultSet
@@ -2103,7 +2104,21 @@ abstract class Model_Base
 		$this->limit = $limit;
 		return $this;
 	}
-
+	
+	//set the $forUpdateShare property to UPDATE and return the current object
+	public function forUpdate()
+	{
+		$this->forUpdateShare = "UPDATE";
+		return $this;
+	}
+	
+	//set the $forUpdateShare property to SHARE and return the current object
+	public function forShare()
+	{
+		$this->forUpdateShare = "SHARE";
+		return $this;
+	}
+	
 	//set the $listArray property
 	public function toList($key, $value = null)
 	{
@@ -2245,6 +2260,7 @@ abstract class Model_Base
 		$this->groupBy = null;
 		$this->orderBy = null;
 		$this->limit = null;
+		$this->forUpdateShare = null;
 		$this->from = null;
 		$this->on = array();
 		$this->using = array();
@@ -2272,6 +2288,7 @@ abstract class Model_Base
 		$tmp["groupBy"] = $this->groupBy;
 		$tmp["orderBy"] = $this->orderBy;
 		$tmp["limit"] = $this->limit;
+		$tmp["forUpdateShare"] = $this->forUpdateShare;
 		$tmp["from"] = $this->from;
 		$tmp["on"] = $this->on;
 		$tmp["using"] = $this->using;
@@ -2310,6 +2327,7 @@ abstract class Model_Base
 			$this->groupBy = $back["groupBy"];
 			$this->orderBy = $back["orderBy"];
 			$this->limit = $back["limit"];
+			$this->forUpdateShare = $back["forUpdateShare"];
 			$this->from = $back["from"];
 			$this->on = $back["on"];
 			$this->using = $back["using"];

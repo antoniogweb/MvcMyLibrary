@@ -169,7 +169,7 @@ class Model_Tree extends Model_Base {
 			$this->limit = "$start, ".$this->recordsPerPage;
 		}
 		
-		$row = $this->db->select($elements['tables'],$queryFields,$elements['where'],$this->groupBy,$this->orderBy,$this->limit,$elements['on'],$this->using,$this->join, $showTable, $elements['binded']);
+		$row = $this->db->select($elements['tables'],$queryFields,$elements['where'],$this->groupBy,$this->orderBy,$this->limit,$elements['on'],$this->using,$this->join, $showTable, $elements['binded'],$this->forUpdateShare);
 		
 		//process the result data
 		if ($this->process)
@@ -752,38 +752,6 @@ class Model_Tree extends Model_Base {
 		{
 			return false;
 		}
-// 		if (isset($whereClause))
-// 		{
-// 			return parent::del(null,$whereClause);
-// 		}
-// 		else
-// 		{
-// 			if ($this->_onDelete === 'check' and isset($this->_reference))
-// 			{
-// 				if (isset($this->_reference[0]) and isset($this->_reference[1]))
-// 				{
-// 					if ($this->db->recordExists($this->_reference[0],$this->_reference[1],(int)$id))
-// 					{
-// 						$this->notice = $this->_resultString->getString('associate');
-// 						$this->identifierValue = null;
-// 						$this->result = false;
-// 					}
-// 					else
-// 					{
-// 						return parent::del((int)$id);
-// 					}
-// 				}
-// 				else
-// 				{
-// 					throw new Exception('you have forgotten to set \'$this->_reference\' or you have forgotten to set $this->_onDelete = \'nocheck\'');
-// 				}
-// 			}
-// 			else
-// 			{
-// 				return parent::del((int)$id);
-// 			}
-// 		}
-// 		return false;
 	}
 
 	//method to obtain one columns from the tables $this->_tablesArray as an associative array

@@ -37,6 +37,8 @@ class Users_CheckAdmin {
 	public static $sessionsModel = null;
 	public static $accessesModel = null;
 	
+	public static $useConcurrencyCheckInLastFailureTime = false; // if set to true, when looks for the time of the last failure, uses select .. for update
+	
 	public $status = array();
 	
 	private $users;
@@ -511,9 +513,16 @@ class Users_CheckAdmin {
 // 		$data = $this->_db->select($this->_usersTable,'last_failure',self::$usernameFieldName.'="'.$user.'"');
 		
 		if (isset($this->users))
-			$data = $this->users->clear()->where(array(
+		{
+			$this->users->clear()->where(array(
 				self::$usernameFieldName	=>	$user,
-			))->send();
+			));
+			
+			if (self::$useConcurrencyCheckInLastFailureTime)
+				$this->users->forUpdate();
+			
+			$data = $this->users->send();
+		}
 		else
 			$data = $this->_db->select($this->_usersTable,'last_failure',self::$usernameFieldName.'="'.$user.'"');
 		
@@ -523,6 +532,7 @@ class Users_CheckAdmin {
 			{
 				return true;
 			}
+			
 			return false;
 		}
 		else
@@ -530,7 +540,19 @@ class Users_CheckAdmin {
 			return true;
 		}
 	}
-
+	
+	public function startCheckTransaction()
+	{
+		if (isset($this->users) && self::$useConcurrencyCheckInLastFailureTime)
+			$this->users->db->beginTransaction();
+	}
+	
+	public function commitCheckTransaction()
+	{
+		if (isset($this->users) && self::$useConcurrencyCheckInLastFailureTime)
+			$this->users->db->commit();
+	}
+	
 	public function login($user, $pwd, $force = false)
 	{
 		$user = sanitizeAll($user);
@@ -543,12 +565,16 @@ class Users_CheckAdmin {
 		}
 		else
 		{
+			$this->startCheckTransaction();
+			
 			if ($force || $this->checkLastFailure($user))
 			{
 				if ($force)
 					$this->checkUser($user);
 				else
 					$this->checkPassword($user,$pwd);
+				
+				$this->commitCheckTransaction();
 				
 				if ($this->status['status']==='accepted')
 				{
@@ -576,13 +602,20 @@ class Users_CheckAdmin {
 					
 					Cookie::set($this->_params['cookie_name'], $this->uid, $expirationTime, $this->_params['cookie_path'], true, 'Lax');
 					
-// 					setcookie($this->_params['cookie_name'],$this->uid,$expirationTime,$this->_params['cookie_path']); #magic cookie
 					$this->updateAccesses();
 					
 					if (!$this->_params['allow_multiple_accesses'])
 					{
-						$this->_db->del($this->_sessionsTable,self::$idUserFieldName.'='.$this->status['id_user']." AND uid != '".$this->uid."'");
-// 						$this->_db->del($this->_sessionsTable,self::$idUserFieldName.'='.$this->status['id_user'].' AND uid != "'.$this->uid.'"');
+						if (isset($this->sessions))
+							$this->sessions->del(null, array(
+								self::$idUserFieldName." = ? AND uid != ?",
+								array(
+									$this->status['id_user'],
+									$this->uid,
+								),
+							));
+						else
+							$this->_db->del($this->_sessionsTable,self::$idUserFieldName.'='.$this->status['id_user']." AND uid != '".$this->uid."'");
 					}
 					else
 					{
@@ -591,8 +624,6 @@ class Users_CheckAdmin {
 						
 						if ($maxAllowedSessionNumber > 0)
 						{
-// 							$rows = $this->_db->select($this->_sessionsTable,"creation_date",self::$idUserFieldName.'='.$this->status['id_user'],null,"creation_date desc",$maxAllowedSessionNumber);
-							
 							if (isset($this->sessions))
 							{
 								$rows = $this->sessions->clear()->where(array(
@@ -619,22 +650,22 @@ class Users_CheckAdmin {
 							}
 						}
 					}
-// 					$this->redirect('accepted');
+					
 					return 'accepted';
 				}
 				else if ($this->status['status']==='login-error')
 				{
-// 					$this->redirect('login-error');
 					return 'login-error';
 				}
 			}
 			else
 			{
-// 				$this->redirect('wait');
+				$this->commitCheckTransaction();
+				
 				return 'wait';
 			}
 		}
-// 		$this->redirect('login-error');
+		
 		return 'login-error';
 	}
 

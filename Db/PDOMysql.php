@@ -236,7 +236,9 @@ class Db_PDOMysql
 		
 		$query = $this->createSelectQuery($table,$select,$where,$group_by,null,null,$on,$using,$join);
 		
-		$dataCached = Cache::getData($table, "COUNT ".md5(json_encode($binded)).$query);
+		$hash = "COUNT ".md5(serialize($binded)).$query;
+		
+		$dataCached = Cache::getData($table, $hash);
 		if (isset($dataCached))
 			return $dataCached;
 		
@@ -267,7 +269,7 @@ class Db_PDOMysql
 			
 			$ris = $stmt = null;
 			
-			Cache::setData($table, "COUNT ".md5(json_encode($binded)).$query, $num_rows);
+			Cache::setData($table, $hash, $num_rows);
 			
 			return (int)$num_rows;
 		} else {
@@ -279,7 +281,9 @@ class Db_PDOMysql
 	{
 		$query = $this->createSelectQuery($table,"$func($field) AS m",$where,$group_by,null,null,$on,$using,$join);
 		
-		$dataCached = Cache::getData($table, "MATH ".md5(json_encode($binded)).$query);
+		$hash = "MATH ".md5(serialize($binded)).$query;
+		
+		$dataCached = Cache::getData($table, $hash);
 		if (isset($dataCached))
 			return $dataCached;
 		
@@ -301,7 +305,7 @@ class Db_PDOMysql
 			$result = $stmt = null;
 			$data = $row['m'];
 			
-			Cache::setData($table, "MATH ".md5(json_encode($binded)).$query, $data);
+			Cache::setData($table, $hash, $data);
 			
 			return $data;
 		}
@@ -347,7 +351,9 @@ class Db_PDOMysql
 	{
 		$query = $this->createSelectQuery($table,$fields,$where,$group_by,$order_by,$limit,$on,$using,$join,$forUpdateShare);
 		
-		$dataCached = Cache::getData($table, "SELECT ".md5(json_encode($bindValues)).$query);
+		$hash = "SELECT ".md5(serialize($bindValues)).$query;
+		
+		$dataCached = Cache::getData($table, $hash);
 		if (isset($dataCached))
 			return $dataCached;
 		
@@ -368,7 +374,7 @@ class Db_PDOMysql
 		
 		$data = $this->getData($stmt, $showTable);
 		
-		Cache::setData($table, "SELECT ".md5(json_encode($bindValues)).$query, $data);
+		Cache::setData($table, $hash, $data);
 		
 		return $data;
 	}

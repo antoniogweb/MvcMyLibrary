@@ -463,6 +463,8 @@ abstract class Model_Base
 					
 					$value = reset($value);
 					
+					$value = $this->sanitizeValue($value);
+					
 					if (Params::$nullQueryValue === false or (!is_array($value) and strcmp($value,Params::$nullQueryValue) !== 0) or (is_array($value) and !empty($value)))
 					{
 						if (in_array(strtolower(trim($field)),array("in","nin")))
@@ -542,7 +544,8 @@ abstract class Model_Base
 				
 				if (Params::$nullQueryValue === false or strcmp(nullToBlank($value),Params::$nullQueryValue) !== 0)
 				{
-					$whereClauseArray[] = $tableName.$fieldClean.'=?';
+					$value = $this->sanitizeValue($value);
+					$whereClauseArray[] = strstr($field,'n!n!') ? $value : $tableName.$fieldClean.'=?';
 					$this->bindedValues[] = $value;
 				}
 			}

@@ -574,11 +574,13 @@ class Db_PDOMysql
 			
 			for($i = 0; $i < count($values); $i++)
 			{
-				$preparedValues[":".$fieldsArray[$i]] = $values[$i];
+// 				$preparedValues[":".$fieldsArray[$i]] = $values[$i];
+				$preparedValues[] = $values[$i];
 			}
 
 			$values = implode(',',array_keys($preparedValues));
-			$query="INSERT INTO $table ($fields) VALUES ($values);";
+// 			$query="INSERT INTO $table ($fields) VALUES ($values);";
+			$query="INSERT INTO $table ($fields) VALUES (".str_repeat ('?, ',  count ($preparedValues) - 1) . '?'.");";
 			$this->query=$query;
 			$this->queries[] = $query . $this->bindedValuesString($preparedValues);
 

@@ -49,6 +49,7 @@ class Url {
 		$protocol = Params::$useHttps ? "https" : "http";
 		
 		$url = MOD_REWRITE_MODULE === true ? "$protocol://" . self::getDomainName() . $langUrl . '/' . $pathFromRootFolder : "$protocol://" . self::getDomainName() . '/index.php/' . $langUrl . $pathFromRootFolder;
+		
 		return $url;
 	}
 

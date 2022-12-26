@@ -22,7 +22,7 @@
 
 if (!defined('EG')) die('Direct access not allowed!');
 
-class Cache {
+class Cache_Db {
 	
 	public static $cachedQueries = array();
 	public static $cachedTables = array();
@@ -253,8 +253,8 @@ class Cache {
 	{
 		foreach ($tables as $table)
 		{
-			if (!in_array($table, Cache::$cachedTables)) {
-				Cache::$cachedTables[] = $table;
+			if (!in_array($table, Cache_Db::$cachedTables)) {
+				Cache_Db::$cachedTables[] = $table;
 			}
 		}
 	}

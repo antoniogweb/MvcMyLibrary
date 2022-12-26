@@ -67,7 +67,12 @@ class Theme {
 	{
 		$this->_data = array_merge($this->_data,$values);
 	}
-
+	
+	public function get()
+	{
+		return $this->_data;
+	}
+	
 	//clean the $this->viewFiles array
 	public function clean() {
 		$this->_viewFiles = array();
@@ -122,8 +127,11 @@ class Theme {
 		}
 	}
 	
-	public function render() {
+	public function render($cacheObj) {
 		extract($this->_data);
+		
+		if ($cacheObj->folder && $cacheObj->saveHtml)
+			ob_start();
 		
 		foreach ($this->_viewFiles as $file) {
 			$path = $this->viewPath($file);
@@ -165,6 +173,15 @@ class Theme {
 						include($pathRoot);
 				}
 			}
+		}
+		
+		if ($cacheObj->folder && $cacheObj->saveHtml)
+		{
+			$output = ob_get_clean();
+			
+			$fileCached = $cacheObj->save($output);
+			
+			include($fileCached);
 		}
     }
     

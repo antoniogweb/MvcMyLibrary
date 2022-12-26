@@ -248,7 +248,7 @@ class Db_Mysqli
 		
 		$query = $this->createSelectQuery($table,$select,$where,$group_by,null,null,$on,$using,$join);
 		
-		$dataCached = Cache::getData($table, "COUNT ".$query);
+		$dataCached = Cache_Db::getData($table, "COUNT ".$query);
 		if (isset($dataCached))
 			return $dataCached;
 		
@@ -272,7 +272,7 @@ class Db_Mysqli
 			
 			$ris->close();
 			
-			Cache::setData($table, "COUNT ".$query, $num_rows);
+			Cache_Db::setData($table, "COUNT ".$query, $num_rows);
 			
 			return (int)$num_rows;
 		} else {
@@ -284,7 +284,7 @@ class Db_Mysqli
 	{
 		$query = $this->createSelectQuery($table,"$func($field) AS m",$where,$group_by,null,null,$on,$using,$join);
 		
-		$dataCached = Cache::getData($table, "MATH ".$query);
+		$dataCached = Cache_Db::getData($table, "MATH ".$query);
 		if (isset($dataCached))
 			return $dataCached;
 		
@@ -299,7 +299,7 @@ class Db_Mysqli
 			
 			$data = $row['m'];
 			
-			Cache::setData($table, "MATH ".$query, $data);
+			Cache_Db::setData($table, "MATH ".$query, $data);
 			
 			return $data;
 		}
@@ -337,7 +337,7 @@ class Db_Mysqli
 	{
 		$query = $this->createSelectQuery($table,$fields,$where,$group_by,$order_by,$limit,$on,$using,$join,$forUpdateShare);
 		
-		$dataCached = Cache::getData($table, "SELECT ".$query);
+		$dataCached = Cache_Db::getData($table, "SELECT ".$query);
 		if (isset($dataCached))
 			return $dataCached;
 		
@@ -350,7 +350,7 @@ class Db_Mysqli
 		
 		$data = $this->getData($result, $showTable);
 		
-		Cache::setData($table, "SELECT ".$query, $data);
+		Cache_Db::setData($table, "SELECT ".$query, $data);
 		
 		return $data;
 	}

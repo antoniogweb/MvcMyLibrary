@@ -423,7 +423,9 @@ function callHook()
 		Hooks::load(ROOT . DS . APPLICATION_PATH . DS . 'Hooks' . DS . 'AfterInitialization.php');
 
 		$templateFlag= true;
-
+		
+		$cache = Cache_Html::getInstance();
+		
 		if (method_exists($dispatch, $action) and is_callable(array($dispatch, $action)))
 		{
 			//pass the action to the theme object
@@ -433,8 +435,16 @@ function callHook()
 			{
 				$dispatch->theme->currPage = $dispatch->baseUrl.'/'.$currentUrl;
 			}
-		
-			call_user_func_array(array($dispatch,$action),$queryString);
+			
+			if ($cache->saved())
+			{
+				if ($cache->fileWithCommands)
+					include($cache->fileWithCommands);
+				
+				$cache->load($dispatch->theme->get());
+			}
+			else
+				call_user_func_array(array($dispatch,$action),$queryString);
 		}
 		else
 		{
@@ -443,7 +453,8 @@ function callHook()
 
 		if ($templateFlag)
 		{
-			$dispatch->theme->render();
+			if (!$cache->saved())
+				$dispatch->theme->render(Cache_Html::getInstance());
 		}
 
 	}

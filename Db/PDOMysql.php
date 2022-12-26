@@ -56,7 +56,7 @@ class Db_PDOMysql
 
 	//PHP-Mysql charset translation table
 	private $charsetTranslationTable = array(
-		'UTF-8'			=> 	'utf8',
+		'UTF-8'			=> 	'utf8mb4',
 		'ISO-8859-1'	=> 	'latin1',
 		'EUC-JP'		=>	'ujis',
 		'SJIS'			=>	'sjis'
@@ -238,7 +238,7 @@ class Db_PDOMysql
 		
 		$hash = "COUNT ".md5(serialize($binded)).$query;
 		
-		$dataCached = Cache::getData($table, $hash);
+		$dataCached = Cache_Db::getData($table, $hash);
 		if (isset($dataCached))
 			return $dataCached;
 		
@@ -269,7 +269,7 @@ class Db_PDOMysql
 			
 			$ris = $stmt = null;
 			
-			Cache::setData($table, $hash, $num_rows);
+			Cache_Db::setData($table, $hash, $num_rows);
 			
 			return (int)$num_rows;
 		} else {
@@ -283,7 +283,7 @@ class Db_PDOMysql
 		
 		$hash = "MATH ".md5(serialize($binded)).$query;
 		
-		$dataCached = Cache::getData($table, $hash);
+		$dataCached = Cache_Db::getData($table, $hash);
 		if (isset($dataCached))
 			return $dataCached;
 		
@@ -305,7 +305,7 @@ class Db_PDOMysql
 			$result = $stmt = null;
 			$data = $row['m'];
 			
-			Cache::setData($table, $hash, $data);
+			Cache_Db::setData($table, $hash, $data);
 			
 			return $data;
 		}
@@ -353,7 +353,7 @@ class Db_PDOMysql
 		
 		$hash = "SELECT ".md5(serialize($bindValues)).$query;
 		
-		$dataCached = Cache::getData($table, $hash);
+		$dataCached = Cache_Db::getData($table, $hash);
 		if (isset($dataCached))
 			return $dataCached;
 		
@@ -374,7 +374,7 @@ class Db_PDOMysql
 		
 		$data = $this->getData($stmt, $showTable);
 		
-		Cache::setData($table, $hash, $data);
+		Cache_Db::setData($table, $hash, $data);
 		
 		return $data;
 	}

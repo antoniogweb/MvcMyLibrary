@@ -1186,7 +1186,13 @@ abstract class Model_Base
 			{
 				if (isset($id))
 				{
-					$where = $this->_idFieldsArray[0].'='.(int)($id);
+					$where = $this->arrayToWhereClause(array(
+						$this->_idFieldsArray[0]." = ?",
+						array(
+							(int)$id
+						),
+					));
+// 					$where = $this->_idFieldsArray[0].'='.(int)($id);
 					$result = $this->db->update($this->_tablesArray[0],$el[0],$el[1],$where);
 					$this->setNotice($result);
 					return $result;
@@ -1271,7 +1277,13 @@ abstract class Model_Base
 		else
 		{
 			if (isset($id)) {
-				$where = $this->_idFieldsArray[0].'='.(int)$id;
+				$where = $this->arrayToWhereClause(array(
+					$this->_idFieldsArray[0]." = ?",
+					array(
+						(int)$id
+					),
+				));
+// 				$where = $this->_idFieldsArray[0].'='.(int)$id;
 				$result = $this->db->del($this->_tablesArray[0],$where);
 				$this->setNotice($result);
 				return $result;

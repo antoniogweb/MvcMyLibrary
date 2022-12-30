@@ -28,37 +28,51 @@ class Cache_Html
 	private static $folderChecked = false;
 	private static $folderDynamicChecked = false;
 	
+	public static $maxNumberOfFilesCached = 0; // if 0, there is no limit
+	
 	private $dinamicFiles = array();
+	private $internalLoadChache = true; // intenal flag set by the checkNumberOfFiles method
 	
 	public $baseUrl = null; //the base url of the website: http://domainname
 	public $baseUrlSrc = null; //the base url of the website (http://domainname) without the language
 	
-	public $absolutePath = null;
-	public $folder = null;
-	public $cacheKey = null;
-	public $saveHtml = false;
-	public $loadHtml = false;
-	public $fileWithCommands = null;
+	public $absolutePath = null; // absolute path (se $folder below)
+	public $folder = null; // folder where the cache files are saved, the path is relative path to the $absolutePath path (see above), 
+	public $cacheKey = null; // the key of the cache, it should hold $_SERVER["REQUEST_URI"]
+	public $saveHtml = false; // if the page has to be cached
+	public $loadHtml = false; // if the cache has to be loaded
+	public $fileWithCommands = null; // file with commands to be executed before load the cache
 	
-	private function __construct()
+	private function __construct($absolutePath, $folder)
 	{
+		$this->absolutePath = $absolutePath;
+		$this->folder = $folder;
+		
 		$this->baseUrl = rtrim(Url::getRoot(),"/");
 		$this->baseUrlSrc = rtrim(Url::getFileRoot(),"/");
+		
+		// Check the number of files and set internalLoadChache
+		$this->checkNumberOfFiles();
 	}
-
-	public static function getInstance()
+	
+	public static function getInstance($absolutePath = null, $folder = null)
 	{
 		if (!isset(self::$instance)) {
 			$className = __CLASS__;
-			self::$instance = new $className();
+			self::$instance = new $className($absolutePath, $folder);
 		}
 		
 		return self::$instance;
 	}
 	
+	public function getInternalLoadChache()
+	{
+		return $this->internalLoadChache;
+	}
+	
 	public function saved()
 	{
-		if ($this->loadHtml && $this->cacheKey && is_file($this->getFullPath()."/".md5($this->cacheKey).".php"))
+		if ($this->internalLoadChache && $this->loadHtml && $this->cacheKey && is_file($this->getFullPath()."/".md5($this->cacheKey).".php"))
 			return true;
 		
 		return false;
@@ -66,7 +80,7 @@ class Cache_Html
 	
 	public function load($data)
 	{
-		if ($this->loadHtml && $this->cacheKey && is_file($this->getFullPath()."/".md5($this->cacheKey).".php"))
+		if ($this->internalLoadChache && $this->loadHtml && $this->cacheKey && is_file($this->getFullPath()."/".md5($this->cacheKey).".php"))
 		{
 			extract($data);
 			
@@ -81,7 +95,7 @@ class Cache_Html
 	
 	public function saveDynamic($path, $cachable = true, $stringaCache = '')
 	{
-		if (!$cachable && $this->saveHtml)
+		if ($this->internalLoadChache && !$cachable && $this->saveHtml && $this->folder)
 		{
 			$fileName = md5($stringaCache.$path).".php";
 			
@@ -125,20 +139,34 @@ class Cache_Html
 		return $absolutePath;
 	}
 	
+	public function checkNumberOfFiles()
+	{
+		if (self::$maxNumberOfFilesCached && $this->folder)
+		{
+			$absolutePath = $this->checkCacheFolder();
+			
+			$iterator = new FilesystemIterator($absolutePath, FilesystemIterator::SKIP_DOTS);
+			$numberOfFilesCached = iterator_count($iterator);
+			
+			if ($numberOfFilesCached > self::$maxNumberOfFilesCached)
+				$this->internalLoadChache = false;
+		}
+	}
+	
 	public function save($html)
 	{
 		if (!$this->cacheKey && isset($_SERVER["REQUEST_URI"]))
 			$this->cacheKey = $_SERVER["REQUEST_URI"];
 		
-		$fileName = md5($this->cacheKey).".php";
-		
-		$absolutePath = $this->checkCacheFolder();
-		
-		if ($this->folder)
+		if ($this->internalLoadChache && $this->folder && $this->cacheKey)
 		{
+			$absolutePath = $this->checkCacheFolder();
+			
+			$fileName = md5($this->cacheKey).".php";
+			
 			file_put_contents($absolutePath."/".$fileName, $html);
 			
-			file_put_contents($absolutePath."/log_files.log", json_encode($this->dinamicFiles));
+// 			file_put_contents($absolutePath."/log_files.log", json_encode($this->dinamicFiles));
 			
 			return $absolutePath."/".$fileName;
 		}

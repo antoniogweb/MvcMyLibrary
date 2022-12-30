@@ -130,7 +130,7 @@ class Theme {
 	public function render($cacheObj) {
 		extract($this->_data);
 		
-		if ($cacheObj->folder && $cacheObj->saveHtml)
+		if ($cacheObj->getInternalLoadChache() && $cacheObj->folder && $cacheObj->saveHtml)
 			ob_start();
 		
 		foreach ($this->_viewFiles as $file) {
@@ -175,7 +175,7 @@ class Theme {
 			}
 		}
 		
-		if ($cacheObj->folder && $cacheObj->saveHtml)
+		if ($cacheObj->getInternalLoadChache() && $cacheObj->folder && $cacheObj->saveHtml)
 		{
 			$output = ob_get_clean();
 			

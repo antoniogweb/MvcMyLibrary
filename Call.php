@@ -425,6 +425,8 @@ function callHook()
 		$templateFlag= true;
 		
 		$cache = Cache_Html::getInstance();
+		$dispatch->setCacheParameters();
+		$cache->currPage = $dispatch->currPage;
 		
 		if (method_exists($dispatch, $action) and is_callable(array($dispatch, $action)))
 		{
@@ -441,7 +443,8 @@ function callHook()
 				if ($cache->fileWithCommands)
 					include($cache->fileWithCommands);
 				
-				$cache->load($dispatch->theme->get());
+				$cache->setData($dispatch->theme->get());
+				$cache->load();
 			}
 			else
 				call_user_func_array(array($dispatch,$action),$queryString);

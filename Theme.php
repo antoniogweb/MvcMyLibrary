@@ -131,7 +131,10 @@ class Theme {
 		extract($this->_data);
 		
 		if ($cacheObj->getInternalLoadChache() && $cacheObj->folder && $cacheObj->saveHtml)
+		{
+			$cacheObj->setData($this->_data);
 			ob_start();
+		}
 		
 		foreach ($this->_viewFiles as $file) {
 			$path = $this->viewPath($file);

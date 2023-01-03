@@ -79,7 +79,17 @@ class Controller {
 		
 		$this->applicationUrl = isset($application) ? $application . "/" : null;
 	}
-
+	
+	final public function setCacheParameters()
+	{
+		$cache = Cache_Html::getInstance();
+		
+		$cache->controller = $this->controller;
+		$cache->application = $this->application;
+		$cache->applicationUrl = $this->applicationUrl;
+		$cache->action = $this->action;
+	}
+	
 	//redirect to $path after the time $time
 	final public function redirect($path,$time = 0,$string = null)
 	{

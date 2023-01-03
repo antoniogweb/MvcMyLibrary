@@ -27,8 +27,11 @@ class Cache_Html
 	private static $instance = null; //instance of this class
 	private static $folderChecked = false;
 	private static $folderDynamicChecked = false;
+	private static $folderIncludeChecked = false;
 	
 	public static $maxNumberOfFilesCached = 0; // if 0, there is no limit
+	
+	protected $_data = array();
 	
 	private $dinamicFiles = array();
 	private $internalLoadChache = true; // intenal flag set by the checkNumberOfFiles method
@@ -36,8 +39,15 @@ class Cache_Html
 	public $baseUrl = null; //the base url of the website: http://domainname
 	public $baseUrlSrc = null; //the base url of the website (http://domainname) without the language
 	
+	public $controller = 'controller';
+	public $application = null;
+	public $applicationUrl = null; //the url of the application
+	public $action = '';
+	public $currPage; //the URL of the current page
+	
 	public $absolutePath = null; // absolute path (se $folder below)
 	public $folder = null; // folder where the cache files are saved, the path is relative path to the $absolutePath path (see above), 
+	public $partialKey = ""; // get the key used for files to be included
 	public $cacheKey = null; // the key of the cache, it should hold $_SERVER["REQUEST_URI"]
 	public $saveHtml = false; // if the page has to be cached
 	public $loadHtml = false; // if the cache has to be loaded
@@ -65,6 +75,11 @@ class Cache_Html
 		return self::$instance;
 	}
 	
+	public function setData($data)
+	{
+		$this->_data = $data;
+	}
+	
 	public function getInternalLoadChache()
 	{
 		return $this->internalLoadChache;
@@ -78,11 +93,11 @@ class Cache_Html
 		return false;
 	}
 	
-	public function load($data)
+	public function load()
 	{
 		if ($this->internalLoadChache && $this->loadHtml && $this->cacheKey && is_file($this->getFullPath()."/".md5($this->cacheKey).".php"))
 		{
-			extract($data);
+			extract($this->_data);
 			
 			include($this->getFullPath()."/".md5($this->cacheKey).".php");
 		}
@@ -93,26 +108,49 @@ class Cache_Html
 		return rtrim($this->absolutePath,"/")."/".rtrim($this->folder,"/");
 	}
 	
-	public function saveDynamic($path, $cachable = true, $stringaCache = '')
+	public function saveDynamic($path, $cachable = true, $stringaCache = '', $cachedTemplateFile = false)
 	{
-		if ($this->internalLoadChache && !$cachable && $this->saveHtml && $this->folder)
+		if ($this->internalLoadChache && $this->saveHtml && $this->folder && (!$cachable || $cachedTemplateFile))
 		{
-// 			$fileName = md5($stringaCache.$path).".php";
-			$fileName = randomToken(20).".php";
-			
 			$absolutePath = $this->checkCacheFolder();
 			
 			if ($this->folder)
 			{
-				$html = "<?php echo '<?php $stringaCache include(\'".$path."\'); ?>' ?>";
+				$fileNameRandom = randomToken(20).".php";
 				
-				FilePutContentsAtomic($absolutePath."/DynamicFiles/".$fileName, $html);
-				
-// 				file_put_contents($absolutePath."/DynamicFiles/".$fileName, $html);
-				
-				$this->dinamicFiles[] = $absolutePath."/DynamicFiles/".$fileName;
-				
-				return $absolutePath."/DynamicFiles/".$fileName;
+				if (!$cachable)
+				{
+					$html = "<?php echo '<?php $stringaCache include(\'".$path."\'); ?>' ?>";
+					
+					FilePutContentsAtomic($absolutePath."/DynamicFiles/".$fileNameRandom, $html);
+					$this->dinamicFiles[] = $absolutePath."/DynamicFiles/".$fileNameRandom;
+					return $absolutePath."/DynamicFiles/".$fileNameRandom;
+				}
+				else if ($cachedTemplateFile)
+				{
+					$path_parts = pathinfo($path);
+					
+					$fileName = $this->partialKey."_".$path_parts['basename'];
+					
+					$pathOfCachedTemplateFIle = $absolutePath."/Include/".$fileName;
+// 					echo $pathOfCachedTemplateFIle;die();
+					if (!file_exists($pathOfCachedTemplateFIle))
+					{
+						extract($this->_data);
+						ob_start();
+						include($path);
+						$output = ob_get_clean();
+						FilePutContentsAtomic($pathOfCachedTemplateFIle, $output);
+					}
+					
+					$html = "<?php echo '<?php include(\'".$pathOfCachedTemplateFIle."\'); ?>' ?>";
+					
+					FilePutContentsAtomic($absolutePath."/DynamicFiles/".$fileNameRandom, $html);
+					$this->dinamicFiles[] = $absolutePath."/DynamicFiles/".$fileNameRandom;
+					return $absolutePath."/DynamicFiles/".$fileNameRandom;
+				}
+				else
+					return $path;
 			}
 			else
 				return $path;
@@ -137,6 +175,13 @@ class Cache_Html
 			createFolderFull($this->folder."/DynamicFiles", $this->absolutePath);
 			
 			self::$folderDynamicChecked = true;
+		}
+		
+		if (!self::$folderIncludeChecked && !is_dir($absolutePath."/Include") && $this->folder)
+		{
+			createFolderFull($this->folder."/Include", $this->absolutePath);
+			
+			self::$folderIncludeChecked = true;
 		}
 		
 		return $absolutePath;
@@ -170,12 +215,6 @@ class Cache_Html
 			FilePutContentsAtomic($absolutePath."/".$fileName, $html);
 			
 			array_map('unlink', $this->dinamicFiles);
-			
-// 			print_r($this->dinamicFiles);
-			
-// 			file_put_contents($absolutePath."/".$fileName, $html);
-			
-// 			file_put_contents($absolutePath."/log_files.log", json_encode($this->dinamicFiles));
 			
 			return $absolutePath."/".$fileName;
 		}

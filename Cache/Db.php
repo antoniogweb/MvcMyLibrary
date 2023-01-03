@@ -105,11 +105,11 @@ class Cache_Db {
 						}
 					}
 					
-					file_put_contents($path, time());
+					FilePutContentsAtomic($path, time());
 				}
 			}
 			else
-				file_put_contents($path, time());
+				FilePutContentsAtomic($path, time());
 		}
 	}
 	
@@ -230,7 +230,7 @@ class Cache_Db {
 					
 					$fileName = md5($query).".txt";
 					
-					file_put_contents($cacheFolderFull."/".$fileName, serialize($data));
+					FilePutContentsAtomic($cacheFolderFull."/".$fileName, serialize($data));
 					self::$cachedQueries[md5($query)] = $data;
 				}
 			}

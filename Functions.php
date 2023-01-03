@@ -644,3 +644,22 @@ function addBackSlashLike($string = "")
 	
 	return $string;
 }
+
+// atomic file_put_contents
+// write a random tmp file and then remame the tmp file
+function FilePutContentsAtomic($filePath, $data)
+{
+	$path_parts = pathinfo($filePath);
+	
+	$extension = strtolower($path_parts['extension']);
+	$dirName = $path_parts['dirname'];
+	
+	$tmpFile = rtrim($dirName,"/")."/".randomToken(20);
+	
+	if ($extension)
+		$tmpFile .= ".".$extension;
+	
+	file_put_contents($tmpFile, $data);
+	
+	rename($tmpFile, $filePath);
+}

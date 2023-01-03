@@ -97,9 +97,8 @@ class Cache_Html
 	{
 		if ($this->internalLoadChache && !$cachable && $this->saveHtml && $this->folder)
 		{
-			$fileName = md5($stringaCache.$path).".php";
-			
-			$this->dinamicFiles[] = $stringaCache.$path;
+// 			$fileName = md5($stringaCache.$path).".php";
+			$fileName = randomToken(20).".php";
 			
 			$absolutePath = $this->checkCacheFolder();
 			
@@ -107,7 +106,11 @@ class Cache_Html
 			{
 				$html = "<?php echo '<?php $stringaCache include(\'".$path."\'); ?>' ?>";
 				
-				file_put_contents($absolutePath."/DynamicFiles/".$fileName, $html);
+				FilePutContentsAtomic($absolutePath."/DynamicFiles/".$fileName, $html);
+				
+// 				file_put_contents($absolutePath."/DynamicFiles/".$fileName, $html);
+				
+				$this->dinamicFiles[] = $absolutePath."/DynamicFiles/".$fileName;
 				
 				return $absolutePath."/DynamicFiles/".$fileName;
 			}
@@ -164,7 +167,13 @@ class Cache_Html
 			
 			$fileName = md5($this->cacheKey).".php";
 			
-			file_put_contents($absolutePath."/".$fileName, $html);
+			FilePutContentsAtomic($absolutePath."/".$fileName, $html);
+			
+			array_map('unlink', $this->dinamicFiles);
+			
+// 			print_r($this->dinamicFiles);
+			
+// 			file_put_contents($absolutePath."/".$fileName, $html);
 			
 // 			file_put_contents($absolutePath."/log_files.log", json_encode($this->dinamicFiles));
 			

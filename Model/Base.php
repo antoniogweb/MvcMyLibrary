@@ -1345,10 +1345,29 @@ abstract class Model_Base
 						$prevId = $data[$i-$increm][$this->_tablesArray[0]][$this->_idFieldsArray[0]];
 						$currentOrder = $data[$i][$this->_tablesArray[0]][$this->_idOrder];
 						$currentId = $data[$i][$this->_tablesArray[0]][$this->_idFieldsArray[0]];
-
+						
+// 						$res1 = $this->db->update($this->_tablesArray[0],$this->_idOrder,array($prevOrder),$this->_idFieldsArray[0]."='$currentId'");
+// 						$res2 = $this->db->update($this->_tablesArray[0],$this->_idOrder,array($currentOrder),$this->_idFieldsArray[0]."='$prevId'");
+						
+						$where = $this->arrayToWhereClause(array(
+							$this->_idFieldsArray[0]." = ?",
+							array(
+								(int)$currentId
+							),
+						));
+				
 						//exchange the id_order of the two record
-						$res1 = $this->db->update($this->_tablesArray[0],$this->_idOrder,array($prevOrder),$this->_idFieldsArray[0]."='$currentId'");
-						$res2 = $this->db->update($this->_tablesArray[0],$this->_idOrder,array($currentOrder),$this->_idFieldsArray[0]."='$prevId'");
+						$res1 = $this->db->update($this->_tablesArray[0],$this->_idOrder,array($prevOrder),$where);
+						
+						$where = $this->arrayToWhereClause(array(
+							$this->_idFieldsArray[0]." = ?",
+							array(
+								(int)$prevId
+							),
+						));
+						
+						$res2 = $this->db->update($this->_tablesArray[0],$this->_idOrder,array($currentOrder),$where);
+						
 						$result = ($res1 and $res2);
 						$this->setNotice($result);
 						return $result;

@@ -122,9 +122,12 @@ class Cache_Html
 				{
 					$html = "<?php echo '<?php $stringaCache include(\'".$path."\'); ?>' ?>";
 					
-					FilePutContentsAtomic($absolutePath."/DynamicFiles/".$fileNameRandom, $html);
-					$this->dinamicFiles[] = $absolutePath."/DynamicFiles/".$fileNameRandom;
-					return $absolutePath."/DynamicFiles/".$fileNameRandom;
+					$dynamicPath = $absolutePath."/DynamicFiles/".$fileNameRandom;
+					
+					FilePutContentsAtomic($dynamicPath, $html);
+					
+					$this->dinamicFiles[] = $dynamicPath;
+					return $dynamicPath;
 				}
 				else if ($cachedTemplateFile)
 				{
@@ -133,7 +136,7 @@ class Cache_Html
 					$fileName = $this->partialKey."_".$path_parts['basename'];
 					
 					$pathOfCachedTemplateFIle = $absolutePath."/Include/".$fileName;
-// 					echo $pathOfCachedTemplateFIle;die();
+					
 					if (!file_exists($pathOfCachedTemplateFIle))
 					{
 						extract($this->_data);

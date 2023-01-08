@@ -167,6 +167,6 @@ class Params
 	// the original $_POST
 	public static $rawPOST = array();
 	
-	// function to call before redirect
+	// function to call before redirect. It can be of the type array("ClassName","MethodName") or array($obj, "MethodName") or "FunctionName"
 	public static $logFunctionBeforeRedirect = null;
 }

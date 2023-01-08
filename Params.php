@@ -166,4 +166,7 @@ class Params
 	
 	// the original $_POST
 	public static $rawPOST = array();
+	
+	// function to call before redirect
+	public static $logFunctionBeforeRedirect = null;
 }

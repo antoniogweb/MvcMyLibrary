@@ -34,6 +34,10 @@ class HeaderObj {
 		$completePath = Url::getRoot().$path;
 		header('Refresh: '.$time.';url='.$completePath);
 		if (isset($string)) echo $string;
+		
+		if (isset(Params::$logFunctionBeforeRedirect))
+			call_user_func(Params::$logFunctionBeforeRedirect);
+		
 		exit;
 	}
 

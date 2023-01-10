@@ -136,10 +136,10 @@ class Image_Gd_Thumbnail
 		{
 			return false;
 			
-			if (isset($this->params['defaultImage']))
-				$imagePath = $this->params['defaultImage'];
-			
-			$outputFile = $cachePathForce = null;
+// 			if (isset($this->params['defaultImage']))
+// 				$imagePath = $this->params['defaultImage'];
+// 			
+// 			$outputFile = $cachePathForce = null;
 		}
 		
 		//cache of the thumb

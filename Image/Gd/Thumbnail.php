@@ -120,7 +120,7 @@ class Image_Gd_Thumbnail
 		//set if it has to create cache or not
 		$createCache = false;
 		
-		$imageFile = basename($imageFile);
+		$imageFile = basename((string)$imageFile);
 		$imagePath = $this->basePath . $imageFile;
 		
 		$img = null;
@@ -130,7 +130,17 @@ class Image_Gd_Thumbnail
 		$u = new Files_Upload($this->basePath);
 		$isValidPath = $u->isMatching($imagePath);
 		
-		if ((!file_exists($imagePath) or !$isValidPath) and isset($this->params['defaultImage'])) $imagePath = $this->params['defaultImage'];
+// 		if ((!file_exists($imagePath) or !$isValidPath) and isset($this->params['defaultImage'])) $imagePath = $this->params['defaultImage'];
+		
+		if (!file_exists($imagePath) or !$isValidPath)
+		{
+			return false;
+			
+			if (isset($this->params['defaultImage']))
+				$imagePath = $this->params['defaultImage'];
+			
+			$outputFile = $cachePathForce = null;
+		}
 		
 		//cache of the thumb
 		if ($this->params['useCache'] && file_exists($imagePath) && $isValidPath)

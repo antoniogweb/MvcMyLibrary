@@ -27,8 +27,9 @@ class Scaffold
 {
 
 	protected $_type = null; //the type of the scaffold. It can be 'main' or 'form'
-	protected $_queryType = null; //it can be insert or update
-
+	protected $_queryType = null; //it can be insert or update (not used)
+	protected $queryType = null; //it can be insert or update
+	
 	protected $_primaryKey = null; //the primary key of the table
 	protected $_controller = null; //the name of the controller
 	

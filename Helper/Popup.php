@@ -53,7 +53,10 @@ class Helper_Popup extends Helper_Html {
 
 	//popup legend
 	public $legend = array();
-
+	
+	// will be an instanceof the generic language class
+	public $strings = null;
+	
 	public function __construct()
 	{
 		//get the generic language class

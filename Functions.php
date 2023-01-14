@@ -110,6 +110,14 @@ function sanitizeHtml($stringa) {
 
 }
 
+function sanitizeHtmlLight($stringa) {
+
+	$charset = Params::$htmlentititiesCharset;
+	$stringa=htmlspecialchars(nullToBlank($stringa),ENT_QUOTES,$charset);
+	return $stringa;
+
+}
+
 //check if only alphabetic + optional characters are present in the string $string. Set $string to $altString if other characters are found
 //$optChar: allowed characters divided by '|'  Ex: '+|-|;'
 function sanitizeCustom($string,$optChar,$altString = 'MvcMyLibrary')
@@ -444,7 +452,10 @@ function getUserAgent() {
 //encode a string to drop ugly characters
 function encode($url)
 {
-	$url = utf8_decode(html_entity_decode($url,ENT_QUOTES,'UTF-8'));
+// 	$url = utf8_decode(html_entity_decode($url,ENT_QUOTES,'UTF-8'));
+	
+	$url = html_entity_decode($url,ENT_QUOTES,'UTF-8');
+	$url = mb_convert_encoding($url, 'ISO-8859-1', 'UTF-8');
 	
 	$temp = null;
 	

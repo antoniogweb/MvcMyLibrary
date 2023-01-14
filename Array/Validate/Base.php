@@ -28,7 +28,8 @@ class Array_Validate_Base
 
 	public $strength;
 	public $errorString = null; //string containing the list fields not found
-	public $errorsNumb = null; //numbers of errors
+	public $errorsNumb = null; //numbers of errors (not used, TYPO ERROR)
+	public $errorNumb = null; //numbers of errors
 
 	protected $_lang; //language of notices
 	protected $_resultString; //reference to the class arraycheckStrings containing all the result strings

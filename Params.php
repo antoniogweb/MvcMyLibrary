@@ -84,6 +84,9 @@ class Params
 	//current front-end language
 	public static $lang = null;
 	
+	// used by sLang e rLang below, it save lang to be restored
+	private static $__bckLang = null;
+	
 	//array of countries allowed for the website front-end
 	public static $frontEndCountries = array();
 	
@@ -169,4 +172,18 @@ class Params
 	
 	// function to call before redirect. It can be of the type array("ClassName","MethodName") or array($obj, "MethodName") or "FunctionName"
 	public static $logFunctionBeforeRedirect = null;
+	
+	// set the $lang attribute
+	public static function sLang($newLang)
+	{
+		self::$__bckLang = self::$lang;
+		self::$lang = $newLang;
+	}
+	
+	// restore the $lang attribute
+	public static function rLang()
+	{
+		self::$lang = self::$__bckLang;
+		self::$__bckLang = null;
+	}
 }

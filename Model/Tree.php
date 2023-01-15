@@ -145,10 +145,17 @@ class Model_Tree extends Model_Base {
 		return implode(",",$processedFields);
 	}
 	
+	public function signature()
+	{
+		return $this->getFields($this->select, "all", true, true);
+	}
+	
 	//method to get the values of the selected fields
 	//it walks the tree by means of a join query
 	//$fields: the fields that have to be excracted from the tableName
-	public function getFields($fields = '',$choice = 'all', $showTable = true)
+	//$showTable: if the table array level has to be filled
+	//$returnSignature: if it has only to return the signature (query + data)
+	public function getFields($fields = '',$choice = 'all', $showTable = true, $returnSignature = false)
 	{
 		$elements = $this->treeQueryElements($this->_tablesArray[0],$choice);
 		
@@ -168,6 +175,9 @@ class Model_Tree extends Model_Base {
 			
 			$this->limit = "$start, ".$this->recordsPerPage;
 		}
+		
+		if ($returnSignature)
+			return $this->db->signature($elements['tables'],$queryFields,$elements['where'],$this->groupBy,$this->orderBy,$this->limit,$elements['on'],$this->using,$this->join, $showTable, $elements['binded'],$this->forUpdateShare);
 		
 		$row = $this->db->select($elements['tables'],$queryFields,$elements['where'],$this->groupBy,$this->orderBy,$this->limit,$elements['on'],$this->using,$this->join, $showTable, $elements['binded'],$this->forUpdateShare);
 		

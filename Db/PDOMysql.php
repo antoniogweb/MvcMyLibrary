@@ -347,6 +347,13 @@ class Db_PDOMysql
 		return " (VALUES: ".implode(",",array_values($bindValues)).")";
 	}
 	
+	public function signature($table,$fields='*',$where=null,$group_by=null,$order_by=null,$limit=null,$on=array(),$using=array(),$join=array(), $showTable = true, $bindValues = array(), $forUpdateShare = null)
+	{
+		$query = $this->createSelectQuery($table,$fields,$where,$group_by,$order_by,$limit,$on,$using,$join,$forUpdateShare);
+		
+		return md5(serialize($bindValues)).$query;
+	}
+	
 	public function select($table,$fields='*',$where=null,$group_by=null,$order_by=null,$limit=null,$on=array(),$using=array(),$join=array(), $showTable = true, $bindValues = array(), $forUpdateShare = null)
 	{
 		$query = $this->createSelectQuery($table,$fields,$where,$group_by,$order_by,$limit,$on,$using,$join,$forUpdateShare);

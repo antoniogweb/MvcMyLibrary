@@ -155,8 +155,10 @@ class Cache_Db {
 	{
 		if (in_array($table, self::$cachedTables))
 		{
-			if (isset(self::$cachedQueries[md5($query)]))
-				return self::$cachedQueries[md5($query)];
+			$hash = md5($query);
+			
+			if (isset(self::$cachedQueries[$hash]))
+				return self::$cachedQueries[$hash];
 			else if (self::$cacheFolder)
 			{
 				if (self::$skipReadingCache)
@@ -164,13 +166,13 @@ class Cache_Db {
 				
 				$cacheFolderFull = rtrim(self::$cacheFolder,"/")."/".self::getCacheUnixTime();
 				
-				$fileName = md5($query).".txt";
+				$fileName = $hash.".txt";
 				
 				if (@is_file($cacheFolderFull."/".$fileName))
 				{
-					self::$cachedQueries[md5($query)] = unserialize(file_get_contents($cacheFolderFull."/".$fileName));
+					self::$cachedQueries[$hash] = unserialize(file_get_contents($cacheFolderFull."/".$fileName));
 					
-					return self::$cachedQueries[md5($query)];
+					return self::$cachedQueries[$hash];
 				}
 			}
 		}
@@ -182,6 +184,8 @@ class Cache_Db {
 	{
 		if (in_array($table, self::$cachedTables))
 		{
+			$hash = md5($query);
+			
 			if (self::$cacheFolder)
 			{
 				if (self::$skipWritingCache)
@@ -228,14 +232,14 @@ class Cache_Db {
 						}
 					}
 					
-					$fileName = md5($query).".txt";
+					$fileName = $hash.".txt";
 					
 					FilePutContentsAtomic($cacheFolderFull."/".$fileName, serialize($data));
-					self::$cachedQueries[md5($query)] = $data;
+					self::$cachedQueries[$hash] = $data;
 				}
 			}
 			else
-				self::$cachedQueries[md5($query)] = $data;
+				self::$cachedQueries[$hash] = $data;
 		}
 	}
 	

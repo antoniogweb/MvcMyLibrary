@@ -145,6 +145,7 @@ class Model_Tree extends Model_Base {
 		return implode(",",$processedFields);
 	}
 	
+	// return the signature of the query: sql query + data
 	public function signature()
 	{
 		return $this->getFields($this->select, "all", true, true);

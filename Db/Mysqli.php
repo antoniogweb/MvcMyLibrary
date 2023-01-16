@@ -24,10 +24,9 @@ if (!defined('EG')) die('Direct access not allowed!');
 
 //class to manage the database
 //singleton!
-class Db_Mysqli
+class Db_Mysqli extends Db_Generic
 {
 	use QueryLog;
-	use Db_Generic;
 	
 	private $autocommit = true;
 	private $transactionBatchSize = 100;
@@ -90,9 +89,10 @@ class Db_Mysqli
 		if (!@$this->db->set_charset($charset)) $this->charsetError = false;
 		
 		$this->charset = $this->db->character_set_name();
-
+		
+		$this->setLogger();
 	}
-
+	
 	//return the $this->db property
 	public function getDb()
 	{
@@ -255,9 +255,9 @@ class Db_Mysqli
 		$this->query = $query;
 		$this->queries[] = $query;
 		
-		$this->startLog();
+		$this->logger->startLog();
 		$ris = $this->db->query($query);
-		$this->endLog();
+		$this->logger->endLog($query);
 		if ($ris) {
 			
 			if (isset($group_by))
@@ -351,9 +351,9 @@ class Db_Mysqli
 		$this->query = $query;
 		$this->queries[] = $query;
 		
-		$this->startLog();
+		$this->logger->startLog();
 		$result = $this->db->query($query);
-		$this->endLog();
+		$this->logger->endLog($query);
 		
 		$data = $this->getData($result, $showTable);
 		
@@ -795,9 +795,9 @@ class Db_Mysqli
 		$this->query = $query;
 		$this->queries[] = $query;
 		
-		$this->startLog();
+		$this->logger->startLog();
 		$result = $this->db->query($query);
-		$this->endLog();
+		$this->logger->endLog($query);
 		if ($result === true)
 		{
 			return $forceSelect ? array() : true;

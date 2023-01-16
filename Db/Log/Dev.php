@@ -22,8 +22,8 @@
 
 if (!defined('EG')) die('Direct access not allowed!');
 
-trait QueryLog {
-	
+class Db_Log_Dev extends Db_Log_Generic
+{
 	public $startTime = 0;
 	public $endTime = 0;
 	
@@ -36,15 +36,19 @@ trait QueryLog {
 	{
 		$this->endTime = microtime(true);
 		
-		$queryTime = ($this->endTime - $this->startTime) / 1000;
+		$queryTime = ($this->endTime - $this->startTime);
 		
-		if ($queryTime > $this->queryTimeThresholdToLogInSeconds)
+		if ($queryTime > self::$queryTimeThresholdToLogInSeconds)
 		{
-			$this->queries[] = "QUERY TIME: ".$queryTime;
+			$this->writeLog($query);
+			$this->writeLog("QUERY TIME: ".$queryTime);
 		}
 	}
 	
-	public function startLogProd() {}
-	
-	public function endLogProd($query = "") {}
+	public function writeLog($string)
+	{
+		Files_Log::$logFolder = self::$absoluteLogPath."/".self::$logFolder;
+		$log = Files_Log::getInstance(self::$logFile);
+		$log->writeString($string);
+	}
 }

@@ -22,29 +22,9 @@
 
 if (!defined('EG')) die('Direct access not allowed!');
 
-trait QueryLog {
+class Db_Log_Prod extends Db_Log_Generic
+{
+	public function startLog() {}
 	
-	public $startTime = 0;
-	public $endTime = 0;
-	
-	public function startLog()
-	{
-		$this->startTime = microtime(true);
-	}
-	
-	public function endLog($query = "")
-	{
-		$this->endTime = microtime(true);
-		
-		$queryTime = ($this->endTime - $this->startTime) / 1000;
-		
-		if ($queryTime > $this->queryTimeThresholdToLogInSeconds)
-		{
-			$this->queries[] = "QUERY TIME: ".$queryTime;
-		}
-	}
-	
-	public function startLogProd() {}
-	
-	public function endLogProd($query = "") {}
+	public function endLog($query = "") {}
 }

@@ -22,29 +22,15 @@
 
 if (!defined('EG')) die('Direct access not allowed!');
 
-trait QueryLog {
+class Db_Log_Generic
+{
+	public static $queryTimeThresholdToLogInSeconds = 0.2;
+	public static $absoluteLogPath = null; // absolute path (se $logFolder below)
+	public static $logFolder = "Logs"; // folder where the log files are saved, the path is relative path to the $absoluteLogPath path (see above), 
+	public static $logFile = "long_queries.log";
 	
-	public $startTime = 0;
-	public $endTime = 0;
-	
-	public function startLog()
+	public function __construct()
 	{
-		$this->startTime = microtime(true);
+		self::$absoluteLogPath = ROOT;
 	}
-	
-	public function endLog($query = "")
-	{
-		$this->endTime = microtime(true);
-		
-		$queryTime = ($this->endTime - $this->startTime) / 1000;
-		
-		if ($queryTime > $this->queryTimeThresholdToLogInSeconds)
-		{
-			$this->queries[] = "QUERY TIME: ".$queryTime;
-		}
-	}
-	
-	public function startLogProd() {}
-	
-	public function endLogProd($query = "") {}
 }

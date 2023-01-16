@@ -24,10 +24,8 @@ if (!defined('EG')) die('Direct access not allowed!');
 
 //class to manage the database
 //singleton!
-class Db_PDOMysql
+class Db_PDOMysql extends Db_Generic
 {
-	use Db_Generic;
-	
 	private $autocommit = true;
 	private $transactionBatchSize = 100;
 	
@@ -89,7 +87,8 @@ class Db_PDOMysql
 		}
 		
 		$this->charset = $charset;
-
+		
+		$this->setLogger();
 	}
 
 	//return the $this->db property
@@ -245,6 +244,7 @@ class Db_PDOMysql
 		$this->query = $query;
 		$this->queries[] = $query . $this->bindedValuesString($binded);
 		
+		$this->logger->startLog();
 		if (empty($binded))
 			$ris = $stmt = $this->db->query($query);
 		else
@@ -252,7 +252,7 @@ class Db_PDOMysql
 			$stmt = $this->db->prepare($query);
 			$ris = $stmt->execute($binded);
 		}
-		
+		$this->logger->endLog($query);
 // 		$ris = $this->db->query($query);
 		if ($ris) {
 			
@@ -366,6 +366,7 @@ class Db_PDOMysql
 		
 		$this->query = $query;
 		
+		$this->logger->startLog();
 		if (empty($bindValues))
 		{
 			$result = $stmt = $this->db->query($query);
@@ -378,6 +379,7 @@ class Db_PDOMysql
 			
 			$this->queries[] = $query . $this->bindedValuesString($bindValues);
 		}
+		$this->logger->endLog($query);
 		
 		$data = $this->getData($stmt, $showTable);
 		
@@ -838,6 +840,8 @@ class Db_PDOMysql
 	{
 		$select = false;
 		
+		$this->logger->startLog();
+		
 		if (is_array($query))
 		{
 			$stmt = $this->db->prepare($query[0]);
@@ -859,6 +863,8 @@ class Db_PDOMysql
 			$this->query = $query;
 			$this->queries[] = $query;
 		}
+		
+		$this->logger->endLog($query);
 		
 		if ($select && $result)
 			return $this->getData($stmt, $showTable);

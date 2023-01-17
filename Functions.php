@@ -596,7 +596,9 @@ function arrayToAttributeString($array)
 	
 	foreach ($array as $k => $v)
 	{
-		$html .= " $k='$v' ";
+// 		$html .= " $k=\"$v\" ";
+		$html .= $k.'="'.$v.'"';
+		
 	}
 	
 	return $html;

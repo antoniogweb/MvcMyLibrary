@@ -29,8 +29,12 @@ class Db_Log_Generic
 	public static $logFolder = "Logs"; // folder where the log files are saved, the path is relative path to the $absoluteLogPath path (see above), 
 	public static $logFile = "long_queries.log";
 	
-	public function __construct()
+	protected $timer;
+	
+	public function __construct($timer = null)
 	{
 		self::$absoluteLogPath = ROOT;
+		
+		$this->timer = Factory_Timer::getInstance();
 	}
 }

@@ -27,7 +27,6 @@ if (!defined('EG')) die('Direct access not allowed!');
 class Db_Generic
 {
 	public $logger = null; // instance of Db_Log_Dev or Db_Log_Prod
-	public $enableQueryLog = false; // enable or not the query log on file
 	
 	public function createSelectQuery($table,$fields='*',$where=null,$group_by=null,$order_by=null,$limit=null,$on=array(),$using=array(),$join=array(), $forUpdateShare = null)
 	{

@@ -127,7 +127,7 @@ class Theme {
 		}
 	}
 	
-	public function render($cacheObj) {
+	public function render($cacheObj, $timerObj) {
 		extract($this->_data);
 		
 		if ($cacheObj->getInternalLoadChache() && $cacheObj->folder && $cacheObj->saveHtml)
@@ -135,6 +135,8 @@ class Theme {
 			$cacheObj->setData($this->_data);
 			ob_start();
 		}
+		
+		$timerObj->startTime("THEME_RENDERING", "THEME_RENDERING");
 		
 		foreach ($this->_viewFiles as $file) {
 			$path = $this->viewPath($file);
@@ -177,6 +179,8 @@ class Theme {
 				}
 			}
 		}
+		
+		$timerObj->endTime("THEME_RENDERING", "THEME_RENDERING");
 		
 		if ($cacheObj->getInternalLoadChache() && $cacheObj->folder && $cacheObj->saveHtml)
 		{

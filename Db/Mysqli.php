@@ -255,9 +255,10 @@ class Db_Mysqli extends Db_Generic
 		$this->query = $query;
 		$this->queries[] = $query;
 		
-		$this->logger->startLog();
+		$this->logger->startLog($query);
 		$ris = $this->db->query($query);
 		$this->logger->endLog($query);
+		
 		if ($ris) {
 			
 			if (isset($group_by))
@@ -291,7 +292,10 @@ class Db_Mysqli extends Db_Generic
 		$this->query = $query;
 		$this->queries[] = $query;
 		
+		$this->logger->startLog($query);
 		$result = $this->db->query($query);
+		$this->logger->endLog($query);
+		
 		if ($result)
 		{
 			$row = $result->fetch_array();
@@ -351,7 +355,7 @@ class Db_Mysqli extends Db_Generic
 		$this->query = $query;
 		$this->queries[] = $query;
 		
-		$this->logger->startLog();
+		$this->logger->startLog($query);
 		$result = $this->db->query($query);
 		$this->logger->endLog($query);
 		
@@ -795,9 +799,10 @@ class Db_Mysqli extends Db_Generic
 		$this->query = $query;
 		$this->queries[] = $query;
 		
-		$this->logger->startLog();
+		$this->logger->startLog($query);
 		$result = $this->db->query($query);
 		$this->logger->endLog($query);
+		
 		if ($result === true)
 		{
 			return $forceSelect ? array() : true;

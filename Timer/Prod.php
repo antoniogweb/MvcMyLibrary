@@ -22,35 +22,36 @@
 
 if (!defined('EG')) die('Direct access not allowed!');
 
-class Db_Log_Dev extends Db_Log_Generic
+class Timer_Prod
 {
-	public $startTime = 0;
-	public $endTime = 0;
+	use Timer_Generic;
 	
-	public function startLog($signature = "")
+	public $absoluteLogPath = null; // absolute path (se $logFolder below)
+	public $logFolder = "Logs"; // folder where the log files are saved, the path is relative path to the $absoluteLogPath path (see above), 
+	public $logFile = "application_times.log";
+	
+	private static $instance = null; //instance of this class
+	
+	private $times = [];
+	
+	private function __construct($absoluteLogPath = null)
 	{
-		$this->startTime = microtime(true);
-		$this->timer->startTime("QUERIES", $signature);
+		$this->setAbsolutePath($absoluteLogPath);
 	}
-	
-	public function endLog($signature = "")
+
+	public static function getInstance($absoluteLogPath = null)
 	{
-		$this->endTime = microtime(true);
-		$this->timer->endTime("QUERIES", $signature);
-		
-		$queryTime = ($this->endTime - $this->startTime);
-		
-		if ($queryTime > self::$queryTimeThresholdToLogInSeconds)
-		{
-			$this->writeLog($signature);
-			$this->writeLog("QUERY TIME: ".$queryTime);
+		if (!isset(self::$instance)) {
+			$className = __CLASS__;
+			self::$instance = new $className($absoluteLogPath,);
 		}
+		
+		return self::$instance;
 	}
 	
-	public function writeLog($string)
-	{
-		Files_Log::$logFolder = self::$absoluteLogPath."/".self::$logFolder;
-		$log = Files_Log::getInstance(self::$logFile);
-		$log->writeString($string);
-	}
+	public function startTime($name, $signature) {}
+	
+	public function endTime($name, $signature) {}
+	
+	public function writeLog() {}
 }

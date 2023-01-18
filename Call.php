@@ -457,7 +457,7 @@ function callHook()
 		if ($templateFlag)
 		{
 			if (!$cache->saved())
-				$dispatch->theme->render(Cache_Html::getInstance());
+				$dispatch->theme->render(Cache_Html::getInstance(), Factory_Timer::getInstance());
 		}
 
 	}
@@ -574,6 +574,13 @@ try {
 	if (!defined('APP_CONSOLE'))
 		checkRequestUriLength();
 	
+	// create the logger
+	$logProd =  defined("LOG_TIMES") ? false : true;
+	
+	$timer = Factory_Timer::getInstance($logProd,array(ROOT));
+	
+	$timer->startTime("APP","APP");
+	
 	//connect to the database
 	Factory_Db::getInstance(DATABASE_TYPE,array(HOST,USER,PWD,DB));
 	
@@ -624,6 +631,8 @@ try {
 	//call the main hook
 	if (!defined('APP_CONSOLE'))
 		callHook();
+	
+	$timer->endTime("APP","APP");
 	
 	//include the file containing the set of actions to carry out before ending application
 	if (file_exists(ROOT . DS . APPLICATION_PATH . DS . 'Hooks' . DS . 'BeforeEnding.php'))

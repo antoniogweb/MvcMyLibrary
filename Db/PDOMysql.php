@@ -244,7 +244,7 @@ class Db_PDOMysql extends Db_Generic
 		$this->query = $query;
 		$this->queries[] = $query . $this->bindedValuesString($binded);
 		
-		$this->logger->startLog();
+		$this->logger->startLog($hash);
 		if (empty($binded))
 			$ris = $stmt = $this->db->query($query);
 		else
@@ -252,7 +252,7 @@ class Db_PDOMysql extends Db_Generic
 			$stmt = $this->db->prepare($query);
 			$ris = $stmt->execute($binded);
 		}
-		$this->logger->endLog($query);
+		$this->logger->endLog($hash);
 // 		$ris = $this->db->query($query);
 		if ($ris) {
 			
@@ -290,6 +290,8 @@ class Db_PDOMysql extends Db_Generic
 		$this->query = $query;
 		$this->queries[] = $query;
 		
+		$this->logger->startLog($hash);
+		
 		if (empty($binded))
 			$result = $stmt = $this->db->query($query);
 		else
@@ -297,6 +299,8 @@ class Db_PDOMysql extends Db_Generic
 			$stmt = $this->db->prepare($query);
 			$result = $stmt->execute($binded);
 		}
+		
+		$this->logger->endLog($hash);
 		
 // 		$result = $this->db->query($query);
 		if ($result)
@@ -366,7 +370,7 @@ class Db_PDOMysql extends Db_Generic
 		
 		$this->query = $query;
 		
-		$this->logger->startLog();
+		$this->logger->startLog($hash);
 		if (empty($bindValues))
 		{
 			$result = $stmt = $this->db->query($query);
@@ -379,7 +383,7 @@ class Db_PDOMysql extends Db_Generic
 			
 			$this->queries[] = $query . $this->bindedValuesString($bindValues);
 		}
-		$this->logger->endLog($query);
+		$this->logger->endLog($hash);
 		
 		$data = $this->getData($stmt, $showTable);
 		
@@ -840,12 +844,14 @@ class Db_PDOMysql extends Db_Generic
 	{
 		$select = false;
 		
-		$this->logger->startLog();
-		
 		if (is_array($query))
 		{
+			$this->logger->startLog($query[0]);
+			
 			$stmt = $this->db->prepare($query[0]);
 			$result = $stmt->execute($query[1]);
+			
+			$this->logger->endLog($query[0]);
 			
 			if (strstr(strtolower($query[0]), 'select'))
 				$select = true;
@@ -855,7 +861,11 @@ class Db_PDOMysql extends Db_Generic
 		}
 		else
 		{
+			$this->logger->startLog($query);
+			
 			$result = $stmt = $this->db->query($query);
+			
+			$this->logger->endLog($query);
 			
 			if (strstr(strtolower($query), 'select'))
 				$select = true;
@@ -863,8 +873,6 @@ class Db_PDOMysql extends Db_Generic
 			$this->query = $query;
 			$this->queries[] = $query;
 		}
-		
-		$this->logger->endLog($query);
 		
 		if ($select && $result)
 			return $this->getData($stmt, $showTable);

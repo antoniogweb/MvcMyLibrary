@@ -22,35 +22,24 @@
 
 if (!defined('EG')) die('Direct access not allowed!');
 
-class Db_Log_Dev extends Db_Log_Generic
-{
-	public $startTime = 0;
-	public $endTime = 0;
+//class to create the database layer class
+class Factory_Timer {
+
+	private static $instance = null;
 	
-	public function startLog($signature = "")
+	//start the database connection
+	//$prod: true or false
+	//$arrayParams: array containing the $absolute log file path
+	public static function getInstance($prod = true, $arrayParams = array())
 	{
-		$this->startTime = microtime(true);
-		$this->timer->startTime("QUERIES", $signature);
-	}
-	
-	public function endLog($signature = "")
-	{
-		$this->endTime = microtime(true);
-		$this->timer->endTime("QUERIES", $signature);
+		if (isset(self::$instance))
+			return self::$instance;
 		
-		$queryTime = ($this->endTime - $this->startTime);
+		if ($prod)
+			self::$instance = call_user_func_array(array('Timer_Prod','getInstance'),$arrayParams);
+		else
+			self::$instance = call_user_func_array(array('Timer_Dev','getInstance'),$arrayParams);
 		
-		if ($queryTime > self::$queryTimeThresholdToLogInSeconds)
-		{
-			$this->writeLog($signature);
-			$this->writeLog("QUERY TIME: ".$queryTime);
-		}
-	}
-	
-	public function writeLog($string)
-	{
-		Files_Log::$logFolder = self::$absoluteLogPath."/".self::$logFolder;
-		$log = Files_Log::getInstance(self::$logFile);
-		$log->writeString($string);
+		return self::$instance;
 	}
 }

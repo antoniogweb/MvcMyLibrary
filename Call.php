@@ -408,7 +408,11 @@ function callHook()
 
 	if (class_exists($controller))
 	{
+		$timer = Factory_Timer::getInstance();
+		
+		$timer->startTime("CONSTRUCTOR","CONSTRUCTOR");
 		$dispatch = new $controller($model,$controllerName,$queryString, getApplicationName(), $action);
+		$timer->endTime("CONSTRUCTOR","CONSTRUCTOR");
 		
 		//pass the action to the controller object
 		$dispatch->action = $action;
@@ -447,7 +451,11 @@ function callHook()
 				$cache->load();
 			}
 			else
+			{
+				$timer->startTime("METHOD","METHOD");
 				call_user_func_array(array($dispatch,$action),$queryString);
+				$timer->endTime("METHOD","METHOD");
+			}
 		}
 		else
 		{
@@ -457,7 +465,7 @@ function callHook()
 		if ($templateFlag)
 		{
 			if (!$cache->saved())
-				$dispatch->theme->render(Cache_Html::getInstance(), Factory_Timer::getInstance());
+				$dispatch->theme->render($cache, $timer);
 		}
 
 	}

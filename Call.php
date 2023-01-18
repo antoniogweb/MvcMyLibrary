@@ -632,8 +632,6 @@ try {
 	if (!defined('APP_CONSOLE'))
 		callHook();
 	
-	$timer->endTime("APP","APP");
-	
 	//include the file containing the set of actions to carry out before ending application
 	if (file_exists(ROOT . DS . APPLICATION_PATH . DS . 'Hooks' . DS . 'BeforeEnding.php'))
 		Hooks::load(ROOT . DS . APPLICATION_PATH . DS . 'Hooks' . DS . 'BeforeEnding.php');

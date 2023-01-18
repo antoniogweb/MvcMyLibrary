@@ -43,7 +43,7 @@ trait Timer_Generic
 			foreach ($struct as $signature => $values)
 			{
 				if (isset($values["time"]))
-					$totals[$name]["time"] += ($values["time"]*1000);
+					$totals[$name]["time"] += $values["time"];
 				
 				$totals[$name]["number"] += 1;
 			}

@@ -43,7 +43,7 @@ class Timer_Prod
 	{
 		if (!isset(self::$instance)) {
 			$className = __CLASS__;
-			self::$instance = new $className($absoluteLogPath,);
+			self::$instance = new $className($absoluteLogPath);
 		}
 		
 		return self::$instance;

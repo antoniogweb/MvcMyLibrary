@@ -55,7 +55,7 @@ class Cache_Caller_Cache
 	{
 		$className = get_class($obj);
 		
-		$hash = md5($className.$methodName.serialize($args));
+		$hash = md5(Params::$lang.$className.$methodName.serialize($args));
 		
 		if (isset($this->methodCalls[$hash]))
 			return $this->methodCalls[$hash];

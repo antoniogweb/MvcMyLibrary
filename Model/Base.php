@@ -494,10 +494,10 @@ abstract class Model_Base
 								$this->bindedValues[] = "%".addBackSlashLike($value);
 								break;
 							case "nin":
-								$newValue  = $fieldName . " not in ($placeholders) ";
+								$newValue  = $placeholders ? $fieldName . " not in ($placeholders) " : null;
 								break;
 							case "in":
-								$newValue  = $fieldName . " in ($placeholders) ";
+								$newValue  = $placeholders ? $fieldName . " in ($placeholders) " : null;
 								break;
 							case "lt":
 								$newValue  = $fieldName . " < ? ";

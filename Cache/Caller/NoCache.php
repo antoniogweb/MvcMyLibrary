@@ -24,6 +24,17 @@ if (!defined('EG')) die('Direct access not allowed!');
 
 class Cache_Caller_NoCache
 {
+	public function __construct($saveToDisk = false) {}
+	
+	public function getMethodCalls()
+	{
+		return array();
+	}
+	
+	public function setSaveToDisk($saveToDisk) {}
+	
+	public function setMethodCalls($methodCalls) {}
+	
 	public function callMethod($obj, $methodName, $args)
 	{
 		return call_user_func_array(array($obj, $methodName), $args);

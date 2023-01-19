@@ -630,13 +630,13 @@ function createFolderFull($relativePath, $basePath = null, $index = true, $deny 
 		if (@!is_dir($path))
 			@mkdir($path);
 		
-		if ($index)
+		if ($index && !@is_file($path . "/index.html"))
 		{
 			$fp = @fopen($path . "/index.html", 'w');
 			fclose($fp);
 		}
 		
-		if ($deny)
+		if ($deny && !@is_file($path . "/.htaccess"))
 		{
 			$fp = @fopen($path . "/.htaccess", 'w');
 			fwrite($fp, 'deny from all');

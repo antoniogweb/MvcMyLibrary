@@ -24,28 +24,24 @@ if (!defined('EG')) die('Direct access not allowed!');
 
 class Cache_Functions
 {
-// 	private static $methodsToCache = [];
-	
 	private static $instance = null; //instance of this class
 	private $caller = null; // instance of Cache_Caller_NoCache or Cache_Caller_Cache
 	
     private $objs = []; //instances of objects passed by means of ::load()
     private $lastClass = null; // it contains the last class loaded
-//     private $methodCalls = []; // it contains all the calls and the results
-    
-	private function __construct($caller = null)
-	{
-		if (isset($caller))
-			$this->caller = $caller;
-		else
-			$this->caller = new Cache_Caller_NoCache();
-	}
+	
+	private function __construct() {}
 	
 	public static function getInstance($caller = null)
 	{
 		if (!isset(self::$instance)) {
 			$className = __CLASS__;
-			self::$instance = new $className($caller);
+			self::$instance = new $className();
+			
+			if (isset($caller))
+				self::$instance->caller = $caller;
+			else
+				self::$instance->caller = new Cache_Caller_NoCache(false);
 		}
 		
 		return self::$instance;
@@ -68,4 +64,9 @@ class Cache_Functions
 		else
 			throw new Exception('Error in <b>'.__METHOD__.'</b>: function <b>'.$methodName.'</b> does not exists.');
     }
+    
+    public function setSaveToDisk($saveToDisk)
+	{
+		$this->caller->setSaveToDisk($saveToDisk);
+	}
 }

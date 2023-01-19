@@ -24,8 +24,32 @@ if (!defined('EG')) die('Direct access not allowed!');
 
 class Cache_Caller_Cache
 {
-	private static $methodsToCache = [];
+	public $absoluteLogPath = null; // absolute path (se $logFolder below)
+	public $logFolder = "Logs/CacheMethods"; // folder where the log files are saved, the path is relative path to the $absoluteLogPath path (see above), 
+	
 	private $methodCalls = []; // it contains all the calls and the results
+	private $saveToDisk = false; // if it has to save the results on cached files
+	
+	public function __construct($saveToDisk = false)
+	{
+		$this->absoluteLogPath = ROOT;
+		$this->saveToDisk = $saveToDisk;
+	}
+	
+	public function setSaveToDisk($saveToDisk)
+	{
+		$this->saveToDisk = $saveToDisk;
+	}
+	
+	public function getMethodCalls()
+	{
+		return $this->methodCalls;
+	}
+	
+	public function setMethodCalls($methodCalls)
+	{
+		$this->methodCalls = $methodCalls;
+	}
 	
 	public function callMethod($obj, $methodName, $args)
 	{
@@ -35,11 +59,29 @@ class Cache_Caller_Cache
 		
 		if (isset($this->methodCalls[$hash]))
 			return $this->methodCalls[$hash];
+		else if ($this->saveToDisk && @is_file($this->absoluteLogPath."/".$this->logFolder."/$hash.log"))
+		{
+			$this->methodCalls[$hash] = unserialize(file_get_contents($this->absoluteLogPath."/".$this->logFolder."/$hash.log"));
+			return $this->methodCalls[$hash];
+		}
 		
 		$res = call_user_func_array(array($obj, $methodName), $args);
 		
 		$this->methodCalls[$hash] = $res;
 		
+		$this->saveCallsToFile($hash, $res);
+		
 		return $res;
 	}
+	
+	public function saveCallsToFile($hash, $res)
+    {
+		if (!$this->saveToDisk)
+			return;
+		
+		if (!@is_dir($this->absoluteLogPath."/".$this->logFolder))
+			createFolderFull($this->logFolder, $this->absoluteLogPath);
+		
+		FilePutContentsAtomic($this->absoluteLogPath."/".$this->logFolder."/".$hash.".log", serialize($res));
+    }
 }

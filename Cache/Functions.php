@@ -22,44 +22,50 @@
 
 if (!defined('EG')) die('Direct access not allowed!');
 
-class Timer_Dev
+class Cache_Functions
 {
-	use Timer_Generic;
-	
-	public $absoluteLogPath = null; // absolute path (se $logFolder below)
-	public $logFolder = "Logs"; // folder where the log files are saved, the path is relative path to the $absoluteLogPath path (see above), 
-	public $logFile = "application_times";
+// 	private static $methodsToCache = [];
 	
 	private static $instance = null; //instance of this class
+	private $caller = null; // instance of Cache_Caller_NoCache or Cache_Caller_Cache
 	
-	private $times = [];
-	
-	private function __construct($absoluteLogPath = null)
+    private $objs = []; //instances of objects passed by means of ::load()
+    private $lastClass = null; // it contains the last class loaded
+//     private $methodCalls = []; // it contains all the calls and the results
+    
+	private function __construct($caller = null)
 	{
-		$this->setAbsolutePath($absoluteLogPath);
+		if (isset($caller))
+			$this->caller = $caller;
+		else
+			$this->caller = new Cache_Caller_NoCache();
 	}
-
-	public static function getInstance($absoluteLogPath = null)
+	
+	public static function getInstance($caller = null)
 	{
 		if (!isset(self::$instance)) {
 			$className = __CLASS__;
-			self::$instance = new $className($absoluteLogPath);
+			self::$instance = new $className($caller);
 		}
 		
 		return self::$instance;
 	}
 	
-	public function startTime($name, $signature)
+	public function load($model)
 	{
-		$this->times[$name][md5($signature)]["query"] = $signature;
-		$this->times[$name][md5($signature)]["start"] =  microtime(true);
+		$className = $this->lastClass = get_class($model);
+		
+		if (!isset($this->objs[$className]))
+			$this->objs[$className] = $model;
+		
+		return self::$instance;
 	}
 	
-	public function endTime($name, $signature)
+	public function __call($methodName, $args)
 	{
-		$this->times[$name][md5($signature)]["end"] = microtime(true);
-		
-		if (isset($this->times[$name][md5($signature)]["start"]))
-			$this->times[$name][md5($signature)]["time"] = $this->times[$name][md5($signature)]["end"] - $this->times[$name][md5($signature)]["start"];
-	}
+		if ($this->lastClass)
+			return $this->caller->callMethod($this->objs[$this->lastClass], $methodName, $args);
+		else
+			throw new Exception('Error in <b>'.__METHOD__.'</b>: function <b>'.$methodName.'</b> does not exists.');
+    }
 }

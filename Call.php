@@ -635,7 +635,7 @@ try {
 
 	//verify that register globals is not active
 	checkRegisterGlobals();
-
+	
 	//call the main hook
 	if (!defined('APP_CONSOLE'))
 		callHook();

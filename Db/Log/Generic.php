@@ -27,7 +27,7 @@ class Db_Log_Generic
 	public static $queryTimeThresholdToLogInSeconds = 0.2;
 	public static $absoluteLogPath = null; // absolute path (se $logFolder below)
 	public static $logFolder = "Logs"; // folder where the log files are saved, the path is relative path to the $absoluteLogPath path (see above), 
-	public static $logFile = "long_queries.log";
+	public static $logFile = "long_queries";
 	
 	protected $timer;
 	

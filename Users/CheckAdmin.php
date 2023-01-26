@@ -557,7 +557,7 @@ class Users_CheckAdmin {
 	{
 		$this->checkStatus();
 		
-		if ($this->status['status'] === 'logged' && isset($this->uid) && isset($_GET[$this->_params['cookie_name']]) && !isset($_COOKIE[$this->_params['cookie_name']]) && Params::$allowSessionIdFromGet)
+		if ($this->status['status'] === 'logged' && isset($this->uid) && isset($_GET[$this->_params['cookie_name']]) && !isset($_COOKIE[$this->_params['cookie_name']]) && Params::$allowSessionIdFromGet && (string)$_GET[$this->_params['cookie_name']] === (string)$this->uid)
 		{
 			$expirationTime = $this->_params['cookie_permanent'] ? time() + $this->_params['session_expire'] : 0;
 			

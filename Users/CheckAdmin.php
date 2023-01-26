@@ -553,6 +553,18 @@ class Users_CheckAdmin {
 			$this->users->db->commit();
 	}
 	
+	public function setCookieFromGetToken()
+	{
+		$this->checkStatus();
+		
+		if ($this->status['status'] === 'logged' && isset($this->uid) && isset($_GET[$this->_params['cookie_name']]) && !isset($_COOKIE[$this->_params['cookie_name']]) && Params::$allowSessionIdFromGet)
+		{
+			$expirationTime = $this->_params['cookie_permanent'] ? time() + $this->_params['session_expire'] : 0;
+			
+			Cookie::set($this->_params['cookie_name'], $this->uid, $expirationTime, $this->_params['cookie_path'], true, 'Lax');
+		}
+	}
+	
 	public function login($user, $pwd, $force = false)
 	{
 		$user = sanitizeAll($user);

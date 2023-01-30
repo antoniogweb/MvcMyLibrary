@@ -224,6 +224,8 @@ function passwordhash($value)
 {
 	if (defined('PASSWORD_PEPPER'))
 		$value = hash_hmac("sha256", $value, PASSWORD_PEPPER);
+	else if (defined('PASSWORD_PEPPER_FUNCTION'))
+		$value = call_user_func(PASSWORD_PEPPER_FUNCTION, $value);
 	
 	return password_hash($value, PASSWORD_DEFAULT);
 }
@@ -238,6 +240,8 @@ function passwordverify($pass, $hash)
 	{
 		if (defined('PASSWORD_PEPPER'))
 			$pass = hash_hmac("sha256", $pass, PASSWORD_PEPPER);
+		else if (defined('PASSWORD_PEPPER_FUNCTION'))
+			$pass = call_user_func(PASSWORD_PEPPER_FUNCTION, $pass);
 		
 		return password_verify($pass, $hash);
 	}

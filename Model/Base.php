@@ -2664,10 +2664,13 @@ abstract class Model_Base
 	{
 		$whereClause = $where[0];
 		
-		foreach ($where[1] as $v)
-		{
-			$whereClause = preg_replace('/\?/', "'$v'", $whereClause, 1);
-		}
+		$whereClause = str_replace('?', " '%s' ", $whereClause);
+		$whereClause = vsprintf($whereClause, $where[1]);
+		
+// 		foreach ($where[1] as $v)
+// 		{
+// 			$whereClause = preg_replace('/\?/', "'$v'", $whereClause, 1);
+// 		}
 		
 		return $whereClause;
 	}

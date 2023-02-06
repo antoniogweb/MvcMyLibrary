@@ -382,14 +382,22 @@ class Db_Mysqli extends Db_Generic
 		if ($result) {
 			$fieldsNumber = $result->field_count;
 			
+			$infoArray = [];
+			
+			for ($i = 0;$i < $fieldsNumber;$i++)
+			{
+				$infoArray[$i] = $result->fetch_field_direct($i);
+			}
+			
 			if ($showTable)
 			{
 				while ($row = $result->fetch_array(MYSQLI_NUM)) {
 					for ($i = 0;$i < $fieldsNumber;$i++) {
-						$finfo = $result->fetch_field_direct($i);
-						$tableName = $finfo->table;
+// 						$finfo = $result->fetch_field_direct($i);
+// 						$finfo = $infoArray[$i];
+						$tableName = $infoArray[$i]->table;
 						if (strcmp($tableName,'') === 0) $tableName = Params::$aggregateKey;
-						$fieldName = $finfo->name;
+						$fieldName = $infoArray[$i]->name;
 						$temp[$tableName][$fieldName] = $row[$i];
 					}
 					array_push($data,$temp);
@@ -399,8 +407,9 @@ class Db_Mysqli extends Db_Generic
 			{
 				while ($row = $result->fetch_array(MYSQLI_NUM)) {
 					for ($i = 0;$i < $fieldsNumber;$i++) {
-						$finfo = $result->fetch_field_direct($i);
-						$fieldName = $finfo->name;
+// 						$finfo = $result->fetch_field_direct($i);
+// 						$finfo = $infoArray[$i];
+						$fieldName = $infoArray[$i]->name;
 						$temp[$fieldName] = $row[$i];
 					}
 					array_push($data,$temp);

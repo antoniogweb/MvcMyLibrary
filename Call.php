@@ -429,6 +429,7 @@ function callHook()
 		$templateFlag= true;
 		
 		$cache = Cache_Html::getInstance();
+		$cache->baseUrl = rtrim(Url::getRoot(),"/");
 		$dispatch->setCacheParameters();
 		$cache->currPage = $dispatch->currPage;
 		
@@ -461,13 +462,13 @@ function callHook()
 		{
 			$templateFlag= false;
 		}
-
+		
 		if ($templateFlag)
 		{
 			if (!$cache->saved())
 				$dispatch->theme->render($cache, $timer);
 		}
-
+		
 	}
 	else
 	{

@@ -29,11 +29,13 @@ class Cache_Caller_Cache
 	
 	private $methodCalls = []; // it contains all the calls and the results
 	private $saveToDisk = false; // if it has to save the results on cached files
+	private $maxNumberOfFilesCached = 0; // if 0, there is no limit
 	
-	public function __construct($saveToDisk = false)
+	public function __construct($saveToDisk = false, $maxNumberOfFilesCached = 0)
 	{
 		$this->absoluteLogPath = ROOT;
 		$this->saveToDisk = $saveToDisk;
+		$this->maxNumberOfFilesCached = $maxNumberOfFilesCached;
 	}
 	
 	public function setSaveToDisk($saveToDisk)
@@ -74,6 +76,21 @@ class Cache_Caller_Cache
 		return $res;
 	}
 	
+	// check the max number of files
+	public function checkNumberOfFiles()
+	{
+		if ($this->maxNumberOfFilesCached)
+		{
+			$iterator = new FilesystemIterator($this->absoluteLogPath."/".$this->logFolder, FilesystemIterator::SKIP_DOTS);
+			$numberOfFilesCached = iterator_count($iterator);
+			
+			if ($numberOfFilesCached > $this->maxNumberOfFilesCached)
+				return false;
+		}
+		
+		return true;
+	}
+	
 	public function saveCallsToFile($hash, $res)
     {
 		if (!$this->saveToDisk)
@@ -81,6 +98,9 @@ class Cache_Caller_Cache
 		
 		if (!@is_dir($this->absoluteLogPath."/".$this->logFolder))
 			createFolderFull($this->logFolder, $this->absoluteLogPath);
+		
+		if (!$this->checkNumberOfFiles())
+			return;
 		
 		FilePutContentsAtomic($this->absoluteLogPath."/".$this->logFolder."/".$hash.".log", serialize($res));
     }

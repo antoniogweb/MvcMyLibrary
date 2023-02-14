@@ -222,10 +222,12 @@ function strip_tagsDeep($value) {
 
 function passwordhash($value)
 {
-	if (defined('PASSWORD_PEPPER'))
-		$value = hash_hmac("sha256", $value, PASSWORD_PEPPER);
+	if (defined('PASSWORD_PEPPER_FUNCTION') && defined('PASSWORD_PEPPER'))
+		$value = call_user_func(PASSWORD_PEPPER_FUNCTION, PASSWORD_PEPPER.$value);
 	else if (defined('PASSWORD_PEPPER_FUNCTION'))
 		$value = call_user_func(PASSWORD_PEPPER_FUNCTION, $value);
+	else if (defined('PASSWORD_PEPPER'))
+		$value = hash_hmac("sha256", $value, PASSWORD_PEPPER);
 	
 	return password_hash($value, PASSWORD_DEFAULT);
 }
@@ -238,10 +240,12 @@ function passwordverify($pass, $hash)
 {
 	if (PASSWORD_HASH == "passwordhash")
 	{
-		if (defined('PASSWORD_PEPPER'))
-			$pass = hash_hmac("sha256", $pass, PASSWORD_PEPPER);
+		if (defined('PASSWORD_PEPPER_FUNCTION') && defined('PASSWORD_PEPPER'))
+			$pass = call_user_func(PASSWORD_PEPPER_FUNCTION, PASSWORD_PEPPER.$pass);
 		else if (defined('PASSWORD_PEPPER_FUNCTION'))
 			$pass = call_user_func(PASSWORD_PEPPER_FUNCTION, $pass);
+		else if (defined('PASSWORD_PEPPER'))
+			$pass = hash_hmac("sha256", $pass, PASSWORD_PEPPER);
 		
 		return password_verify($pass, $hash);
 	}

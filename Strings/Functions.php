@@ -25,18 +25,21 @@ if (!defined('EG')) die('Direct access not allowed!');
 
 function eg_strlen($string)
 {
+	$string = nullToBlank($string);
 	return Params::$mbStringLoaded === true ? mb_strlen($string,DEFAULT_CHARSET) : strlen($string);
 }
 
 
 function eg_strtoupper($string)
 {
+	$string = nullToBlank($string);
 	return Params::$mbStringLoaded === true ? mb_strtoupper($string,DEFAULT_CHARSET) : strtoupper($string);
 }
 
 
 function eg_strtolower($string)
 {
+	$string = nullToBlank($string);
 	return Params::$mbStringLoaded === true ? mb_strtolower($string,DEFAULT_CHARSET) : strtolower($string);
 }
 

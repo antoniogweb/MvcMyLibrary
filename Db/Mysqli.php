@@ -660,7 +660,7 @@ class Db_Mysqli extends Db_Generic
 
 			for ($i=0;$i<count($fields);$i++) {
 				
-				if ((!defined('NEW_WHERE_CLAUSE_STYLE') or !NEW_WHERE_CLAUSE_STYLE) && !Params::$newWhereClauseStyle) $values[$i] = str_replace(Params::$cleanSymbol,"",$values[$i]);
+				if ((!defined('NEW_WHERE_CLAUSE_STYLE') or !NEW_WHERE_CLAUSE_STYLE) && !Params::$newWhereClauseStyle) $values[$i] = str_replace(Params::$cleanSymbol,"",nullToBlank($values[$i]));
 
 				$values[$i] = '"'.$values[$i].'"';
 				

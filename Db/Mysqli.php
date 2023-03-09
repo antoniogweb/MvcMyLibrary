@@ -337,6 +337,11 @@ class Db_Mysqli extends Db_Generic
 		return $this->getMath('AVG',$table,$field,$where,$group_by,$on,$using,$join);
 	}
 	
+	public function queryStruct($table,$fields='*',$where=null,$group_by=null,$order_by=null,$limit=null,$on=array(),$using=array(),$join=array(), $showTable = true, $bindValues = array(), $forUpdateShare = null)
+	{
+		return array(rtrim($this->signature($table,$fields,$where,$group_by,$order_by,$limit,$on,$using,$join,$forUpdateShare),";"),array());
+	}
+	
 	public function signature($table,$fields='*',$where=null,$group_by=null,$order_by=null,$limit=null,$on=array(),$using=array(),$join=array(), $showTable = true, $bindValues = array(), $forUpdateShare = null)
 	{
 		$query = $this->createSelectQuery($table,$fields,$where,$group_by,$order_by,$limit,$on,$using,$join,$forUpdateShare);

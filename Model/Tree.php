@@ -151,12 +151,18 @@ class Model_Tree extends Model_Base {
 		return $this->getFields($this->select, "all", true, true);
 	}
 	
+	// return the struct of the query: sql query + data
+	public function queryStruct()
+	{
+		return $this->getFields($this->select, "all", true, false, true);
+	}
+	
 	//method to get the values of the selected fields
 	//it walks the tree by means of a join query
 	//$fields: the fields that have to be excracted from the tableName
 	//$showTable: if the table array level has to be filled
 	//$returnSignature: if it has only to return the signature (query + data)
-	public function getFields($fields = '',$choice = 'all', $showTable = true, $returnSignature = false)
+	public function getFields($fields = '',$choice = 'all', $showTable = true, $returnSignature = false, $returnQuery = false)
 	{
 		$elements = $this->treeQueryElements($this->_tablesArray[0],$choice);
 		
@@ -179,6 +185,9 @@ class Model_Tree extends Model_Base {
 		
 		if ($returnSignature)
 			return $this->db->signature($elements['tables'],$queryFields,$elements['where'],$this->groupBy,$this->orderBy,$this->limit,$elements['on'],$this->using,$this->join, $showTable, $elements['binded'],$this->forUpdateShare);
+		
+		if ($returnQuery)
+			return $this->db->queryStruct($elements['tables'],$queryFields,$elements['where'],$this->groupBy,$this->orderBy,$this->limit,$elements['on'],$this->using,$this->join, $showTable, $elements['binded'],$this->forUpdateShare);
 		
 		$row = $this->db->select($elements['tables'],$queryFields,$elements['where'],$this->groupBy,$this->orderBy,$this->limit,$elements['on'],$this->using,$this->join, $showTable, $elements['binded'],$this->forUpdateShare);
 		

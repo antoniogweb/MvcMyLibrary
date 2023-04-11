@@ -58,7 +58,9 @@ class Image_Gd_Thumbnail
 			'useCache'		=>	false,
 			'forceToFormat'	=>	null, // if null, keet the same output format (it can be jpeg or png)
 			'jpegImgQuality'	=>	self::$defaultJpegImgQuality, // the default JPEG quality
-			'imageCreateFunction'	=>	'imagecreatetruecolor',
+			'imageCreateFunctionJpeg'	=>	'imagecreatetruecolor',
+			'imageCreateFunctionPng'	=>	'imagecreatetruecolor',
+			'imageCreateFunctionGif'	=>	'imagecreatetruecolor',
 		);
 
 		//set the $this->params array
@@ -341,11 +343,11 @@ class Image_Gd_Thumbnail
 					}
 				}
 			}
-
+			
 			//temp image
-			if ($this->params["imageCreateFunction"] == "imagecreatetruecolor")
+			if ($this->params["imageCreateFunction".ucfirst($type)] == "imagecreatetruecolor")
 				$tmpImg = imagecreatetruecolor($backWidth, $backHeight);
-			else if ($this->params["imageCreateFunction"] == "imagecreate")
+			else if ($this->params["imageCreateFunction".ucfirst($type)] == "imagecreate")
 				$tmpImg = imagecreate($backWidth, $backHeight);
 			else
 				$tmpImg = imagecreatetruecolor($backWidth, $backHeight);

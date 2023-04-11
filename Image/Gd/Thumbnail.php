@@ -61,6 +61,9 @@ class Image_Gd_Thumbnail
 			'imageCreateFunctionJpeg'	=>	'imagecreatetruecolor',
 			'imageCreateFunctionPng'	=>	'imagecreatetruecolor',
 			'imageCreateFunctionGif'	=>	'imagecreatetruecolor',
+			'imageTrueColorToPaletteJpeg'	=>	null,
+			'imageTrueColorToPalettePng'	=>	null,
+			'imageTrueColorToPaletteGif'	=>	null,
 		);
 
 		//set the $this->params array
@@ -394,6 +397,10 @@ class Image_Gd_Thumbnail
 				imagecopyresized($tmpImg, $img, $xDst, $yDst, $xSrc, $ySrc,$newWidth, $newHeight, $width, $height);
 			}
 			imagedestroy($img);
+			
+			if ($this->params["imageTrueColorToPalette".ucfirst($type)])
+				imagetruecolortopalette($tmpImg, false, $this->params["imageTrueColorToPalette".ucfirst($type)]);
+			
 			$img = $tmpImg;
 
 			if (!function_exists($this->params['function']))

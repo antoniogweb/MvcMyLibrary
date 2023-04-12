@@ -154,7 +154,9 @@ class Helper_Menu extends Helper_Html
 								}
 							}
 							
-							$qString = !empty($qStringArray) ? "&".implode("&",$qStringArray) : "";
+							$qStringFirst = Params::$rewriteStatusVariables ? "?" : "&";
+							$qString = !empty($qStringArray) ? $qStringFirst.implode("&",$qStringArray) : "";
+// 							$qString = !empty($qStringArray) ? "&".implode("&",$qStringArray) : "";
 							
 							$viewStatus = Url::createUrl($this->viewArgs);
 						}

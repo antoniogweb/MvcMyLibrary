@@ -2664,8 +2664,20 @@ abstract class Model_Base
 	{
 		$whereClause = $where[0];
 		
+		$conToken = false;
+		
+		if (strstr($whereClause,"%"))
+		{
+			$token = randomToken(20);
+			$whereClause = str_replace("%",$token,$whereClause);
+			$conToken = true;
+		}
+		
 		$whereClause = str_replace('?', " '%s' ", $whereClause);
 		$whereClause = vsprintf($whereClause, $where[1]);
+		
+		if ($conToken)
+			$whereClause = str_replace($token,"%",$whereClause);
 		
 // 		foreach ($where[1] as $v)
 // 		{

@@ -85,7 +85,7 @@ class Image_Gd_Captcha
 			$yposFixed = (int)(($this->params['boxHeight'])/2);
 			$ypos = $this->params['align'] === true ? $yposFixed : $yposFixed + mt_rand(0,10);
 			$charHeight = $this->params['charHeight'];
-			imagettftext($img,$charHeight + rand(0,8),$angle,($i+0.3)*$space,$ypos,$color,$fontPath,$char);
+			imagettftext($img,$charHeight + rand(0,8),$angle,(int)(($i+0.3)*$space),$ypos,$color,$fontPath,$char);
 		}
 
 		$noiseColor = imagecolorallocate($img, mt_rand(125,255), mt_rand(125,255), mt_rand(125,255));

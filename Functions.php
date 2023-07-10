@@ -325,7 +325,7 @@ function wrap($string,$tag_class) {#wrap the string with the tag and its class
 //check that $date is a ISO date (YYYY-MM-DD)
 function checkIsoDate($date)
 {
-	if (preg_match('/^[0-9]{4}\-[0-9]{2}\-[0-9]{2}$/',$date))
+	if (preg_match('/^[0-9]{4}\-[0-9]{2}\-[0-9]{2}$/',(string)$date))
 	{
 		$dateArray = explode('-',$date);
 		if ((int)$dateArray[1] <= 12 and (int)$dateArray[1] >= 1 )

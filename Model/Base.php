@@ -407,7 +407,7 @@ abstract class Model_Base
 	{
 		$regExpr = '/^('.implode("|",Params::$whereClauseTransformSymbols).')\:(.*)$/';
 		
-		if (preg_match($regExpr,$string,$matches))
+		if (preg_match($regExpr,nullToBlank($string),$matches))
 		{
 			if (function_exists("wc".$matches[1]))
 			{
@@ -690,9 +690,9 @@ abstract class Model_Base
 					{
 						$regExpr = '/^('.implode("|",Params::$whereClauseTransformSymbols).')\:('.Params::$nullQueryValue.')$/';
 						
-						if (Params::$nullQueryValue === false or (strcmp($value,Params::$nullQueryValue) !== 0 and !preg_match($regExpr,$value)))
+						if (Params::$nullQueryValue === false or (strcmp(nullToBlank($value),Params::$nullQueryValue) !== 0 and !preg_match($regExpr,nullToBlank($value))))
 						{
-							$value = $this->prepareWhereClause($value);
+							$value = $this->prepareWhereClause(nullToBlank($value));
 							
 							foreach (params::$whereClauseSymbolArray as $symbol)
 							{

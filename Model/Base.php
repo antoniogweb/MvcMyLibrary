@@ -1702,6 +1702,8 @@ abstract class Model_Base
 				throw new Exception('error in method <b>'.__METHOD__.'</b> : <b>'.$errString.'['.$queryType.']</b> has to be an associative array');
 			}
 			
+			$errorCount = 0;
+			
 			foreach ($conditions[$queryType] as $key => $values)
 			{
 
@@ -1752,10 +1754,19 @@ abstract class Model_Base
 					
 					$this->result = false;
 					$this->queryResult = false;
-					return false;
+					$errorCount++;
+					
+					if (Params::$exitAtFirstFailedValidation)
+						return false;
 				}
 			}
-			return true;
+			
+			if (Params::$exitAtFirstFailedValidation)
+				return true;
+			else if ($errorCount)
+				return false;
+			else
+				return true;
 		} else {
 			return true;
 		}

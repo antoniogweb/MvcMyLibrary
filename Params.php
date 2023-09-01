@@ -159,6 +159,9 @@ class Params
 	// define the array of data to validate
 	public static $arrayToValidate = null;
 	
+	// if true, the validation function exists at the first failed validation, otherwise it continues until the end
+	public static $exitAtFirstFailedValidation = true;
+	
 	// the function to be used ny helper and other components
 	public static $translatorFunction = null;
 	

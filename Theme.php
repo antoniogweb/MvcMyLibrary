@@ -112,13 +112,13 @@ class Theme {
 		//find the View subfolder where to look for view files
 		$subfolder = isset(Params::$viewSubfolder) ? Params::$viewSubfolder . DS : null;
 		
-		if (isset($this->application) and file_exists(ROOT . DS . APPLICATION_PATH . DS . "Apps" . DS . ucfirst($this->application). DS . 'Views' . DS .$subfolder. ucwords($this->controller) . DS . $file . '.php'))
+		if (isset($this->application) and file_exists(ROOT . DS . APPLICATION_PATH . DS . "Apps" . DS . ucfirst($this->application). DS . 'Views' . DS . ucwords($this->controller) . DS . $file . '.php'))
 		{
-			return ROOT . DS . APPLICATION_PATH . DS . "Apps" . DS . ucfirst($this->application). DS . 'Views' . DS . $subfolder. ucwords($this->controller) . DS . $file . '.php';
+			return ROOT . DS . APPLICATION_PATH . DS . "Apps" . DS . ucfirst($this->application). DS . 'Views' . DS .  ucwords($this->controller) . DS . $file . '.php';
 		}
-		else if (isset($this->application) and file_exists(ROOT . DS . APPLICATION_PATH . DS . "Apps" . DS . ucfirst($this->application). DS . 'Views' . DS . $subfolder. $file . '.php'))
+		else if (isset($this->application) and file_exists(ROOT . DS . APPLICATION_PATH . DS . "Apps" . DS . ucfirst($this->application). DS . 'Views' . DS . $file . '.php'))
 		{
-			return ROOT . DS . APPLICATION_PATH . DS . "Apps" . DS . ucfirst($this->application). DS . 'Views' . DS .$subfolder. $file . '.php';
+			return ROOT . DS . APPLICATION_PATH . DS . "Apps" . DS . ucfirst($this->application). DS . 'Views' . DS . $file . '.php';
 		}
 		else if (file_exists(ROOT . DS . APPLICATION_PATH . DS . 'Views' . DS .$subfolder. ucwords($this->controller) . DS . $file . '.php')) {
 			return ROOT . DS . APPLICATION_PATH . DS . 'Views' . DS .$subfolder. ucwords($this->controller) . DS . $file . '.php';

@@ -111,6 +111,7 @@ abstract class Model_Base
 	public $oBindedValues = array(); //array with values for prepared statement of ON clause array(":name"=>"Johm",":surname"=>"Doe")
 	
 	public $applySoftConditionsOnPost = false; // apply soft conditions on $_POST too
+	public $applySoftConditionsOnValues = true; // apply soft conditions on $this->values
 	
 	public $_queryString; //the Query String of the page
 	

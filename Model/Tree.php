@@ -687,7 +687,7 @@ class Model_Tree extends Model_Base {
 					if ($this->applyValidateConditions("insert",'values'))
 					{
 						$this->restoreConditions("values");
-						if ($this->applyValidateConditions("insert",'soft',true))
+						if (!$this->applySoftConditionsOnValues || $this->applyValidateConditions("insert",'soft',true))
 						{
 							$this->restoreConditions("soft");
 							
@@ -733,7 +733,7 @@ class Model_Tree extends Model_Base {
 					if ($this->applyValidateConditions("update",'values'))
 					{
 						$this->restoreConditions("values");
-						if ($this->applyValidateConditions("update",'soft',true))
+						if (!$this->applySoftConditionsOnValues || $this->applyValidateConditions("update",'soft',true))
 						{
 							$this->restoreConditions("soft");
 							return parent::update($id, $whereClause);

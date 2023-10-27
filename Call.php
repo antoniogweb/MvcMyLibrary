@@ -187,6 +187,9 @@ function callHook()
 	{
 		if (isset($_GET['url']))
 		{
+			if (defined("REMOVE_START_SLASH"))
+				$_GET['url'] = ltrim($_GET['url'], "/");
+			
 			$_GET['url'] = removeVirtualSubfolder($_GET['url']);
 			
 			if ($_GET['url'] && !languageInUrl($_GET['url']))

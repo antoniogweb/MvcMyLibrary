@@ -52,7 +52,8 @@ class Model_Tree extends Model_Base {
 						}
 						
 						$sWhereArray[] = implode(" AND ", $arrayQuery);
-						$this->bindedValues = $arrayValues;
+						$this->bindedValues = array_merge($this->bindedValues,$arrayValues);
+// 						$this->bindedValues = $arrayValues;
 					}
 				}
 				else

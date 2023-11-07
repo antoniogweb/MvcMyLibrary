@@ -107,6 +107,7 @@ abstract class Model_Base
 	public $currPage; //the URL of the current page
 	
 	public $bindedValues = array(); //array with values for prepared statement array(":name"=>"Johm",":surname"=>"Doe")
+	public $fBindedValues = array(); //array with values for prepared statement of FROM clause array(":name"=>"Johm",":surname"=>"Doe")
 	public $jBindedValues = array(); //array with values for prepared statement of JOIN clause array(":name"=>"Johm",":surname"=>"Doe")
 	public $oBindedValues = array(); //array with values for prepared statement of ON clause array(":name"=>"Johm",":surname"=>"Doe")
 	
@@ -1963,7 +1964,7 @@ abstract class Model_Base
 	//set the $from property and return the current object
 	public function from($tables = null)
 	{
-		$this->from = isset($tables) ? $tables : $this->_tables;
+		$this->from = isset($tables) ? $this->processArray($tables,"fBindedValues") : $this->_tables;
 		return $this;
 	}
 	
@@ -2311,6 +2312,7 @@ abstract class Model_Base
 		$this->on = array();
 		$this->using = array();
 		$this->join = array();
+		$this->fBindedValues = array();
 		$this->jBindedValues = array();
 		$this->oBindedValues = array();
 		$this->toList = false;
@@ -2339,6 +2341,7 @@ abstract class Model_Base
 		$tmp["on"] = $this->on;
 		$tmp["using"] = $this->using;
 		$tmp["join"] = $this->join;
+		$tmp["fBindedValues"] = $this->fBindedValues;
 		$tmp["jBindedValues"] = $this->jBindedValues;
 		$tmp["oBindedValues"] = $this->oBindedValues;
 		$tmp["toList"] = $this->toList;
@@ -2378,6 +2381,7 @@ abstract class Model_Base
 			$this->on = $back["on"];
 			$this->using = $back["using"];
 			$this->join = $back["join"];
+			$this->fBindedValues = $back["fBindedValues"];
 			$this->jBindedValues = $back["jBindedValues"];
 			$this->oBindedValues = $back["oBindedValues"];
 			$this->toList = $back["toList"];

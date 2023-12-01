@@ -458,6 +458,7 @@ class Image_Gd_Thumbnail
 							$textWidth = imagettfbbox($text["size"], $text["angle"], $text["font"], $text["text"]);
 							
 							$x -= (int)($textWidth[2] / 2);
+							break;
 					}
 				}
 				

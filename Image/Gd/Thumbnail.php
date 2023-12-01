@@ -33,6 +33,8 @@ class Image_Gd_Thumbnail
 	public static $cacheFolderFilesPermission = 0777;
 	
 	public $textOverlay = array();
+	public $watermarks = array();
+	
 	public $imageRotations = array();
 	
 	public static $defaultJpegImgQuality = 75; // the default JPEG quality
@@ -463,6 +465,21 @@ class Image_Gd_Thumbnail
 				}
 				
 				imagettftext($img, $text["size"], $text["angle"], $x, $text["y"], $color, $text["font"], $text["text"]);
+			}
+		}
+		
+		foreach ($this->watermarks as $wm)
+		{
+			if (isset($wm["imagePath"]) && isset($wm["x"]) && $wm["y"])
+			{
+				if (file_exists($wm["imagePath"]))
+				{
+					$wmImage = imagecreatefromstring(file_get_contents($wm["imagePath"]));
+					
+					list($wmWidth, $wmHeight) = getimagesize($wm["imagePath"]);
+					
+					imagecopy($img, $wmImage, $wm["x"], $wm["y"], 0, 0, $wmWidth, $wmHeight);
+				}
 			}
 		}
 		

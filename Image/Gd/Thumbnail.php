@@ -450,6 +450,17 @@ class Image_Gd_Thumbnail
 						$x += $text["x-offset"];
 				}
 				
+				if (isset($text["align"]))
+				{
+					switch ($text["align"])
+					{
+						case "center";
+							$textWidth = imagettfbbox($text["size"], $text["angle"], $text["font"], $text["text"]);
+							
+							$x -= (int)($textWidth[2] / 2);
+					}
+				}
+				
 				imagettftext($img, $text["size"], $text["angle"], $x, $text["y"], $color, $text["font"], $text["text"]);
 			}
 		}

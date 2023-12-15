@@ -82,7 +82,7 @@ class Html_Form {
 			}
 			else
 			{
-				$str= (strcmp($value,$b) === 0) ? "selected='$b'" : null;
+				$str= (strcmp(nullToBlank($value),$b) === 0) ? "selected='$b'" : null;
 				$returnString .= "<option value=\"".$b."\" $str>$a</option>\n";
 			}
 		}

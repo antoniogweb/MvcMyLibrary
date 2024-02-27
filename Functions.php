@@ -399,7 +399,7 @@ function randString($length,$start = 33, $end = 126)
 	$random = '';
 	for ($i = 0; $i < $length; $i++)
 	{
-		$random .= chr(mt_rand($start, $end));
+		$random .= chr(random_int($start, $end));
 	}
 	return $random;
 }

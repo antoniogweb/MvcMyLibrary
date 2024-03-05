@@ -25,7 +25,6 @@ if (!defined('EG')) die('Direct access not allowed!');
 //class to manage upload files
 class Files_Upload
 {
-
 	const DS = DIRECTORY_SEPARATOR;
 
 	private $base = null; //root directory
@@ -263,6 +262,11 @@ class Files_Upload
 	public static function isJpeg($ext)
 	{
 		return in_array(strtolower($ext),array("jpg","jpeg")) ? true : false;
+	}
+	
+	public static function isImage($ext)
+	{
+		return in_array(strtolower($ext),array("jpg","jpeg","png")) ? true : false;
 	}
 	
 	//get a not existing file name if the one retrieved from the upload process already exists in the current directory

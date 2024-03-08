@@ -68,7 +68,8 @@ class Files_Upload
 			'fileUploadBehaviour'			=>	'add_token', //can be none or add_token
 			'fileUploadBeforeTokenChar'		=>	'_',
 			'functionUponFileNane'			=>	'none',
-			'createImage'					=>	false,
+			'createImage'					=>	false, // if it has to create the image after upload
+			'createImageParams'				=>	null,
 		);
 
 		//set the $this->scaffold->params array
@@ -587,7 +588,7 @@ class Files_Upload
 									{
 										//create the image
 										$basePath = $this->base.$this->directory;
-										$thumb = new Image_Gd_Thumbnail($basePath);
+										$thumb = new Image_Gd_Thumbnail($basePath, $this->params['createImageParams']);
 										$thumb->render($fileName,$this->base.$this->directory.$fileName);
 									}
 

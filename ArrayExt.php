@@ -53,7 +53,8 @@ class ArrayExt {
 				if (array_key_exists($temp[0],$associativeArray) and !is_array($associativeArray[$temp[0]])) {
 					$tempArray[$temp[0]] = call_user_func($temp[1],$associativeArray[$temp[0]]);
 				} else {
-					$tempArray[$temp[0]] = '';
+					$tempArray[$temp[0]] = call_user_func($temp[1],'');
+// 					$tempArray[$temp[0]] = '';
 				}
 			}
 		}

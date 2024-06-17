@@ -46,7 +46,7 @@ class Form_Select extends Form_Entry
 		
 		if ($this->report)
 		{
-			if (is_array($this->options) and strcmp($this->reverse,"yes") === 0 and isset($this->options[$entryValue]))
+			if (is_array($this->options) and strcmp(nullToBlank($this->reverse),"yes") === 0 and isset($this->options[$entryValue]))
 			{
 				$entryValue = $this->options[$entryValue];
 			}

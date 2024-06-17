@@ -821,11 +821,17 @@ class Helper_List extends Helper_Html {
 	
 	public function moveupForm($itemArray)
 	{
+		if (isset($this->model) && !$this->model->manageable($itemArray['primaryKey']))
+			return "";
+		
 		return $this->generalForm($itemArray, 'moveupAction', 'up');
 	}
 
 	public function movedownForm($itemArray)
 	{
+		if (isset($this->model) && !$this->model->manageable($itemArray['primaryKey']))
+			return "";
+		
 		return $this->generalForm($itemArray, 'movedownAction', 'down');
 	}
 
@@ -836,6 +842,9 @@ class Helper_List extends Helper_Html {
 
 	public function delForm($itemArray)
 	{
+		if (isset($this->model) && !$this->model->manageable($itemArray['primaryKey']))
+			return "";
+		
 		return $this->generalForm($itemArray, 'delAction', 'del');
 	}
 

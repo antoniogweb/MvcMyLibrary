@@ -150,7 +150,12 @@ class Helper_Popup extends Helper_Html {
 				
 				if ($this->printLegend)
 				{
-					$returnString .= "<div class='popup_legend_item popup_legend_item_$field'>".$this->legend[$field]."</div>";
+					$legend = $this->legend[$field];
+					
+					if (Params::$translatorFunction)
+						$legend = call_user_func(Params::$translatorFunction, $legend);
+					
+					$returnString .= "<div class='popup_legend_item popup_legend_item_$field'>".$legend."</div>";
 				}
 				
 				$returnString .= self::$popupHtml["bottom"];

@@ -63,6 +63,9 @@ class Helper_Popup extends Helper_Html {
 		$this->strings = Factory_Strings::generic(Params::$language);
 		
 		$this->allString = $this->strings->gtext('All');
+		
+		if (Params::$translatorFunction)
+			$this->allString = call_user_func(Params::$translatorFunction, $this->allString);
 	}
 	
 	public function build($url, $popupArray = null, $type = 'exclusive', $pageArg = null, $printLegend = false, $model = null) {

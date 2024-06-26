@@ -67,9 +67,9 @@ class Image_Gd_Captcha
 		
 		$background = imagecolorallocate($img,255,255,255);
 		$border = imagecolorallocate($img,0,0,0);
-		$colors[] = imagecolorallocate($img,mt_rand(0,125),mt_rand(0,125),mt_rand(0,125));
-		$colors[] = imagecolorallocate($img,mt_rand(0,125),mt_rand(0,125),mt_rand(0,125));
-		$colors[] = imagecolorallocate($img,mt_rand(0,125),mt_rand(0,125),mt_rand(0,125));
+		$colors[] = imagecolorallocate($img,random_int(0,125),random_int(0,125),random_int(0,125));
+		$colors[] = imagecolorallocate($img,random_int(0,125),random_int(0,125),random_int(0,125));
+		$colors[] = imagecolorallocate($img,random_int(0,125),random_int(0,125),random_int(0,125));
 		
 		//create the background
 		imagefilledrectangle($img,1,1,$this->params['boxWidth']-2,$this->params['boxHeight']-2,$background);
@@ -83,15 +83,15 @@ class Image_Gd_Captcha
 			$fontPath = $this->params['fontPath'];
 			$angle = $this->params['undulation'] === false ? 0 : -20+rand(0,40);
 			$yposFixed = (int)(($this->params['boxHeight'])/2);
-			$ypos = $this->params['align'] === true ? $yposFixed : $yposFixed + mt_rand(0,10);
+			$ypos = $this->params['align'] === true ? $yposFixed : $yposFixed + random_int(0,10);
 			$charHeight = $this->params['charHeight'];
 			imagettftext($img,$charHeight + rand(0,8),$angle,(int)(($i+0.3)*$space),$ypos,$color,$fontPath,$char);
 		}
 
-		$noiseColor = imagecolorallocate($img, mt_rand(125,255), mt_rand(125,255), mt_rand(125,255));
+		$noiseColor = imagecolorallocate($img, random_int(125,255), random_int(125,255), random_int(125,255));
 		/* generate random dots in background */
 		for( $i=0; $i<($this->params['boxWidth'] * $this->params['boxHeight'])/7; $i++ ) {
-			imagefilledellipse($img, mt_rand(0,$this->params['boxWidth']), mt_rand(0,$this->params['boxHeight']), 1, 1, $noiseColor);
+			imagefilledellipse($img, random_int(0,$this->params['boxWidth']), random_int(0,$this->params['boxHeight']), 1, 1, $noiseColor);
 		}
 		
 		$_SESSION[$this->params['sessionKey']] = $this->string;

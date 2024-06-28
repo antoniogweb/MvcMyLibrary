@@ -38,7 +38,7 @@ class Lang_En_ValCondStrings {
 		return $html;
 	}
 	
-	public function translateElement($element)
+	protected function translateElement($element)
 	{
 		if (Params::$translatorFunction)
 			$element = call_user_func(Params::$translatorFunction, $element);

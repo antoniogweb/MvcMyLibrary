@@ -39,10 +39,6 @@ class Lang_En_Formats_Fields
 		else
 		{
 			$fieldName = str_replace("_"," ", $fieldName);
-			
-			if (Params::$translatorFunction)
-				$fieldName = call_user_func(Params::$translatorFunction, $fieldName);
-			
 			return ucfirst($fieldName);
 		}
 	}

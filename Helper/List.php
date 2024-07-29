@@ -276,7 +276,7 @@ class Helper_List extends Helper_Html {
 		$hash = md5(microtime().uniqid(mt_rand(),true));
 		
 		$string = str_replace($this->viewStatus,$hash,$string);
-		$string = preg_replace_callback('/(\;)([a-zA-Z0-9\_\.\|\:]{1,})(\;)/', array($this, 'replaceField') ,$string);
+		$string = preg_replace_callback('/(\;)([a-zA-Z0-9\_\.\|\:\-]{1,})(\;)/', array($this, 'replaceField') ,$string);
 		$string = str_replace($hash,$this->viewStatus,$string);
 		
 		return $string;

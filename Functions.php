@@ -412,7 +412,7 @@ function generateString($charNumb = 8,$allowedChars = '0123456789abcdefghijklmno
 	$str = null;
 	for ($i = 0; $i < $charNumb; $i++)
 	{
-		$str .= substr($allowedChars, mt_rand(0, strlen($allowedChars)-1), 1);
+		$str .= substr($allowedChars, random_int(0, strlen($allowedChars)-1), 1);
 	}
 	return $str;
 }

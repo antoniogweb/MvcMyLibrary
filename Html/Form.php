@@ -25,6 +25,8 @@ if (!defined('EG')) die('Direct access not allowed!');
 //create the HTML of the inputs of a form
 class Html_Form {
 	
+	public static $forceStaticAttribute = "";
+	
 	//return the HTML of a select
 	//$name: name of the select
 	//$value: the selected value of the select (set $value equal to null if you don't want to select an option)
@@ -39,7 +41,7 @@ class Html_Form {
 		$idStr = isset($idName) ? "id='".$idName."'" : null;
 		
 		$returnString = null;
-		$returnString .= "<select $attributes ".$idStr." $strClass name='".$name."'>\n";
+		$returnString .= "<select $attributes ".$idStr." $strClass name='".$name."' ".self::$forceStaticAttribute.">\n";
 		if (is_string($options)) {
 			$tempArray = explode(',',$options);
 			foreach ($tempArray as $item)
@@ -101,7 +103,7 @@ class Html_Form {
 		$strClass = isset($className) ? "class='".$className."'" : null;
 		$idStr = isset($idName) ? "id='".$idName."'" : null;
 		
-		$returnString ="<input $attributes ".$idStr." $strClass type='text' name='" .$name. "' value = \"$value\" />";
+		$returnString ="<input $attributes ".$idStr." $strClass type='text' name='" .$name. "' value = \"$value\" ".self::$forceStaticAttribute."/>";
 		return $returnString;
 	}
 
@@ -114,7 +116,7 @@ class Html_Form {
 		$strClass = isset($className) ? "class='".$className."'" : null;
 		$idStr = isset($idName) ? "id='".$idName."'" : null;
 
-		$returnString ="<input $attributes ".$idStr." $strClass type='file' name='" .$name. "' />";
+		$returnString ="<input $attributes ".$idStr." $strClass type='file' name='" .$name. "' ".self::$forceStaticAttribute."/>";
 		return $returnString;
 	}
 	
@@ -130,7 +132,7 @@ class Html_Form {
 		$idStr = isset($idName) ? "id='".$idName."'" : null;
 		
 		$str = (strcmp($value,$option) === 0) ? "checked = 'checked'" : null;
-		return "<input $attributes ".$idStr." $strClass type='checkbox' name='".$name."' value=\"".$option."\" $str />";
+		return "<input $attributes ".$idStr." $strClass type='checkbox' name='".$name."' value=\"".$option."\" $str ".self::$forceStaticAttribute."/>";
 	}
 	
 	//return the HTML of a hidden entry
@@ -153,7 +155,7 @@ class Html_Form {
 		$strClass = isset($className) ? "class='".$className."'" : null;
 		$idStr = isset($idName) ? "id='".$idName."'" : null;
 		
-		return "<input $attributes ".$idStr." $strClass type='password' name='" .$name. "' value=\"$value\" />";
+		return "<input $attributes ".$idStr." $strClass type='password' name='" .$name. "' value=\"$value\" ".self::$forceStaticAttribute."/>";
 	}
 
 	//return the HTML of a textarea
@@ -165,7 +167,7 @@ class Html_Form {
 		$strClass = isset($className) ? "class='".$className."'" : null;
 		$idStr = isset($idName) ? "id='".$idName."'" : null;
 		
-		return "<textarea $attributes ".$idStr." $strClass name='" .$name. "'>$value</textarea>";
+		return "<textarea $attributes ".$idStr." $strClass name='" .$name. "' ".self::$forceStaticAttribute.">$value</textarea>";
 	}
 	
 	//return the HTML of a radio button
@@ -233,7 +235,7 @@ class Html_Form {
 // 			}
 			
 			$str= (strcmp($value,$b) === 0) ? "checked='checked'" : null;
-			$returnString .= "$before<input $attributes ".$idStr." $strClass type='radio' name='".$name."' value=\"".$b."\" $str />$after";
+			$returnString .= "$before<input $attributes ".$idStr." $strClass type='radio' name='".$name."' value=\"".$b."\" $str ".self::$forceStaticAttribute."/>$after";
 		}
 		
 		return $returnString;

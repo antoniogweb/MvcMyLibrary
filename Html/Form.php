@@ -98,12 +98,14 @@ class Html_Form {
 	//$value: the value of the input
 	//$className: the class name of the input
 	//$idName: name of the id
-	static public function input($name, $value, $className = null, $idName = null, $attributes = null)
+	//$attributes: attributes as string
+	//$type: type of the input
+	static public function input($name, $value, $className = null, $idName = null, $attributes = null, $type = "text")
 	{
 		$strClass = isset($className) ? "class='".$className."'" : null;
 		$idStr = isset($idName) ? "id='".$idName."'" : null;
 		
-		$returnString ="<input $attributes ".$idStr." $strClass type='text' name='" .$name. "' value = \"$value\" ".self::$forceStaticAttribute."/>";
+		$returnString ="<input $attributes ".$idStr." $strClass type='$type' name='" .$name. "' value = \"$value\" ".self::$forceStaticAttribute."/>";
 		return $returnString;
 	}
 

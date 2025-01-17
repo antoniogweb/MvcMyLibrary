@@ -190,7 +190,7 @@ class Controller {
 
 	//load a users_checkAdmin class
 	//$sessonType: the type of session. It can be 'admin' (in the case of the access of an admin user) or 'registered' (in the case of the access of a registerd user)
-	final public function session($sessionType = 'admin', $model = array()) {
+	final public function session($sessionType = 'admin', $model = array(), $twoFactorModel = null) {
 		$sessionTypeArray = array('admin','registered');
 		if (!in_array($sessionType,$sessionTypeArray)) {
 			throw new Exception('Error in '.__METHOD__.': the session type can be \'admin\' or \'registered\' only');
@@ -213,9 +213,13 @@ class Controller {
 				define("ADMIN_COOKIE_PERMANENT", false);
 			}
 			
+			if (!defined('ADMIN_USERS_TWO_FACTOR_ACTION'))
+				define("ADMIN_USERS_TWO_FACTOR_ACTION", "twofactor");
+			
 			$params = array(
 				'users_controller' 		=> ADMIN_USERS_CONTROLLER,
 				'users_login_action'	=> ADMIN_USERS_LOGIN_ACTION,
+				'users_twofactor_action'=> ADMIN_USERS_TWO_FACTOR_ACTION,
 				'panel_controller' 		=> ADMIN_PANEL_CONTROLLER,
 				'panel_main_action'		=> ADMIN_PANEL_MAIN_ACTION,
 				'cookie_name' 			=> ADMIN_COOKIE_NAME,
@@ -241,7 +245,9 @@ class Controller {
 				's_model'				=>	$model[1] ?? null,
 				'a_model'				=>	$model[2] ?? null,
 				'g_model'				=>	$model[3] ?? null,
+				't_model'				=>	$twoFactorModel,
 			);
+			
 			$this->s['admin'] = new Users_CheckAdmin($params);
 		}
 		//registered session
@@ -262,9 +268,13 @@ class Controller {
 				define("REG_COOKIE_PERMANENT", false);
 			}
 			
+			if (!defined('REG_USERS_TWO_FACTOR_ACTION'))
+				define("REG_USERS_TWO_FACTOR_ACTION", "twofactor");
+			
 			$params = array(
 				'users_controller' 		=> REG_USERS_CONTROLLER,
 				'users_login_action'	=> REG_USERS_LOGIN_ACTION,
+				'users_twofactor_action'=> REG_USERS_TWO_FACTOR_ACTION,
 				'panel_controller' 		=> REG_PANEL_CONTROLLER,
 				'panel_main_action' 	=> REG_PANEL_MAIN_ACTION,
 				'cookie_name' 			=> REG_COOKIE_NAME,
@@ -290,7 +300,9 @@ class Controller {
 				's_model'				=>	$model[1] ?? null,
 				'a_model'				=>	$model[2] ?? null,
 				'g_model'				=>	$model[3] ?? null,
+				't_model'				=>	$twoFactorModel,
 			);
+			
 			$this->s['registered'] = new Users_CheckAdmin($params);
 		}
 	}

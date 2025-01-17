@@ -45,6 +45,7 @@ class Users_CheckAdmin {
 	private $groups;
 	private $sessions;
 	private $accesses;
+	private $twoFactor = null;
 	
 	protected $lastAccessId = null;
 	
@@ -56,6 +57,7 @@ class Users_CheckAdmin {
 	protected $uid = null;
 	protected $_token = null; //token used in order to defense against CSRF (cross sire request forgeries)
 	protected $_login; //login action
+	protected $_twoFactor; //login action
 	protected $_main; //main action
 	protected $_retype; //retype (the password) action
 	protected $_db; //reference to the database layer class
@@ -71,6 +73,7 @@ class Users_CheckAdmin {
 		$this->_manyToManyTable = $params['manyToManyTable'];
 		$this->_accessesTable = $params['accessesTable'];
 		$this->_login = Url::getRoot(null) . $params['users_controller'] . '/' . $params['users_login_action'] ;
+		$this->_twoFactor = Url::getRoot(null) . $params['users_controller'] . '/' . $params['users_twofactor_action'] ;
 		$this->_main = Url::getRoot(null) . $params['panel_controller'] . '/' . $params['panel_main_action'] ;
 		$this->_retype = Url::getRoot(null) . $params['users_controller'] . '/' . $params['hijacking_action'] ;
 		$this->_db = Factory_Db::getInstance($params['database_type']);
@@ -90,6 +93,8 @@ class Users_CheckAdmin {
 		
 		if (isset(self::$groupsModel) && !isset($this->groups))
 			$this->groups = new self::$groupsModel();
+		
+		$this->twoFactor = $params['t_model'];
 	}
 
 	private function acquireCookie() { #obtain cookie
@@ -183,10 +188,10 @@ class Users_CheckAdmin {
 		if (count($row) === 1 and $row !== false)
 		{
 			$this->status['user']=$row[0][self::$usernameFieldName];
-			$this->status['status']='logged';
 			$this->status['id_user']=$row[0][self::$idUserFieldName];
 			$this->status['user_agent'] = $row[0]['user_agent'];
 			$this->status['token'] = $row[0]['token'];
+			$this->status['status'] = $this->getTwoFactorStatus($this->status['id_user'], $this->uid);
 			$this->obtainGroups();
 		} else {
 			$this->status['user']='sconosciuto';
@@ -197,7 +202,15 @@ class Users_CheckAdmin {
 			$this->status['groups'] = array();
 		}
 	}
-
+	
+	private function getTwoFactorStatus($idUser, $uid = "")
+	{
+		if (isset($this->twoFactor))
+			return $this->twoFactor->getStatus($idUser, $uid);
+		
+		return "logged";
+	}
+	
 	public function redirect($val,$time = 3) { #fa il redirect dell'utente
 		if ($val === 'logged') {
 			header('Refresh: '.$time.';url='.$this->_main);
@@ -223,6 +236,8 @@ class Users_CheckAdmin {
 		} else if ($val === 'wait') {
 			header('Refresh: '.$time.';url='.$this->_login);
 			if ($time !== 0) echo "You have to wait ".$this->_params['time_after_failure']." seconds before you can try to login another time";
+		} else if ($val === 'two-factor') {
+			header('Location: '.$this->_twoFactor);
 		}
 		exit;
 	}
@@ -303,6 +318,10 @@ class Users_CheckAdmin {
 				$permission = $this->checkAccess($groups);
 				if (!$permission) $this->redirect('not-authorized',$time);
 			}
+		}
+		else if (strcmp($this->status['status'],'two-factor') === 0)
+		{
+			$this->redirect('two-factor',$time);
 		}
 	}
 

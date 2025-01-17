@@ -684,3 +684,10 @@ function FilePutContentsAtomic($filePath, $data)
 	
 	rename($tmpFile, $filePath);
 }
+
+function partiallyHideEmail($email)
+{
+	return preg_replace_callback('/(\w)(.*?)(\w)(@.*?)$/s', function ($matches){
+		return $matches[1].preg_replace("/\w/", "*", $matches[2]).$matches[3].$matches[4];
+	}, $email);
+}

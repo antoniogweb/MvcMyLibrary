@@ -203,6 +203,14 @@ class Users_CheckAdmin {
 		}
 	}
 	
+	public function getTwoFactorUidt()
+	{
+		if (isset($this->twoFactor))
+			return $this->twoFactor->getUidt();
+		
+		return null;
+	}
+	
 	private function getTwoFactorStatus($idUser, $uid = "")
 	{
 		if (isset($this->twoFactor))

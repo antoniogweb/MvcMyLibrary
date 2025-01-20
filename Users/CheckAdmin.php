@@ -187,11 +187,17 @@ class Users_CheckAdmin {
 
 		if (count($row) === 1 and $row !== false)
 		{
-			$this->status['user']=$row[0][self::$usernameFieldName];
 			$this->status['id_user']=$row[0][self::$idUserFieldName];
+			
+			$status = $this->getTwoFactorStatus($this->status['id_user'], $this->uid);
+			
+			if ($status == "not-logged")
+				$this->delSession();
+			
+			$this->status['user']=$row[0][self::$usernameFieldName];
 			$this->status['user_agent'] = $row[0]['user_agent'];
 			$this->status['token'] = $row[0]['token'];
-			$this->status['status'] = $this->getTwoFactorStatus($this->status['id_user'], $this->uid);
+			$this->status['status'] = $status;
 			$this->obtainGroups();
 		} else {
 			$this->status['user']='sconosciuto';
@@ -203,6 +209,14 @@ class Users_CheckAdmin {
 		}
 	}
 	
+	public function twoFactorCreateSession($idUser, $uid)
+	{
+		if (isset($this->twoFactor))
+			return $this->twoFactor->creaSessione($idUser, $uid);
+		
+		return "two-factor";
+	}
+	
 	public function getTwoFactorUidt()
 	{
 		if (isset($this->twoFactor))
@@ -211,12 +225,20 @@ class Users_CheckAdmin {
 		return null;
 	}
 	
-	private function getTwoFactorStatus($idUser, $uid = "")
+	private function getTwoFactorStatus($idUser, $uid = "", $loggedState = "logged")
 	{
 		if (isset($this->twoFactor))
-			return $this->twoFactor->getStatus($idUser, $uid);
+			return $this->twoFactor->getStatus($idUser, $uid, $loggedState);
 		
-		return "logged";
+		return $loggedState;
+	}
+	
+	public function twoFactorDelSession()
+	{
+		if (isset($this->twoFactor))
+			return $this->twoFactor->delSession($this->uid);
+		
+		return true;
 	}
 	
 	public function redirect($val,$time = 3) { #fa il redirect dell'utente
@@ -690,7 +712,12 @@ class Users_CheckAdmin {
 						}
 					}
 					
-					return 'accepted';
+					$stato = $this->getTwoFactorStatus($this->status['id_user'], $this->uid, 'accepted');
+					
+					if ($stato == "not-logged")
+						$stato = $this->twoFactorCreateSession($this->status['id_user'], $this->uid);
+					
+					return $stato;
 				}
 				else if ($this->status['status']==='login-error')
 				{
@@ -748,13 +775,44 @@ class Users_CheckAdmin {
 		}
 		return false;
 	}
-
+	
+	private function getDelSessionQuery()
+	{
+		if (isset($this->sessions))
+			$delClause = array(
+				"uid = ?",
+				array(
+					$this->uid,
+				),
+			);
+		else
+			$delClause = "uid = '".$this->uid."'";
+		
+		return $delClause;
+	}
+	
+	private function delCookie()
+	{
+		setcookie ($this->_params['cookie_name'], "", time() - 3600,$this->_params['cookie_path']);
+	}
+	
+	public function delSession()
+	{
+		$this->delCookie();
+		
+		$delClause = $this->getDelSessionQuery();
+		
+		return isset($this->sessions) ? $this->sessions->del(null, $delClause) : $this->_db->del($this->_sessionsTable, $delClause);
+	}
+	
 	public function logout()
 	{
 		$this->checkStatus();
-		if ($this->status['status'] === 'logged')
+		
+		if ($this->status['status'] === 'logged' || $this->status['status'] === 'two-factor')
 		{
-			setcookie ($this->_params['cookie_name'], "", time() - 3600,$this->_params['cookie_path']);
+			$this->delCookie();
+			// setcookie ($this->_params['cookie_name'], "", time() - 3600,$this->_params['cookie_path']);
 			
 			if (!$this->_params['allow_multiple_accesses'])
 			{
@@ -762,15 +820,16 @@ class Users_CheckAdmin {
 			}
 			else
 			{
-				if (isset($this->sessions))
-					$delClause = array(
-						"uid = ?",
-						array(
-							$this->uid,
-						),
-					);
-				else
-					$delClause = "uid = '".$this->uid."'";
+				$delClause = $this->getDelSessionQuery();
+				// if (isset($this->sessions))
+				// 	$delClause = array(
+				// 		"uid = ?",
+				// 		array(
+				// 			$this->uid,
+				// 		),
+				// 	);
+				// else
+				// 	$delClause = "uid = '".$this->uid."'";
 			}
 			
 			$res = isset($this->sessions) ? $this->sessions->del(null, $delClause) : $this->_db->del($this->_sessionsTable, $delClause);
@@ -778,6 +837,8 @@ class Users_CheckAdmin {
 // 			if ($this->_db->del($this->_sessionsTable, $delClause))
 			if ($res)
 			{
+				$this->twoFactorDelSession();
+				
 				return 'was-logged';
 			} 
 			else 

@@ -241,6 +241,14 @@ class Users_CheckAdmin {
 		return true;
 	}
 	
+	public function getTwoFactorModel()
+	{
+		if (isset($this->twoFactor))
+			return $this->twoFactor;
+		
+		return null;
+	}
+	
 	public function redirect($val,$time = 3) { #fa il redirect dell'utente
 		if ($val === 'logged') {
 			header('Refresh: '.$time.';url='.$this->_main);

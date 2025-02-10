@@ -220,7 +220,7 @@ class Users_CheckAdmin {
 	public function getTwoFactorUidt()
 	{
 		if (isset($this->twoFactor))
-			return $this->twoFactor->getUidt();
+			return $this->twoFactor->getUidt((int)$this->status['id_user']);
 		
 		return null;
 	}

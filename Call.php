@@ -279,7 +279,9 @@ function callHook()
 		$url = $res[0];
 		$currentUrl = $res[1];
 	}
-
+	
+	$url = mapController($url);
+	
 // 	echo $url;
 	
 	$urlArray = explode("/",$url);
@@ -480,6 +482,25 @@ function callHook()
 
 }
 
+// map the controller
+function mapController($url)
+{
+	if (property_exists('Route', 'controllersMap'))
+	{
+		foreach (Route::$controllersMap as $controller => $toController)
+		{
+			$regExpr = '/^'.$controller.'/';
+			
+			if (preg_match($regExpr,$url))
+			{
+				$nurl = preg_replace('/^'.$controller.'/',$toController,$url);
+				return $nurl;
+			}
+		}
+	}
+	
+	return $url;
+}
 
 //rewrite the URL
 function rewrite($url)

@@ -198,6 +198,7 @@ class Users_CheckAdmin {
 			$this->status['user_agent'] = $row[0]['user_agent'];
 			$this->status['token'] = $row[0]['token'];
 			$this->status['status'] = $status;
+			$this->status['creation_time'] = (int)$row[0]['creation_date'];
 			$this->obtainGroups();
 		} else {
 			$this->status['user']='sconosciuto';
@@ -206,7 +207,27 @@ class Users_CheckAdmin {
 			$this->status['user_agent']='';
 			$this->status['token'] = '';
 			$this->status['groups'] = array();
+			$this->status['creation_time'] = 0;
 		}
+	}
+	
+	// Get the time UNIX TIME of the start of the current session
+	public function getCreationTime()
+	{
+		if (isset($this->status['creation_time']))
+			return (int)$this->status['creation_time'];
+		
+		return 0;
+	}
+	
+	// Get the time remaining in the session before it is deleted
+	// $dividedBy: 1 is in seconds, 3600 if in hours, 86400 if in days
+	public function getSessionRemainingTime($dividedBy = 1)
+	{
+		if (isset($this->status['creation_time']))
+			return (((int)$this->_params['session_expire'] + (int)$this->status['creation_time']) - (int)time()) / $dividedBy;
+		
+		return 0;
 	}
 	
 	public function twoFactorCreateSession($idUser, $uid)

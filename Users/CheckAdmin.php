@@ -668,8 +668,8 @@ class Users_CheckAdmin {
 				
 				if ($this->status['status']==='accepted')
 				{
-					$this->uid = md5(randString(10).uniqid(mt_rand(),true));
-					$this->_token = md5(randString(12));
+					$this->uid = md5(randString(30).uniqid(mt_rand(),true));
+					$this->_token = md5(randString(30));
 					$userAgent = getUserAgent();
 					
 					//set the expiration time

@@ -39,7 +39,7 @@ class Image_Gd_Thumbnail
 	
 	public static $defaultJpegImgQuality = 75; // the default JPEG quality
 	
-	private static $memoryLimit = null; // if not null, the memory limit set with ini_set in the render method
+	public static $memoryLimit = null; // if not null, the memory limit set with ini_set in the render method
 	
 	public function __construct($basePath,$params = null)
 	{
@@ -120,11 +120,6 @@ class Image_Gd_Thumbnail
 		}
 		
 		return $coordSrc;
-	}
-	
-	public function setMemoryLimit($ml)
-	{
-		self::$memoryLimit = (string)$ml;
 	}
 	
 	//create the thumbnail

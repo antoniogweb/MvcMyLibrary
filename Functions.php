@@ -672,7 +672,8 @@ function FilePutContentsAtomic($filePath, $data)
 {
 	$path_parts = pathinfo($filePath);
 	
-	$extension = strtolower($path_parts['extension']);
+	// $extension = strtolower($path_parts['extension']);
+	$extension = isset($path_parts['extension']) ? strtolower($path_parts['extension']) : "";
 	$dirName = $path_parts['dirname'];
 	
 	$tmpFile = rtrim($dirName,"/")."/".randomToken(20);

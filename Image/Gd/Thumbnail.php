@@ -39,6 +39,8 @@ class Image_Gd_Thumbnail
 	
 	public static $defaultJpegImgQuality = 75; // the default JPEG quality
 	
+	public static $memoryLimit = null; // if not null, the memory limit set with ini_set in the render method
+	
 	public function __construct($basePath,$params = null)
 	{
 		$finalChar = $basePath[strlen($basePath) - 1];
@@ -125,6 +127,9 @@ class Image_Gd_Thumbnail
 	//$outputFile: the name of the output file
 	public function render($imageFile, $outputFile = null, $cachePathForce = null)
 	{
+		if (isset(self::$memoryLimit))
+			ini_set("memory_limit", self::$memoryLimit);
+		
 		//set if it has to create cache or not
 		$createCache = false;
 		

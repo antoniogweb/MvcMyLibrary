@@ -649,14 +649,14 @@ try {
 		}
 	}
 
+	//report errors
+	ErrorReporting();
+	
 	//include the file containing the set of actions to carry out before the check of the super global array
 	Hooks::load(ROOT . DS . APPLICATION_PATH . DS . 'Hooks' . DS . 'BeforeChecks.php');
 
 	//sanitize super global arrays
 	sanitizeSuperGlobal();
-
-	//report errors
-	ErrorReporting();
 
 	//verify that register globals is not active
 	checkRegisterGlobals();

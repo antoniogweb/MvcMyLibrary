@@ -28,7 +28,7 @@ class HeaderObj {
 	private $domainName; //the base path of the website (domainname)
 
 	//redirect to $path after the time $time
-	//string that  appears until the page is redirected
+	//string that appears until the page is redirected
 	public function redirect($path,$time = 0,$string = null)
 	{
 		$completePath = Url::getRoot().$path;
@@ -40,5 +40,11 @@ class HeaderObj {
 		
 		exit;
 	}
-
+	
+	// Redirect to $urlRedirect
+	public static function location($urlRedirect)
+	{
+		header('Location: '.$urlRedirect);
+		die();
+	}
 }

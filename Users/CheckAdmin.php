@@ -209,10 +209,10 @@ class Users_CheckAdmin {
 		}
 	}
 	
-	public function twoFactorCreateSession($idUser, $uid)
+	public function twoFactorCreateSession($idUser, $uid, $force = false)
 	{
 		if (isset($this->twoFactor))
-			return $this->twoFactor->creaSessione($idUser, $uid);
+			return $this->twoFactor->creaSessione($idUser, $uid, $force);
 		
 		return "two-factor";
 	}
@@ -723,7 +723,7 @@ class Users_CheckAdmin {
 					$stato = $this->getTwoFactorStatus($this->status['id_user'], $this->uid, 'accepted');
 					
 					if ($stato == "not-logged")
-						$stato = $this->twoFactorCreateSession($this->status['id_user'], $this->uid);
+						$stato = $this->twoFactorCreateSession($this->status['id_user'], $this->uid, $force);
 					
 					return $stato;
 				}

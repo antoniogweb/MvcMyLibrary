@@ -2,7 +2,7 @@
 
 // MvcMyLibrary is a PHP framework for creating and managing dynamic content
 //
-// Copyright (C) 2009 - 2023  Antonio Gallo (info@laboratoriolibero.com)
+// Copyright (C) 2009 - 2025  Antonio Gallo (info@laboratoriolibero.com)
 // See COPYRIGHT.txt and LICENSE.txt.
 //
 // This file is part of MvcMyLibrary

@@ -2,7 +2,7 @@
 
 // MvcMyLibrary is a PHP framework for creating and managing dynamic content
 //
-// Copyright (C) 2009 - 2023  Antonio Gallo (info@laboratoriolibero.com)
+// Copyright (C) 2009 - 2025  Antonio Gallo (info@laboratoriolibero.com)
 // See COPYRIGHT.txt and LICENSE.txt.
 //
 // This file is part of MvcMyLibrary
@@ -26,7 +26,6 @@ if (!defined('EG')) die('Direct access not allowed!');
 //you have to call session_start() before to initialize a captcha object
 class Image_Gd_Captcha
 {
-
 	private $params = array(); //parameters of the object
 	private $string = null; //the text string of the captcha
 	
@@ -58,7 +57,12 @@ class Image_Gd_Captcha
 		$this->string = generateString($this->params['charNumber']);
 	}
 
-	public function render()
+	public function setString($string)
+	{
+		$this->string = $string;
+	}
+	
+	public function render($folderPath = null)
 	{
 		//space among characters
 		$space = $this->params['boxWidth'] / ($this->params['charNumber']+1);
@@ -94,10 +98,18 @@ class Image_Gd_Captcha
 			imagefilledellipse($img, random_int(0,$this->params['boxWidth']), random_int(0,$this->params['boxHeight']), 1, 1, $noiseColor);
 		}
 		
-		$_SESSION[$this->params['sessionKey']] = $this->string;
-		header('Content-Type: image/png');
-		imagepng($img);
-		imagedestroy($img);
+		if (!isset($folderPath))
+		{
+			$_SESSION[$this->params['sessionKey']] = $this->string;
+			header('Content-Type: image/png');
+			imagepng($img);
+			imagedestroy($img);
+		}
+		else
+		{
+			$folderPath = rtrim($folderPath, "/");
+			imagepng($img, $folderPath."/".$this->string.".png");
+		}
 	}
 	
 }

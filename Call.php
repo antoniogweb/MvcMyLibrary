@@ -2,7 +2,7 @@
 
 // MvcMyLibrary is a PHP framework for creating and managing dynamic content
 //
-// Copyright (C) 2009 - 2023  Antonio Gallo (info@laboratoriolibero.com)
+// Copyright (C) 2009 - 2025  Antonio Gallo (info@laboratoriolibero.com)
 // See COPYRIGHT.txt and LICENSE.txt.
 //
 // This file is part of MvcMyLibrary
@@ -279,7 +279,9 @@ function callHook()
 		$url = $res[0];
 		$currentUrl = $res[1];
 	}
-
+	
+	$url = mapController($url);
+	
 // 	echo $url;
 	
 	$urlArray = explode("/",$url);
@@ -480,6 +482,25 @@ function callHook()
 
 }
 
+// map the controller
+function mapController($url)
+{
+	if (property_exists('Route', 'controllersMap'))
+	{
+		foreach (Route::$controllersMap as $controller => $toController)
+		{
+			$regExpr = '/^'.$controller.'/';
+			
+			if (preg_match($regExpr,$url))
+			{
+				$nurl = preg_replace('/^'.$controller.'/',$toController,$url);
+				return $nurl;
+			}
+		}
+	}
+	
+	return $url;
+}
 
 //rewrite the URL
 function rewrite($url)
@@ -628,14 +649,14 @@ try {
 		}
 	}
 
+	//report errors
+	ErrorReporting();
+	
 	//include the file containing the set of actions to carry out before the check of the super global array
 	Hooks::load(ROOT . DS . APPLICATION_PATH . DS . 'Hooks' . DS . 'BeforeChecks.php');
 
 	//sanitize super global arrays
 	sanitizeSuperGlobal();
-
-	//report errors
-	ErrorReporting();
 
 	//verify that register globals is not active
 	checkRegisterGlobals();

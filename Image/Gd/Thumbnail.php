@@ -2,7 +2,7 @@
 
 // MvcMyLibrary is a PHP framework for creating and managing dynamic content
 //
-// Copyright (C) 2009 - 2023  Antonio Gallo (info@laboratoriolibero.com)
+// Copyright (C) 2009 - 2025  Antonio Gallo (info@laboratoriolibero.com)
 // See COPYRIGHT.txt and LICENSE.txt.
 //
 // This file is part of MvcMyLibrary
@@ -38,6 +38,8 @@ class Image_Gd_Thumbnail
 	public $imageRotations = array();
 	
 	public static $defaultJpegImgQuality = 75; // the default JPEG quality
+	
+	public static $memoryLimit = null; // if not null, the memory limit set with ini_set in the render method
 	
 	public function __construct($basePath,$params = null)
 	{
@@ -125,6 +127,9 @@ class Image_Gd_Thumbnail
 	//$outputFile: the name of the output file
 	public function render($imageFile, $outputFile = null, $cachePathForce = null)
 	{
+		if (isset(self::$memoryLimit))
+			ini_set("memory_limit", self::$memoryLimit);
+		
 		//set if it has to create cache or not
 		$createCache = false;
 		

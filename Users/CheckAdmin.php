@@ -238,6 +238,14 @@ class Users_CheckAdmin {
 		return "two-factor";
 	}
 	
+	public function twoFactorResetSession()
+	{
+		if (isset($this->twoFactor))
+			return $this->twoFactor->resettaSessione($this->status['id_user'], $this->uid);
+		
+		return "logged";
+	}
+	
 	public function getTwoFactorUidt()
 	{
 		if (isset($this->twoFactor))

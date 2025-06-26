@@ -238,10 +238,22 @@ class Users_CheckAdmin {
 		return "two-factor";
 	}
 	
-	public function twoFactorResetSession()
+	public function twoFactorResetSession($idUser = null)
 	{
+		if (isset($idUser))
+		{
+			$force = true;
+			$uid = $this->getRandomUid();
+		}
+		else
+		{
+			$force = false;
+			$idUser = $this->status['id_user'];
+			$uid = $this->uid;
+		}
+		
 		if (isset($this->twoFactor))
-			return $this->twoFactor->resettaSessione($this->status['id_user'], $this->uid);
+			return $this->twoFactor->resettaSessione($idUser, $uid, $force);
 		
 		return "logged";
 	}
@@ -651,6 +663,11 @@ class Users_CheckAdmin {
 		}
 	}
 	
+	protected function getRandomUid()
+	{
+		return md5(randString(30).uniqid(mt_rand(),true));
+	}
+	
 	public function login($user, $pwd, $force = false)
 	{
 		$user = sanitizeAll($user);
@@ -676,7 +693,7 @@ class Users_CheckAdmin {
 				
 				if ($this->status['status']==='accepted')
 				{
-					$this->uid = md5(randString(30).uniqid(mt_rand(),true));
+					$this->uid = $this->getRandomUid();
 					$this->_token = md5(randString(30));
 					$userAgent = getUserAgent();
 					

@@ -22,6 +22,11 @@
 
 if (!defined('EG')) die('Direct access not allowed!');
 
+function eg_ucfirst($string)
+{
+	$string = nullToBlank($string);
+	return function_exists('mb_ucfirst') ? mb_ucfirst($string,DEFAULT_CHARSET) : ucfirst($string);
+}
 
 function eg_strlen($string)
 {

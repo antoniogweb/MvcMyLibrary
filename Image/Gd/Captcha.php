@@ -62,7 +62,7 @@ class Image_Gd_Captcha
 		$this->string = $string;
 	}
 	
-	public function render($folderPath = null)
+	public function render($folderPath = null, $fileName = null)
 	{
 		//space among characters
 		$space = $this->params['boxWidth'] / ($this->params['charNumber']+1);
@@ -107,8 +107,11 @@ class Image_Gd_Captcha
 		}
 		else
 		{
+			if (!isset($fileName))
+				$fileName = $this->string;
+			
 			$folderPath = rtrim($folderPath, "/");
-			imagepng($img, $folderPath."/".$this->string.".png");
+			imagepng($img, $folderPath."/".$fileName.".png");
 		}
 	}
 	

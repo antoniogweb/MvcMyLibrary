@@ -70,6 +70,7 @@ class Helper_Pages extends Helper_Html
 	
 	public static $pageLinkWrapClass = array();
 	public static $pageLinkWrap = array();
+	public static $pageLinkWrapClassCurrent = array();
 	
 // 	Ex:
 // 	Helper_Pages::$pageLinkWrap = array("li");
@@ -218,6 +219,7 @@ class Helper_Pages extends Helper_Html
 
 	//return the html link
 	public function html($pageNumber,$string = null) {
+		$current = false;
 		if (isset($string)) {
 			$strNumber = $string;
 			if ((int)$pageNumber < $this->_currentPage)
@@ -233,6 +235,7 @@ class Helper_Pages extends Helper_Html
 			{
 				$strNumber = $pageNumber;
 				$strClass = "class='".$this->linkClass." ".$this->currentClass."'";
+				$current = true;
 			}
 			else
 			{
@@ -246,14 +249,14 @@ class Helper_Pages extends Helper_Html
 		
 		$linkAttributes = ($pageNumber > 1) ? self::$staticAttributesPageFromSecond : "";
 		
-		return $this->getATag($href,$strNumber,$strClass,$linkAttributes);
+		return $this->getATag($href,$strNumber,$strClass,$linkAttributes, $current);
 	}
 
 	//get the HTMl of the tag
 	//$href: href of the link
 	//$text: the text of the link
 	//$strClass: the class of the link
-	public function getATag($href,$text,$strClass, $linkAttributes = "")
+	public function getATag($href,$text,$strClass, $linkAttributes = "", $current = false)
 	{
 		switch ($this->showDivider)
 		{
@@ -286,7 +289,16 @@ class Helper_Pages extends Helper_Html
 		$indice = 0;
 		foreach (Helper_Pages::$pageLinkWrap as $k)
 		{
-			$strClassWrapper = isset(self::$pageLinkWrapClass[$indice]) ? "class='".self::$pageLinkWrapClass[$indice]."'" : $strClass;
+			$classesArray = array();
+			
+			if (isset(self::$pageLinkWrapClass[$indice]))
+				$classesArray[] = self::$pageLinkWrapClass[$indice];
+			
+			if ($current && isset(self::$pageLinkWrapClassCurrent[$indice]))
+				$classesArray[] = self::$pageLinkWrapClassCurrent[$indice];
+			
+			$strClassWrapper = (count($classesArray) > 0) ? "class='".implode(" ",$classesArray)."'" : $strClass;
+			// $strClassWrapper = isset(self::$pageLinkWrapClass[$indice]) ? "class='".self::$pageLinkWrapClass[$indice]."'" : $strClass;
 			$html = "<$k $strClassWrapper>$html</$k>";
 			
 			$indice++;

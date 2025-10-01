@@ -99,13 +99,18 @@ class Url {
 	}
 	
 	// create the url to the $routeName using $args
-	public static function routeToUrl($routeName, $args)
+	public static function routeToUrl($routeName, $args = array())
 	{
 		if (array_key_exists($routeName, self::$routes))
 		{
-			array_unshift($args, self::$routes[$routeName]);
+			if (count($args) > 0)
+			{
+				array_unshift($args, self::$routes[$routeName]);
 			
-			return ltrim(call_user_func_array("sprintf", $args),"/");
+				return ltrim(call_user_func_array("sprintf", $args),"/");
+			}
+			else
+				return self::$routes[$routeName];
 		}
 		
 		throw new Exception('error in <b>' . __METHOD__ . '</b>: the route <b>'.$routeName.'</b> has not been defined.');

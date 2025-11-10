@@ -273,6 +273,21 @@ function sanitizeIp($ip)
 	return preg_match('/^\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}$/',$ip) ? sanitizeAll($ip) : '';
 }
 
+function checkValidTime($time, $format='H:i:s')
+{
+	$d = DateTime::createFromFormat("$format", "$time");
+    return ($d && $d->format($format) == $time);
+}
+
+function sanitizeTime($time)
+{
+	return checkValidTime($time) ? sanitizeAll($time) : "00:00:00";
+}
+
+function sanitizeTimeDeep($value) {
+	return array_map('sanitizeTime', $value);
+}
+
 
 /*
 	CHECK FUNCTIONS

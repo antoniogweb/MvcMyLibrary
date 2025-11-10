@@ -28,7 +28,7 @@ class Params
 
 	public static $allowedDb = array('Mysql','Mysqli','PDOMysql','PDOMssql','None'); //allowed database type
 
-	public static $allowedSanitizeFunc = 'sanitizeAll,sanitizeDb,sanitizeHtml,forceInt,forceNat,none,md5,sha1,strip_tags,passwordhash'; //allowed sanitize functions
+	public static $allowedSanitizeFunc = 'sanitizeAll,sanitizeDb,sanitizeHtml,forceInt,forceNat,none,md5,sha1,strip_tags,passwordhash,sanitizeTime'; //allowed sanitize functions
 
 	//sanitize function used as default in insert and updates
 	public static $defaultSanitizeFunction = "sanitizeAll";

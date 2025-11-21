@@ -181,7 +181,7 @@ class Users_CheckAdmin {
 // 			print_r($row);
 		}
 		else
-			$row=$this->_db->select($this->_usersTable.','.$this->_sessionsTable,$this->_usersTable.'.'.self::$idUserFieldName.','.self::$usernameFieldName.',token,user_agent',$this->_usersTable.".".self::$idUserFieldName."=".$this->_sessionsTable.".".self::$idUserFieldName." and uid='".$this->uid."'",null,null,null,array(),array(),array(),false);
+			$row=$this->_db->select($this->_usersTable.','.$this->_sessionsTable,$this->_usersTable.'.'.self::$idUserFieldName.','.self::$usernameFieldName.',token,user_agent,creation_date',$this->_usersTable.".".self::$idUserFieldName."=".$this->_sessionsTable.".".self::$idUserFieldName." and uid='".$this->uid."'",null,null,null,array(),array(),array(),false);
 		
 // 		$row=$this->_db->select($this->_usersTable.','.$this->_sessionsTable,$this->_usersTable.'.'.self::$idUserFieldName.','.self::$usernameFieldName.',token,user_agent',$this->_usersTable.".".self::$idUserFieldName."=".$this->_sessionsTable.".".self::$idUserFieldName." and uid='".$this->uid."'");
 

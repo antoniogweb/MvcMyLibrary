@@ -195,9 +195,13 @@ class Controller {
 		if (!in_array($sessionType,$sessionTypeArray)) {
 			throw new Exception('Error in '.__METHOD__.': the session type can be \'admin\' or \'registered\' only');
 		}
+		
+		if (isset($this->s[$sessionType]))
+			return;
+		
 		//admin session
 		if ($sessionType === 'admin') {
-		
+			
 			if (!defined('ADMIN_ALLOW_MULTIPLE_ACCESSES'))
 			{
 				define("ADMIN_ALLOW_MULTIPLE_ACCESSES", false);

@@ -436,28 +436,57 @@ function generateString($charNumb = 8,$allowedChars = '0123456789abcdefghijklmno
 function getIp()
 {
     $ip = "";
-
+	$trustedProxies = defined('TRUSTED_PROXIES') ? TRUSTED_PROXIES : array();
+	
     if (isset($_SERVER))
     {
-        if (!empty($_SERVER["HTTP_X_FORWARDED_FOR"]))
-        {
-            $ip = sanitizeIp($_SERVER["HTTP_X_FORWARDED_FOR"]);
-        } else if (!empty($_SERVER["HTTP_CLIENT_IP"])) {
-            $ip = sanitizeIp($_SERVER["HTTP_CLIENT_IP"]);
-        } else if (!empty($_SERVER["REMOTE_ADDR"])) {
-            $ip = sanitizeIp($_SERVER["REMOTE_ADDR"]);
-        }
-    } else {
-        if ( getenv( 'HTTP_X_FORWARDED_FOR' ) !== false ) {
-            $ip = sanitizeIp(getenv( 'HTTP_X_FORWARDED_FOR' ));
-        } else if ( getenv( 'HTTP_CLIENT_IP' ) !== false ) {
-            $ip = sanitizeIp(getenv( 'HTTP_CLIENT_IP' ));
-        } else if ( getenv( 'REMOTE_ADDR' ) !== false ) {
-            $ip = sanitizeIp(getenv( 'REMOTE_ADDR' ));
-        }
+		$remoteAddr = $_SERVER['REMOTE_ADDR'] ?? '';
+		
+		$isTrustedProxy = ($remoteAddr !== '' && in_array($remoteAddr, $trustedProxies, true));
+		
+		if ($isTrustedProxy && !empty($_SERVER['HTTP_X_FORWARDED_FOR'])) {
+			
+			$parts = explode(',', $_SERVER['HTTP_X_FORWARDED_FOR']);
+			$first = trim($parts[0]);
+			if (filter_var($first, FILTER_VALIDATE_IP)) {
+				$ip = $first;
+			}
+		}
+		
+		// fallback sempre su REMOTE_ADDR
+		if ($ip === '' && $remoteAddr !== '' && filter_var($remoteAddr, FILTER_VALIDATE_IP)) {
+			$ip = $remoteAddr;
+		}
     }
-    return $ip;
+    
+    return sanitizeIp($ip);
 }
+
+// function getIp()
+// {
+//     $ip = "";
+// 
+//     if (isset($_SERVER))
+//     {
+//         if (!empty($_SERVER["HTTP_X_FORWARDED_FOR"]))
+//         {
+//             $ip = sanitizeIp($_SERVER["HTTP_X_FORWARDED_FOR"]);
+//         } else if (!empty($_SERVER["HTTP_CLIENT_IP"])) {
+//             $ip = sanitizeIp($_SERVER["HTTP_CLIENT_IP"]);
+//         } else if (!empty($_SERVER["REMOTE_ADDR"])) {
+//             $ip = sanitizeIp($_SERVER["REMOTE_ADDR"]);
+//         }
+//     } else {
+//         if ( getenv( 'HTTP_X_FORWARDED_FOR' ) !== false ) {
+//             $ip = sanitizeIp(getenv( 'HTTP_X_FORWARDED_FOR' ));
+//         } else if ( getenv( 'HTTP_CLIENT_IP' ) !== false ) {
+//             $ip = sanitizeIp(getenv( 'HTTP_CLIENT_IP' ));
+//         } else if ( getenv( 'REMOTE_ADDR' ) !== false ) {
+//             $ip = sanitizeIp(getenv( 'REMOTE_ADDR' ));
+//         }
+//     }
+//     return $ip;
+// }
 
 
 

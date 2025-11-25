@@ -436,30 +436,34 @@ function generateString($charNumb = 8,$allowedChars = '0123456789abcdefghijklmno
 function getIp()
 {
     $ip = "";
-	$trustedProxies = defined('TRUSTED_PROXIES') ? TRUSTED_PROXIES : array();
 	
     if (isset($_SERVER))
     {
 		$remoteAddr = $_SERVER['REMOTE_ADDR'] ?? '';
 		
-		$isTrustedProxy = ($remoteAddr !== '' && in_array($remoteAddr, $trustedProxies, true));
-		
-		if ($isTrustedProxy && !empty($_SERVER['HTTP_X_FORWARDED_FOR'])) {
+		if (!empty($_SERVER['HTTP_X_FORWARDED_FOR']))
+		{
+			$trustedProxies = defined('TRUSTED_PROXIES') ? TRUSTED_PROXIES : array();
+			$isTrustedProxy = ($remoteAddr !== '' && in_array($remoteAddr, $trustedProxies, true));
 			
-			$parts = explode(',', $_SERVER['HTTP_X_FORWARDED_FOR']);
-			$first = trim($parts[0]);
-			if (filter_var($first, FILTER_VALIDATE_IP)) {
-				$ip = $first;
+			if ($isTrustedProxy)
+			{
+				$parts = explode(',', $_SERVER['HTTP_X_FORWARDED_FOR']);
+				$first = trim($parts[0]);
+				
+				if (filter_var($first, FILTER_VALIDATE_IP))
+				{
+					$ip = $first;
+				}
 			}
 		}
-		
-		// fallback sempre su REMOTE_ADDR
-		if ($ip === '' && $remoteAddr !== '' && filter_var($remoteAddr, FILTER_VALIDATE_IP)) {
+		else if ($remoteAddr !== '' && filter_var($remoteAddr, FILTER_VALIDATE_IP))
+		{
 			$ip = $remoteAddr;
 		}
-    }
-    
-    return sanitizeIp($ip);
+	}
+	
+	return sanitizeIp($ip);
 }
 
 // function getIp()

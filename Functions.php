@@ -441,19 +441,22 @@ function getIp()
     {
 		$remoteAddr = $_SERVER['REMOTE_ADDR'] ?? '';
 		
-		if (!empty($_SERVER['HTTP_X_FORWARDED_FOR']))
+		if (defined('TRUSTED_PROXIES'))
 		{
-			$trustedProxies = defined('TRUSTED_PROXIES') ? TRUSTED_PROXIES : array();
-			$isTrustedProxy = ($remoteAddr !== '' && in_array($remoteAddr, $trustedProxies, true));
-			
-			if ($isTrustedProxy)
+			if (!empty($_SERVER['HTTP_X_FORWARDED_FOR']))
 			{
-				$parts = explode(',', $_SERVER['HTTP_X_FORWARDED_FOR']);
-				$first = trim($parts[0]);
+				$trustedProxies = TRUSTED_PROXIES;
+				$isTrustedProxy = ($remoteAddr !== '' && in_array($remoteAddr, $trustedProxies, true));
 				
-				if (filter_var($first, FILTER_VALIDATE_IP))
+				if ($isTrustedProxy)
 				{
-					$ip = $first;
+					$parts = explode(',', $_SERVER['HTTP_X_FORWARDED_FOR']);
+					$first = trim($parts[0]);
+					
+					if (filter_var($first, FILTER_VALIDATE_IP))
+					{
+						$ip = $first;
+					}
 				}
 			}
 		}

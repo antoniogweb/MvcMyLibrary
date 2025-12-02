@@ -290,6 +290,14 @@ class Users_CheckAdmin {
 		return null;
 	}
 	
+	public function getTwoFactorSession()
+	{
+		if (isset($this->twoFactor))
+			return $this->twoFactor->getSession((int)$this->status['id_user']);
+		
+		return array();
+	}
+	
 	public function redirect($val,$time = 3) { #fa il redirect dell'utente
 		if ($val === 'logged') {
 			header('Refresh: '.$time.';url='.$this->_main);

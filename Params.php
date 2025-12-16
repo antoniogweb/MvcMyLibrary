@@ -25,7 +25,6 @@ if (!defined('EG')) die('Direct access not allowed!');
 //class containing all the parameters necessary to MvcMyLibrary to work properly
 class Params
 {
-
 	public static $allowedDb = array('Mysql','Mysqli','PDOMysql','PDOMssql','None'); //allowed database type
 
 	public static $allowedSanitizeFunc = 'sanitizeAll,sanitizeDb,sanitizeHtml,forceInt,forceNat,none,md5,sha1,strip_tags,passwordhash,sanitizeTime'; //allowed sanitize functions
@@ -175,6 +174,9 @@ class Params
 	
 	// function to call before redirect. It can be of the type array("ClassName","MethodName") or array($obj, "MethodName") or "FunctionName"
 	public static $logFunctionBeforeRedirect = null;
+	
+	// fucntion used to hash tokens by function hashToken
+	public static $functionToHashAccessTokens = "";
 	
 	// set the $lang attribute
 	public static function sLang($newLang)

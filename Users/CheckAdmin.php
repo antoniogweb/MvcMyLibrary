@@ -96,7 +96,15 @@ class Users_CheckAdmin {
 		
 		$this->twoFactor = $params['t_model'];
 	}
-
+	
+	private function hashUid()
+	{
+		if ($this->uid !== null && trim($this->uid))
+		{
+			$this->uid = hashToken($this->uid);
+		}
+	}
+	
 	private function acquireCookie() { #obtain cookie
 		#cookie
 		$this->uid = NULL;
@@ -114,6 +122,8 @@ class Users_CheckAdmin {
 		{
 			$this->uid = null;
 		}
+		
+		$this->hashUid();
 // 		$this->uid = isset($_COOKIE[$this->_params['cookie_name']]) ? sanitizeAlnum($_COOKIE[$this->_params['cookie_name']]) : null;
 	}
 
@@ -673,7 +683,7 @@ class Users_CheckAdmin {
 	
 	protected function getRandomUid()
 	{
-		return md5(randString(30).uniqid(mt_rand(),true));
+		return md5(randString(32).uniqid(mt_rand(),true));
 	}
 	
 	public function login($user, $pwd, $force = false)
@@ -701,7 +711,9 @@ class Users_CheckAdmin {
 				
 				if ($this->status['status']==='accepted')
 				{
-					$this->uid = $this->getRandomUid();
+					$this->uid = $cookieUid = $this->getRandomUid();
+					$this->uid = hashToken($this->uid);
+					
 					$this->_token = md5(randString(30));
 					$userAgent = getUserAgent();
 					
@@ -723,7 +735,7 @@ class Users_CheckAdmin {
 					else
 						$this->_db->insert($this->_sessionsTable,self::$idUserFieldName.',uid,token,creation_date,user_agent',array($this->status['id_user'],$this->uid,$this->_token,time(),$userAgent));
 					
-					Cookie::set($this->_params['cookie_name'], $this->uid, $expirationTime, $this->_params['cookie_path'], true, 'Lax');
+					Cookie::set($this->_params['cookie_name'], $cookieUid, $expirationTime, $this->_params['cookie_path'], true, 'Lax');
 					
 					$this->updateAccesses();
 					

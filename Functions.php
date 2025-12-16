@@ -743,3 +743,15 @@ function partiallyHideEmail($email)
 		return $matches[1].preg_replace("/\w/", "*", $matches[2]).$matches[3].$matches[4];
 	}, $email);
 }
+
+function hashToken($token)
+{
+	switch (Params::$functionToHashAccessTokens)
+	{
+		case "sha256":
+			return hash('sha256', $token);
+			break;
+		default:
+			return $token;
+	}
+}

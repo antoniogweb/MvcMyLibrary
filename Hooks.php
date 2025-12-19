@@ -35,4 +35,10 @@ class Hooks
 		}
 	}
 	
+	public static function loadBeforeEnding()
+	{
+		if (file_exists(ROOT . DS . APPLICATION_PATH . DS . 'Hooks' . DS . 'BeforeEnding.php'))
+			Hooks::load(ROOT . DS . APPLICATION_PATH . DS . 'Hooks' . DS . 'BeforeEnding.php');
+	}
+	
 }

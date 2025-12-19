@@ -31,12 +31,14 @@ class HeaderObj {
 	//string that appears until the page is redirected
 	public function redirect($path,$time = 0,$string = null)
 	{
+		if (isset(Params::$logFunctionBeforeRedirect))
+			call_user_func(Params::$logFunctionBeforeRedirect);
+		
+		Hooks::loadBeforeEnding();
+		
 		$completePath = Url::getRoot().$path;
 		header('Refresh: '.$time.';url='.$completePath);
 		if (isset($string)) echo $string;
-		
-		if (isset(Params::$logFunctionBeforeRedirect))
-			call_user_func(Params::$logFunctionBeforeRedirect);
 		
 		exit;
 	}
@@ -44,6 +46,8 @@ class HeaderObj {
 	// Redirect to $urlRedirect
 	public static function location($urlRedirect)
 	{
+		Hooks::loadBeforeEnding();
+		
 		header('Location: '.$urlRedirect);
 		die();
 	}

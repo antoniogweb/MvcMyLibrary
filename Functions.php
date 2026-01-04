@@ -270,7 +270,8 @@ function sanitizeAlnum($string)
 
 function sanitizeIp($ip)
 {
-	return preg_match('/^\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}$/',$ip) ? sanitizeAll($ip) : '';
+	return filter_var($ip, FILTER_VALIDATE_IP) ? sanitizeAll($ip) : '';
+	// return preg_match('/^\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}$/',$ip) ? sanitizeAll($ip) : '';
 }
 
 function checkValidTime($time, $format='H:i:s')
@@ -456,7 +457,7 @@ function getIp()
 					{
 						$last = trim($parts[count($parts)-1]);
 						
-						if (filter_var($last, FILTER_VALIDATE_IP, FILTER_FLAG_IPV4))
+						if (filter_var($last, FILTER_VALIDATE_IP))
 						{
 							$ip = $last;
 						}
@@ -464,7 +465,7 @@ function getIp()
 				}
 			}
 		}
-		else if ($remoteAddr !== '' && filter_var($remoteAddr, FILTER_VALIDATE_IP, FILTER_FLAG_IPV4))
+		else if ($remoteAddr !== '' && filter_var($remoteAddr, FILTER_VALIDATE_IP))
 		{
 			$ip = $remoteAddr;
 		}

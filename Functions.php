@@ -42,6 +42,14 @@ function forceNat($string)
 	return $string;
 }
 
+function forceAlNum(string $string) : string
+{
+	if (ctype_alnum($string))
+		return $string;
+	
+	return "";
+}
+
 function sanitizeQuery($value)
 {
 	if ((!defined('NEW_WHERE_CLAUSE_STYLE') or !NEW_WHERE_CLAUSE_STYLE) && !Params::$newWhereClauseStyle)
@@ -199,6 +207,10 @@ function forceIntDeep($value) {
 
 function forceNatDeep($value) {
 	return array_map('forceNat', $value);
+}
+
+function forceAlNumDeep($value) {
+	return array_map('forceAlNum', $value);
 }
 
 function noneDeep($value) {

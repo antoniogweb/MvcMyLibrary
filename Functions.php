@@ -721,9 +721,9 @@ function createFolderFull($relativePath, $basePath = null, $index = true, $deny 
 	}
 }
 
-function randomToken($salt = 20)
+function randomToken($salt = 32)
 {
-	return md5(randString($salt).uniqid(mt_rand(),true));
+	return md5(randString($salt));
 }
 
 function addBackSlashLike($string = "")

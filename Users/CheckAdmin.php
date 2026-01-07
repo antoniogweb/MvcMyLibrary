@@ -683,7 +683,7 @@ class Users_CheckAdmin {
 	
 	protected function getRandomUid()
 	{
-		return md5(randString(32).uniqid(mt_rand(),true));
+		return md5(randString(32));
 	}
 	
 	public function login($user, $pwd, $force = false)

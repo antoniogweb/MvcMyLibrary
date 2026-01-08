@@ -683,7 +683,7 @@ class Users_CheckAdmin {
 	
 	protected function getRandomUid()
 	{
-		return md5(randString(32));
+		return randomToken();
 	}
 	
 	public function login($user, $pwd, $force = false)
@@ -714,7 +714,7 @@ class Users_CheckAdmin {
 					$this->uid = $cookieUid = $this->getRandomUid();
 					$this->uid = hashToken($this->uid);
 					
-					$this->_token = md5(randString(30));
+					$this->_token = randomToken();
 					$userAgent = getUserAgent();
 					
 					//set the expiration time

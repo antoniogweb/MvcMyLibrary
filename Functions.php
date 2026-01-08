@@ -723,7 +723,7 @@ function createFolderFull($relativePath, $basePath = null, $index = true, $deny 
 
 function randomToken($salt = 32)
 {
-	return md5(randString($salt));
+	return bin2hex(random_bytes(16));
 }
 
 function addBackSlashLike($string = "")

@@ -721,9 +721,9 @@ function createFolderFull($relativePath, $basePath = null, $index = true, $deny 
 	}
 }
 
-function randomToken($salt = 32)
+function randomToken($bytes = 16)
 {
-	return bin2hex(random_bytes(16));
+	return bin2hex(random_bytes($bytes));
 }
 
 function addBackSlashLike($string = "")

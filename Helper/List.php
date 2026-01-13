@@ -273,7 +273,7 @@ class Helper_List extends Helper_Html {
 	public function replaceFields($string,$rowArray) {
 		$this->__rowArray = $rowArray; //used by the replaceField  method
 
-		$hash = md5(microtime().uniqid(mt_rand(),true));
+		$hash = randomToken();
 		
 		$string = str_replace($this->viewStatus,$hash,$string);
 		$string = preg_replace_callback('/(\;)([a-zA-Z0-9\_\.\|\:\-]{1,})(\;)/', array($this, 'replaceField') ,$string);

@@ -81,21 +81,22 @@ class Url {
 		$elementsArray = explode(',',nullToBlank($numericString));
 		$valuesArray = array_values($variablesArray);
 		$keysArray = array_keys($variablesArray);
-		$urlString = null;
+		$urlString = "";
+		
 		for ($i = 0; $i < count($valuesArray); $i++)
 		{
 			if (isset($numericString)) {
-				if (isset($valuesArray[$i]) and in_array($i,$elementsArray)) {
-					$urlString .= (Params::$rewriteStatusVariables or $forceRewrite) ? "/".$valuesArray[$i] : "&".$keysArray[$i]."=".$valuesArray[$i];
+				if (isset($valuesArray[$i]) && in_array($i,$elementsArray)) {
+					$urlString .= (Params::$rewriteStatusVariables || $forceRewrite) ? "/".rawurlencode((string)$valuesArray[$i]) : "&".$keysArray[$i]."=".rawurlencode((string)$valuesArray[$i]);
 				}
 			} else {
 				if (isset($valuesArray[$i])) {
-					$urlString .= (Params::$rewriteStatusVariables or $forceRewrite) ? "/".$valuesArray[$i] : "&".$keysArray[$i]."=".$valuesArray[$i];
+					$urlString .= (Params::$rewriteStatusVariables || $forceRewrite) ? "/".rawurlencode((string)$valuesArray[$i]) : "&".$keysArray[$i]."=".rawurlencode((string)$valuesArray[$i]);
 				}
 			}
 		}
 		
-		return (Params::$rewriteStatusVariables or $forceRewrite) ? $urlString : "?".ltrim(nullToBlank($urlString),"&");
+		return (Params::$rewriteStatusVariables || $forceRewrite) ? $urlString : "?".ltrim(nullToBlank($urlString),"&");
 	}
 	
 	// create the url to the $routeName using $args

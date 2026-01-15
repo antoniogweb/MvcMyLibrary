@@ -113,7 +113,7 @@ function sanitizeAll($stringa) {
 function sanitizeHtml($stringa) {
 
 	$charset = Params::$htmlentititiesCharset;
-	$stringa=htmlentities(nullToBlank($stringa),ENT_QUOTES,$charset);
+	$stringa=htmlentities(nullToBlank($stringa),ENT_QUOTES | ENT_SUBSTITUTE,$charset);
 	return $stringa;
 
 }
@@ -121,7 +121,7 @@ function sanitizeHtml($stringa) {
 function sanitizeHtmlLight($stringa) {
 
 	$charset = Params::$htmlentititiesCharset;
-	$stringa=htmlspecialchars(nullToBlank($stringa),ENT_QUOTES,$charset);
+	$stringa=htmlspecialchars(nullToBlank($stringa),ENT_QUOTES | ENT_SUBSTITUTE,$charset);
 	return $stringa;
 
 }

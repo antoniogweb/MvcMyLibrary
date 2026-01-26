@@ -906,7 +906,7 @@ abstract class Model_Base
 	//$functionsIfFromDb = associative array of the form: array($entry=>$function_to_be_applied)
 	public function getFormValues($queryType = 'insert', $func = 'sanitizeHtml',$id = null,$defaultValues = array(),$functionsIfFromDb = array())
 	{
-		@session_start();
+		Session::open();
 		
 		//get the action array
 		$actionArray = strcmp(Params::$actionArray,"POST") === 0 ? $_POST : $_GET;
@@ -1031,6 +1031,8 @@ abstract class Model_Base
 				}
 			}
 		}
+		
+		Session::restore();
 		
 		return $values;
 	}

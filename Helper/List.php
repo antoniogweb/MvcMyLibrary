@@ -945,7 +945,7 @@ class Helper_List extends Helper_Html {
 		{
 			$text = isset($this->submitImages['del']) ? "<img src='".$this->submitImages[$submitValue]."'>" : $itemArray['value'];
 			$title = isset($this->submitTitles['del']) ? $this->submitTitles[$submitValue] : $itemArray['value'];
-			$string = "<a title='".$title."' class='linkItem' href='".Url::getRoot(null).$itemArray['action'].$viewStatus."'>$text</a>\n";
+			$string = "<a title='".$title."' class='linkItem' href='".Url::getRoot(null).$itemArray['action'].$viewStatus."&csrf=".$this->csrfToken."'>$text</a>\n";
 		}
 		else
 		{
@@ -953,7 +953,7 @@ class Helper_List extends Helper_Html {
 			
 			$text = isset(self::$actionsLayout[$submitValue]["text"]) ? self::$actionsLayout[$submitValue]["text"] : $submitValue;
 			
-			$string = "<a $attributes href='".Url::getRoot(null).$itemArray['action'].$viewStatus."'>$text</a>\n";
+			$string = "<a $attributes href='".Url::getRoot(null).$itemArray['action'].$viewStatus."&csrf=".$this->csrfToken."'>$text</a>\n";
 		}
 		
 		return $string;

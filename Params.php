@@ -178,6 +178,9 @@ class Params
 	// fucntion used to hash tokens by function hashToken
 	public static $functionToHashAccessTokens = "";
 	
+	// session to be used for csrf token in CRUD (it can be admin or registered)
+	public static $sessionCsrfTokenInCrud = "admin";
+	
 	// set the $lang attribute
 	public static function sLang($newLang)
 	{

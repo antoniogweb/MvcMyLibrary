@@ -522,7 +522,7 @@ class Files_Upload
 	{
 		$userfile = $this->params['fileUploadKey'];
 		
-		if(strcmp(trim($_FILES[$userfile]["name"]),"") !== 0)
+		if(isset($_FILES[$userfile]["name"]) && strcmp(trim($_FILES[$userfile]["name"]),"") !== 0)
 		{
 			$nameFromUpload = basename($_FILES[$userfile]["name"]);
 

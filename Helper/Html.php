@@ -28,5 +28,6 @@ class Helper_Html {
 	public $viewArgs = array(); //arguments of the view action (to mantain the status, ex: page,language,etc)
 	public $viewStatus = null; //additional string to the url to define the status of the view action (ex: page,language,etc)
 	public $model = null; //the reference of the model passed from the controller
-
+	public $csrfToken = ""; //CSRF for admin actions
+	
 }

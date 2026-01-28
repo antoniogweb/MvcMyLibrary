@@ -135,6 +135,9 @@ class Controller {
 			if ($this->h[$helperName] instanceof Helper_Html) {
 				$this->h[$helperName]->viewArgs = $this->viewArgs;
 				$this->h[$helperName]->viewStatus = $this->viewStatus;
+				
+				if (Params::$sessionCsrfTokenInCrud && isset($this->s[Params::$sessionCsrfTokenInCrud]) && isset($this->s[Params::$sessionCsrfTokenInCrud]->status["token"]))
+					$this->h[$helperName]->csrfToken = $this->s[Params::$sessionCsrfTokenInCrud]->status["token"];
 			}
 
 			if (method_exists($this->h[$helperName], 'build')) {

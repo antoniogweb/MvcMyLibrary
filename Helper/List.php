@@ -32,7 +32,10 @@ class Helper_List extends Helper_Html {
 	public static $getAllRowsListMethod = "getAllRowsList";
 	
 	private $__rowArray = array(); //the current associative array representing the database record
-
+	
+	// used instead of blank in HTML tables
+	protected $_emptyChar = "&nbsp;";
+	
 	protected $_itemsList = array(); //2-dimensional associative array containing the list items
 	//keys: type,table:field,controller/action,value
 	protected $_head = array(); //2-dimensional array containing the head of the table
@@ -171,6 +174,19 @@ class Helper_List extends Helper_Html {
 	{
 		$this->_identifierName = $identifierName;
 	}
+	
+	public function setEmptyChar($emptyChar)
+	{
+		$oldEmptyChar = $this->_emptyChar;
+		
+		$this->_emptyChar = $emptyChar;
+		
+		for ($i = 0; $i < count($this->_head); $i++)
+		{
+			if ($this->_head[$i]["action"] === $oldEmptyChar)
+				$this->_head[$i]["action"] = $this->_emptyChar;
+		}
+	}
 
 	//add a list Item. $type: the type of the item, $field: the table.field to exctract (use colon to separate the table and the field),$action: controller/action,$value=if type == link->the value of the link
 	public function addItem($type, $action = '', $field = '', $name = '', $value = '', $title = '') {
@@ -203,7 +219,7 @@ class Helper_List extends Helper_Html {
 		if ($type === 'simpleText') {
 			$head['action'] = $this->extractFieldName($action);
 		} else {
-			$head['action'] = '&nbsp';
+			$head['action'] = $this->_emptyChar;
 		}
 		$this->_head[] = $head;
 	}
@@ -364,7 +380,7 @@ class Helper_List extends Helper_Html {
 				$string = call_user_func($this->functionUponCsvCellValue, $string);
 			}
 			
-			return '"'.trim(strip_tags(str_replace("&nbsp","",$string))).'"'.$this->csvColumnsSeparator;
+			return '"'.trim(strip_tags(str_replace("&nbsp;","",$string))).'"'.$this->csvColumnsSeparator;
 		}
 	}
 
@@ -414,7 +430,7 @@ class Helper_List extends Helper_Html {
 			{
 				$temp = Html_Form::checkbox("bulkselect_".$matches[1],"","BS","bulk_select_checkbox",null,"data-class='".$matches[1]."'");
 			}
-			else if (Params::$translatorFunction && trim($temp) && $temp != "&nbsp")
+			else if (Params::$translatorFunction && trim($temp) && $temp != "&nbsp;")
 				$temp = call_user_func(Params::$translatorFunction, $temp);
 			
 			//if renderToCsv is set to true skip what is not a simple text
@@ -487,7 +503,7 @@ class Helper_List extends Helper_Html {
 // 						}
 					}
 
-					$html = '&nbsp';
+					$html = '&nbsp;';
 					if (isset($this->_filters[$count]))
 					{
 						if (!is_array($this->_filters[$count]))
@@ -641,7 +657,7 @@ class Helper_List extends Helper_Html {
 
 			if (($this->_boundaries === 'top' and ($item['type'] === 'moveupForm' or $item['type'] === 'lmoveup')) or ($this->_boundaries === 'bottom' and ($item['type'] === 'movedownForm' or $item['type'] === 'lmovedown')) or ($this->_boundaries === 'both' and ($item['type'] === 'moveupForm' or $item['type'] === 'movedownForm' or $item['type'] === 'lmoveup' or $item['type'] === 'lmovedown')))
 			{
-				$htmlList .= $this->wrapColumn('&nbsp',$prop);
+				$htmlList .= $this->wrapColumn('&nbsp;',$prop);
 			}
 			else
 			{
@@ -854,13 +870,13 @@ class Helper_List extends Helper_Html {
 	}
 
 	public function rawText($itemArray) {
-		$text = strcmp($itemArray['action'],'') !== 0 ? $itemArray['action'] : '&nbsp';
+		$text = strcmp($itemArray['action'],'') !== 0 ? $itemArray['action'] : $this->_emptyChar;
 		$string = "<span class='textItem'>".$text."</span>\n";
 		return $string;
 	}
 	
 	public function simpleText($itemArray) {
-		$emptyChar = isset(Params::$defaultSanitizeHtmlFunction) ? "" : '&nbsp';
+		$emptyChar = isset(Params::$defaultSanitizeHtmlFunction) ? "" : $this->_emptyChar;
 		
 		$text = strcmp($itemArray['action'],'') !== 0 ? $itemArray['action'] : $emptyChar;
 		

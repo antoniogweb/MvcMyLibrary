@@ -486,34 +486,6 @@ function getIp()
 	return sanitizeIp($ip);
 }
 
-// function getIp()
-// {
-//     $ip = "";
-// 
-//     if (isset($_SERVER))
-//     {
-//         if (!empty($_SERVER["HTTP_X_FORWARDED_FOR"]))
-//         {
-//             $ip = sanitizeIp($_SERVER["HTTP_X_FORWARDED_FOR"]);
-//         } else if (!empty($_SERVER["HTTP_CLIENT_IP"])) {
-//             $ip = sanitizeIp($_SERVER["HTTP_CLIENT_IP"]);
-//         } else if (!empty($_SERVER["REMOTE_ADDR"])) {
-//             $ip = sanitizeIp($_SERVER["REMOTE_ADDR"]);
-//         }
-//     } else {
-//         if ( getenv( 'HTTP_X_FORWARDED_FOR' ) !== false ) {
-//             $ip = sanitizeIp(getenv( 'HTTP_X_FORWARDED_FOR' ));
-//         } else if ( getenv( 'HTTP_CLIENT_IP' ) !== false ) {
-//             $ip = sanitizeIp(getenv( 'HTTP_CLIENT_IP' ));
-//         } else if ( getenv( 'REMOTE_ADDR' ) !== false ) {
-//             $ip = sanitizeIp(getenv( 'REMOTE_ADDR' ));
-//         }
-//     }
-//     return $ip;
-// }
-
-
-
 function getUserAgent() {
 	if (isset($_SERVER['HTTP_USER_AGENT']))
 	{

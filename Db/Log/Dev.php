@@ -42,6 +42,9 @@ class Db_Log_Dev extends Db_Log_Generic
 		
 		if ($queryTime > self::$queryTimeThresholdToLogInSeconds)
 		{
+			if (isset($_SERVER['REQUEST_URI']))
+				$this->writeLog("REQUEST URI: ".$_SERVER['REQUEST_URI']);
+			
 			$this->writeLog($signature);
 			$this->writeLog("QUERY TIME: ".$queryTime);
 		}

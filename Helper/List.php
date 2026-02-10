@@ -105,6 +105,9 @@ class Helper_List extends Helper_Html {
 	//function to be applied on the cell before printing (for CSV)
 	public $functionUponCsvCellValue = null;
 	
+	//function to be applied on the cell before printing (for HTML)
+	public $functionUponHtmlCellValue = null;
+	
 	public static $submitEditText = array();
 	
 	//layout of the action buttons
@@ -371,6 +374,11 @@ class Helper_List extends Helper_Html {
 	public function wrapColumn($string, $className = null, $tag = "td") {
 		if (!$this->renderToCsv)
 		{
+			if (isset($this->functionUponHtmlCellValue))
+			{
+				$string = call_user_func($this->functionUponHtmlCellValue, $string);
+			}
+			
 			return wrap($string,array($tag=>$className));
 		}
 		else

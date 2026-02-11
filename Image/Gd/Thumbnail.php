@@ -403,7 +403,8 @@ class Image_Gd_Thumbnail
 				//copy and resize
 				imagecopyresized($tmpImg, $img, $xDst, $yDst, $xSrc, $ySrc,$newWidth, $newHeight, $width, $height);
 			}
-			imagedestroy($img);
+			// imagedestroy($img);
+			unset($img);
 			
 			if ($this->params["imageTrueColorToPalette".ucfirst($type)])
 				imagetruecolortopalette($tmpImg, false, $this->params["imageTrueColorToPalette".ucfirst($type)]);

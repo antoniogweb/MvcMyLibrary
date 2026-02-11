@@ -1028,7 +1028,7 @@ class Helper_List extends Helper_Html {
 		$cleanName = str_replace('n!',"",$viewArgsName);
 		$cleanName = str_replace('-',"",$cleanName);
 
-		if (isset($this->viewArgs[$this->pageArg]))
+		if (isset($this->viewArgs[nullToBlank($this->pageArg)]))
 		{
 			$this->viewArgs[$this->pageArg] = 1;
 		}

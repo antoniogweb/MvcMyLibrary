@@ -461,7 +461,7 @@ class Image_Gd_Thumbnail
 				{
 					switch ($text["align"])
 					{
-						case "center";
+						case "center":
 							$textWidth = imagettfbbox($text["size"], $text["angle"], $text["font"], $text["text"]);
 							
 							$x -= (int)($textWidth[2] / 2);

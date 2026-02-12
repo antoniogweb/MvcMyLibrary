@@ -320,7 +320,7 @@ class Scaffold
 
 	//method to create the HTML of the scaffold
 	//$values: the values to insert in the from entries
-	public function render($values = null,$subset = null, $beforeValues = null, $afterValues = null)
+	public function render($values = null,$subset = null, $beforeValues = null, $afterValues = null, $splitQuery = false)
 	{
 		
 		if ($this->_type === 'main')
@@ -353,7 +353,21 @@ class Scaffold
 			}
 
 			$queryFields = isset($this->fields) ? $this->fields : $this->model->select;
-			$values = $this->model->getTable($queryFields);
+			
+			if ($splitQuery)
+			{
+				$tableKey = $this->model->table().".".$this->model->getPrimaryKey();
+				
+				$idS = forceIntDeep($this->model->select("distinct ".$tableKey)->toList($tableKey)->send());
+				
+				$values = $this->model->select($queryFields)->where(array(
+					"in"	=>	array(
+						$tableKey	=>	$idS,
+					),
+				))->orderBy("FIELD(pages.id_page, ".implode(',', $idS).")")->limit(null)->send();
+			}
+			else
+				$values = $this->model->getTable($queryFields);
 			
 			if ($beforeValues)
 				$values = array_merge($beforeValues, $values);

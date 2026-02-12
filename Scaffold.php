@@ -364,7 +364,7 @@ class Scaffold
 					"in"	=>	array(
 						$tableKey	=>	$idS,
 					),
-				))->orderBy("FIELD(pages.id_page, ".implode(',', $idS).")")->limit(null)->send();
+				))->orderBy("FIELD($tableKey, ".implode(',', $idS).")")->limit(null)->send();
 			}
 			else
 				$values = $this->model->getTable($queryFields);

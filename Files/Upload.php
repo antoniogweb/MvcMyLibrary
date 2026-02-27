@@ -511,7 +511,6 @@ class Files_Upload
 		$finfo = finfo_open(FILEINFO_MIME_TYPE);
 		$MIMEtype = finfo_file($finfo, $filename);
 		$this->mimeType = $MIMEtype;
-		finfo_close($finfo);
 		
 		return $MIMEtype;
 	}
@@ -572,7 +571,6 @@ class Files_Upload
 							$finfo = finfo_open(FILEINFO_MIME_TYPE);
 							$MIMEtype = finfo_file($finfo, $_FILES[$userfile]["tmp_name"]);
 							$this->mimeType = $MIMEtype;
-							finfo_close($finfo);
 						}
 						
 						$AllowedMimeTypesArray = explode(',',$this->params['allowedMimeTypes']);

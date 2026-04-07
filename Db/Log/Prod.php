@@ -24,7 +24,7 @@ if (!defined('EG')) die('Direct access not allowed!');
 
 class Db_Log_Prod extends Db_Log_Generic
 {
-	public function startLog() {}
+	public function startLog($signature = "", $name = "QUERIES") {}
 	
-	public function endLog($query = "") {}
+	public function endLog($query = "", $writeSingleLog = true, $name = "QUERIES") {}
 }

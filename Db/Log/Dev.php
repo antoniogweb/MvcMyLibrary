@@ -27,20 +27,20 @@ class Db_Log_Dev extends Db_Log_Generic
 	public $startTime = 0;
 	public $endTime = 0;
 	
-	public function startLog($signature = "")
+	public function startLog($signature = "", $name = "QUERIES")
 	{
 		$this->startTime = microtime(true);
-		$this->timer->startTime("QUERIES", $signature);
+		$this->timer->startTime($name, $signature);
 	}
 	
-	public function endLog($signature = "")
+	public function endLog($signature = "", $writeSingleLog = true, $name = "QUERIES")
 	{
 		$this->endTime = microtime(true);
-		$this->timer->endTime("QUERIES", $signature);
+		$this->timer->endTime($name, $signature);
 		
 		$queryTime = ($this->endTime - $this->startTime);
 		
-		if ($queryTime > self::$queryTimeThresholdToLogInSeconds)
+		if ($writeSingleLog && $queryTime > self::$queryTimeThresholdToLogInSeconds)
 		{
 			if (isset($_SERVER['REQUEST_URI']))
 				$this->writeLog("REQUEST URI: ".$_SERVER['REQUEST_URI']);

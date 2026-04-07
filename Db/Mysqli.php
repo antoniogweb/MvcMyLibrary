@@ -360,13 +360,15 @@ class Db_Mysqli extends Db_Generic
 		$this->query = $query;
 		$this->queries[] = $query;
 		
-		$this->logger->startLog($query);
-		$result = $this->db->query($query);
-		$this->logger->endLog($query);
-		
-		$data = $this->getData($result, $showTable);
-		
-		Cache_Db::setData($table, "SELECT ".$query, $data);
+			$this->logger->startLog($query);
+			$result = $this->db->query($query);
+			$this->logger->endLog($query);
+			
+			$this->logger->startLog($query, "HYDRATE");
+			$data = $this->getData($result, $showTable);
+			$this->logger->endLog($query, false, "HYDRATE");
+			
+			Cache_Db::setData($table, "SELECT ".$query, $data);
 		
 		return $data;
 	}
@@ -827,7 +829,11 @@ class Db_Mysqli extends Db_Generic
 		}
 		else if ($result instanceof MySQLi_Result)
 		{
-			return $this->getData($result, $showTable);
+			$this->logger->startLog($query, "HYDRATE");
+			$data = $this->getData($result, $showTable);
+			$this->logger->endLog($query, false, "HYDRATE");
+			
+			return $data;
 		}
 	}
 

@@ -25,7 +25,7 @@ if (!defined('EG')) die('Direct access not allowed!');
 //class to manage cookies
 class Cookie
 {
-	public static function set($name, $value, $expires = 0, $path = "/", $secure = true, $samesite = 'None')
+	public static function set($name, $value, $expires = 0, $path = "/", $secure = true, $samesite = 'None', $httpOnly = true)
 	{
 		if (!Params::$useHttps)
 			$secure = false;
@@ -37,6 +37,7 @@ class Cookie
 				'path' => $path,
 				'secure' => $secure,
 				'samesite'	=>	$samesite,
+				'httponly'	=> $httpOnly,
 			);
 			
 			if (!Params::$useHttps && $samesite == 'None')
@@ -46,7 +47,7 @@ class Cookie
 		}
 		else
 		{
-			setcookie($name,$value,$expires,$path, "", $secure);
+			setcookie($name,$value,$expires,$path, "", $secure, $httpOnly);
 		}
 	}
 }

@@ -766,7 +766,7 @@ class Files_Upload
 		"stf"	=>	"application/vnd.wt.stf",
 		"sti"	=>	"application/vnd.sun.xml.impress.template",
 		"stk"	=>	"application/hyperstudio",
-		"stl"	=>	"application/vnd.ms-pki.stl",
+		"stl"	=>	"application/vnd.ms-pki.stl,application/octet-stream",
 		"str"	=>	"application/vnd.pg.format",
 		"stw"	=>	"application/vnd.sun.xml.writer.template",
 		"sus"	=>	"application/vnd.sus-calendar",

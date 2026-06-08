@@ -664,7 +664,7 @@ class Files_Upload
 		"rdz"	=>	"application/vnd.data-vision.rdz",
 		"rep"	=>	"application/vnd.businessobjects",
 		"res"	=>	"application/x-dtbresource+xml",
-		"rfa"	=>	"application/x-ole-storage",
+		"rfa"	=>	"application/x-ole-storage,application/CDFV2",
 		"rgb"	=>	"image/x-rgb",
 		"rif"	=>	"application/reginfo+xml",
 		"rl"	=>	"application/resource-lists+xml",

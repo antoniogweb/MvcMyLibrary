@@ -409,7 +409,11 @@ function callHook()
 
 // 	echo $controller."-".$action;
 	//include the file containing the set of actions to carry out before the initialization of the controller class
-	Hooks::load(ROOT . DS . APPLICATION_PATH . DS . 'Hooks' . DS . 'BeforeInitialization.php');
+	$pathBeforeInitialization = ROOT . DS . APPLICATION_PATH . DS . 'Hooks' . DS . 'BeforeInitialization.php';
+	
+	if (file_exists($pathBeforeInitialization))
+		include_once($pathBeforeInitialization);
+	// Hooks::load(ROOT . DS . APPLICATION_PATH . DS . 'Hooks' . DS . 'BeforeInitialization.php');
 
 	if (class_exists($controller))
 	{

@@ -22,40 +22,19 @@
 
 if (!defined('EG')) die('Direct access not allowed!');
 
-//class to manage cookies
-class Cookie
+//class to manage signatures
+class ValueSigner
 {
-	public static function set($name, $value, $expires = 0, $path = "/", $secure = true, $samesite = 'None', $httpOnly = true, $signatureKey = null)
+	public static function sign(string $value, string $signatureKey): string
 	{
-		if (!Params::$useHttps)
-			$secure = false;
+		return hash_hmac('sha256', $value, $signatureKey);
+	}
+	
+	public static function verify(string $value, string $signature, string $signatureKey): bool
+	{
+		if (hash_equals(hash_hmac('sha256', $value, $signatureKey), $signature))
+			return true;
 		
-		if (PHP_VERSION_ID >= 70300)
-		{
-			$cookieOptions = array (
-				'expires' => $expires,
-				'path' => $path,
-				'secure' => $secure,
-				'samesite'	=>	$samesite,
-				'httponly'	=> $httpOnly,
-			);
-			
-			if (!Params::$useHttps && $samesite == 'None')
-				$cookieOptions['samesite'] = 'Lax';
-			
-			setcookie($name,$value,$cookieOptions);
-			
-			// Create signature
-			if ($signatureKey)
-				setcookie($name."_sig",ValueSigner::sign($value, $signatureKey),$cookieOptions);
-		}
-		else
-		{
-			setcookie($name,$value,$expires,$path, "", $secure, $httpOnly);
-			
-			// Create signature
-			if ($signatureKey)
-				setcookie($name."_sig",ValueSigner::sign($value, $signatureKey),$expires,$path, "", $secure, $httpOnly);
-		}
+		return false;
 	}
 }

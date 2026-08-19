@@ -584,7 +584,7 @@ class Helper_List extends Helper_Html {
 					if (isset(self::$filtersFormLayout["submit"]))
 					{
 						$attributes = isset(self::$filtersFormLayout["submit"]["attributes"]) ? arrayToAttributeString(self::$filtersFormLayout["submit"]["attributes"]) : "";
-						$text = isset(self::$filtersFormLayout["submit"]["text"]) ? $this->strings->gtext(self::$filtersFormLayout["submit"]["text"]) : "Filter";
+						$text = isset(self::$filtersFormLayout["submit"]["html"]) ? self::$filtersFormLayout["submit"]["html"] : (isset(self::$filtersFormLayout["submit"]["text"]) ? $this->strings->gtext(self::$filtersFormLayout["submit"]["text"]) : "Filter");
 						$formBottom .= "<button $attributes>".$text."</button>\n";
 					}
 					else

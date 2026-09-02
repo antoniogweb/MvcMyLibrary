@@ -65,6 +65,9 @@ class Scaffold
 	//instance of Lang_{language}_Generic
 	public $strings = null;
 	
+	// number of elements of the view
+	public $numberOfElements = null;
+	
 	public static $autoParams = array(
 		'mainAction'		=>	'main',
 		'modifyAction'		=>	'form/update',
@@ -325,8 +328,7 @@ class Scaffold
 		
 		if ($this->_type === 'main')
 		{
-
-			$recordNumber = $this->model->rowNumber();
+			$recordNumber = $this->numberOfElements = $this->model->rowNumber();
 			
 			if (isset($this->viewArgs[$this->params['pageVariable']]))
 			{
@@ -360,11 +362,12 @@ class Scaffold
 				
 				$idS = forceIntDeep($this->model->select("distinct ".$tableKey)->toList($tableKey)->send());
 				
-				$values = $this->model->select($queryFields)->where(array(
+				$values = $this->model->save()->select($queryFields)->where(array(
 					"in"	=>	array(
 						$tableKey	=>	$idS,
 					),
 				))->orderBy("FIELD($tableKey, ".implode(',', $idS).")")->limit(null)->send();
+				$this->model->restore(true);
 			}
 			else
 				$values = $this->model->getTable($queryFields);

@@ -67,7 +67,7 @@ class Scaffold
 	
 	// number of elements of the view
 	public $numberOfElements = null;
-	
+
 	public static $autoParams = array(
 		'mainAction'		=>	'main',
 		'modifyAction'		=>	'form/update',
@@ -361,13 +361,20 @@ class Scaffold
 				$tableKey = $this->model->table().".".$this->model->getPrimaryKey();
 				
 				$idS = forceIntDeep($this->model->select("distinct ".$tableKey)->toList($tableKey)->send());
-				
-				$values = $this->model->save()->select($queryFields)->where(array(
-					"in"	=>	array(
-						$tableKey	=>	$idS,
-					),
-				))->orderBy("FIELD($tableKey, ".implode(',', $idS).")")->limit(null)->send();
-				$this->model->restore(true);
+
+				if (empty($idS))
+				{
+					$values = array();
+				}
+				else
+				{
+					$values = $this->model->save()->select($queryFields)->where(array(
+						"in"	=>	array(
+							$tableKey	=>	$idS,
+						),
+					))->orderBy("FIELD($tableKey, ".implode(',', $idS).")")->limit(null)->send();
+					$this->model->restore(true);
+				}
 			}
 			else
 				$values = $this->model->getTable($queryFields);

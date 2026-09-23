@@ -2619,7 +2619,7 @@ abstract class Model_Base
 			
 			foreach ($resultSet as $row)
 			{
-				$list[$row[$keyTable][$keyField]] = $row[$valueTable][$valueField];
+				$list[nullToBlank($row[$keyTable][$keyField])] = $row[$valueTable][$valueField];
 			}
 			
 		}

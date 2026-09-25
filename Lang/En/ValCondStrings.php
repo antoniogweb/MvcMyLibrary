@@ -99,6 +99,12 @@ class Lang_En_ValCondStrings {
 	{
 		return "<div class='".Params::$errorStringClassName."'>Please check that the field <i>".$this->translateElement(getFieldLabel($element))."</i> is a real date</div>\n".$this->getHiddenAlertElement($element);
 	}
+
+	//if the element is not a valid URL
+	public function getNotUrlResultString($element)
+	{
+		return "<div class='".Params::$errorStringClassName."'>Please check that the field <i>".$this->translateElement(getFieldLabel($element))."</i> is a valid URL</div>\n".$this->getHiddenAlertElement($element);
+	}
 	
 	//if the element (string) length exceeds the value of characters (defined by $maxLength)
 	public function getLengthExceedsResultString($element,$maxLength)

@@ -77,6 +77,12 @@ class Lang_Eng_ValCondStrings {
 	{
 		return "<div class='".Params::$errorStringClassName."'>".$element." has to be a real date (YYYY-MM-DD)</div>\n";
 	}
+
+	//if the element is not a valid URL
+	public function getNotUrlResultString($element)
+	{
+		return "<div class='".Params::$errorStringClassName."'>".$element." has to be a valid URL</div>\n";
+	}
 	
 	//if the element (string) length exceeds the value of characters (defined by $maxLength)
 	public function getLengthExceedsResultString($element,$maxLength)

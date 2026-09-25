@@ -322,6 +322,12 @@ function checkMail($string)
 	}
 }
 
+//check if a string has a valid URL format
+function checkUrl($url)
+{
+	return filter_var($url, FILTER_VALIDATE_URL) !== false;
+}
+
 
 
 function wrap($string,$tag_class) {#wrap the string with the tag and its class

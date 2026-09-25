@@ -171,6 +171,13 @@ class Array_Validate_Base
 		return $this->checkGeneric($associativeArray,$keyString,$strength,'checkMail','getNotMailFormatResultString');
 	}
 
+	//verify that the values of the associative array ($associativeArray) indicated by the key string ($keyString) have URL format
+	//$strength: hard or soft. If $strength is set equal to soft then no check is made upon array values equal to '' or null
+	public function checkUrl($associativeArray,$keyString,$strength = 'strong')
+	{
+		return $this->checkGeneric($associativeArray,$keyString,$strength,'checkUrl','getNotUrlResultString');
+	}
+
 
 	//verify that the values of the associative array ($associativeArray) indicated by the key string ($keyString) are integer strings
 	//$strength: hard or soft. If $strength is set equal to soft than non check is made upon array values equalt to '' or null

@@ -101,6 +101,17 @@ class Array_Validate_Strong extends Array_Validate_Base
 		}
 	}
 
+	//verify that the values of the associative array ($associativeArray) indicated by the key string ($keyString) have URL format
+	public function checkUrl($associativeArray,$keyString,$strength = 'strong')
+	{
+		if ($this->checkNotEmpty($associativeArray,$keyString))
+		{
+			return parent::checkUrl($associativeArray,$keyString,'strong');
+		} else {
+			return false;
+		}
+	}
+
 
 	//verify that the values of the associative array ($associativeArray) indicated by the key string ($keyString) are an ISO date.
 	public function checkIsoDate($associativeArray,$keyString,$strength = 'strong')

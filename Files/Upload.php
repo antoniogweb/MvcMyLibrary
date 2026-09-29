@@ -26,7 +26,7 @@ if (!defined('EG')) die('Direct access not allowed!');
 class Files_Upload
 {
 	const DS = DIRECTORY_SEPARATOR;
-
+	
 	private $base = null; //root directory
 	private $directory = null; //current directory. Path relative to the base directory (Files_Upload::base)
 	private $parentDir = null; //parent folder
@@ -44,6 +44,25 @@ class Files_Upload
 	
 	public $ext = null; //the extension of the last file that has been uploaded
 	public $mimeType = null; //the mime type of the last file that has been uploaded
+	
+	public static $defaultParams = array(
+		'filesPermission'				=>	0777,
+		'changeFilePermission'			=>	false,
+		'delFolderAction'				=>	'delFolderAction',
+		'delFileAction'					=>	'delFileAction',
+		'createFolderAction'			=>	'createFolderAction',
+		'uploadFileAction'				=>	'uploadFileAction',
+		'maxFileSize' 					=>	3000000,
+		'language' 						=>	'En',
+		'allowedExtensions'				=>	'jpg,jpeg,png,gif,txt',
+		'allowedMimeTypes'				=>	'',
+		'fileUploadKey' 				=>	'userfile',
+		'fileUploadBehaviour'			=>	'add_token', //can be none or add_token
+		'fileUploadBeforeTokenChar'		=>	'_',
+		'functionUponFileNane'			=>	'none',
+		'createImage'					=>	false, // if it has to create the image after upload
+		'createImageParams'				=>	null,
+	);
 	
 	public static $extToMimeType = array(
 		"123"	=>	"application/vnd.lotus-1-2-3",
@@ -959,24 +978,26 @@ class Files_Upload
 		$tmp = str_replace(self::DS,'\\'.self::DS,$this->base);
 		$this->pattern = "/^(".$tmp.")/";
 		
-		$defaultParams = array(
-			'filesPermission'				=>	0777,
-			'changeFilePermission'			=>	false,
-			'delFolderAction'				=>	'delFolderAction',
-			'delFileAction'					=>	'delFileAction',
-			'createFolderAction'			=>	'createFolderAction',
-			'uploadFileAction'				=>	'uploadFileAction',
-			'maxFileSize' 					=>	3000000,
-			'language' 						=>	'En',
-			'allowedExtensions'				=>	'jpg,jpeg,png,gif,txt',
-			'allowedMimeTypes'				=>	'',
-			'fileUploadKey' 				=>	'userfile',
-			'fileUploadBehaviour'			=>	'add_token', //can be none or add_token
-			'fileUploadBeforeTokenChar'		=>	'_',
-			'functionUponFileNane'			=>	'none',
-			'createImage'					=>	false, // if it has to create the image after upload
-			'createImageParams'				=>	null,
-		);
+		$defaultParams = self::$defaultParams;
+		
+		// $defaultParams = array(
+		// 	'filesPermission'				=>	0777,
+		// 	'changeFilePermission'			=>	false,
+		// 	'delFolderAction'				=>	'delFolderAction',
+		// 	'delFileAction'					=>	'delFileAction',
+		// 	'createFolderAction'			=>	'createFolderAction',
+		// 	'uploadFileAction'				=>	'uploadFileAction',
+		// 	'maxFileSize' 					=>	3000000,
+		// 	'language' 						=>	'En',
+		// 	'allowedExtensions'				=>	'jpg,jpeg,png,gif,txt',
+		// 	'allowedMimeTypes'				=>	'',
+		// 	'fileUploadKey' 				=>	'userfile',
+		// 	'fileUploadBehaviour'			=>	'add_token', //can be none or add_token
+		// 	'fileUploadBeforeTokenChar'		=>	'_',
+		// 	'functionUponFileNane'			=>	'none',
+		// 	'createImage'					=>	false, // if it has to create the image after upload
+		// 	'createImageParams'				=>	null,
+		// );
 
 		//set the $this->scaffold->params array
 		if (is_array($params))
@@ -1471,7 +1492,7 @@ class Files_Upload
 			// get MIME TYPES if empty
 			if ($this->params['allowedExtensions'] != '' && $this->params['allowedMimeTypes'] == '')
 				$this->params['allowedMimeTypes'] = self::getMimeTypesFromExtensions($this->params['allowedExtensions']);
-
+			
 			$nameFromUpload = basename($_FILES[$userfile]["name"]);
 
 			$ext = $this->getFileExtension($nameFromUpload);

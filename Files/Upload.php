@@ -1008,7 +1008,14 @@ class Files_Upload
 			$this->params[$key] = $value;
 		}
 	}
-
+	
+	//get value for the element of key $key of the $params array
+	public function getParam($key)
+	{
+		if (array_key_exists($key,$this->params))
+			return $this->params[$key];
+	}
+	
 	//change a resulting string
 	public function setString($key,$value)
 	{

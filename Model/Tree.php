@@ -668,8 +668,6 @@ class Model_Tree extends Model_Base {
 	
 	public function insert()
 	{
-		$this->db->setAutocommit(true);
-		
 		$this->notice = null;
 		$this->errors = array();
 		
@@ -707,8 +705,6 @@ class Model_Tree extends Model_Base {
 	
 	public function update($id = null, $whereClause = null)
 	{
-		$this->db->setAutocommit(true);
-		
 		$this->notice = null;
 		$this->errors = array();
 		

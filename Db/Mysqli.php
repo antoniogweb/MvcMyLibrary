@@ -83,6 +83,11 @@ class Db_Mysqli extends Db_Generic
 		{
 			die('Connect Error (' . mysqli_connect_errno() . ') ' . mysqli_connect_error());
 		}
+
+		// Force autocommit only when opening the connection, if requested by the
+		// configuration, without changing it during transactional operations.
+		if (defined('FORCE_AUTOCOMMIT'))
+			$this->setAutocommit(true);
 		
 		$charset = array_key_exists(DEFAULT_CHARSET,$this->charsetTranslationTable) ? $this->charsetTranslationTable[DEFAULT_CHARSET] : 'utf8';
 		

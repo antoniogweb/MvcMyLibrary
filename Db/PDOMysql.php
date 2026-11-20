@@ -85,6 +85,11 @@ class Db_PDOMysql extends Db_Generic
 			echo 'Connect Error (' . $e->getMessage() . ') ';
 			die();
 		}
+
+		// Force autocommit only when opening the connection, if requested by the
+		// configuration, without changing it during transactional operations.
+		if (defined('FORCE_AUTOCOMMIT'))
+			$this->setAutocommit(true);
 		
 		$this->charset = $charset;
 		
